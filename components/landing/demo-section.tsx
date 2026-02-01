@@ -1,6 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Mic, MessageCircle } from "lucide-react";
 
 const suggestedQuestions = [
@@ -11,7 +30,30 @@ const suggestedQuestions = [
   "Do I have a case?",
 ];
 
+const LANGUAGES = [
+  { value: "en", label: "English" },
+  { value: "nl", label: "Dutch" },
+] as const;
+
 export function DemoSection() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [language, setLanguage] = useState<"en" | "nl">("en");
+
+  const handleOpenDemo = () => setDialogOpen(true);
+
+  const handleSubmit = () => {
+    const url = websiteUrl.trim();
+    if (!url) return;
+    // TODO: call scrape API, save to DB, format with OpenAI, start VAPI
+    console.log({ websiteUrl: url, language });
+    setDialogOpen(false);
+  };
+
+  const handleCancel = () => {
+    setDialogOpen(false);
+  };
+
   return (
     <section id="demo" className="py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,6 +83,7 @@ export function DemoSection() {
                 {/* Main Button */}
                 <button
                   type="button"
+                  onClick={handleOpenDemo}
                   className="relative w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center shadow-2xl shadow-[#2563EB]/30 hover:scale-105 transition-transform cursor-pointer"
                   aria-label="Start voice conversation"
                 >
@@ -75,6 +118,59 @@ export function DemoSection() {
             </div>
           </CardContent>
         </Card>
+
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Set up your demo</DialogTitle>
+              <DialogDescription>
+                Enter your company website and language. We&apos;ll create a custom voice agent from your site.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="website-url">Website URL</Label>
+                <Input
+                  id="website-url"
+                  type="url"
+                  placeholder="https://yourcompany.com"
+                  value={websiteUrl}
+                  onChange={(e) => setWebsiteUrl(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="language">Language</Label>
+                <Select
+                  value={language}
+                  onValueChange={(v) => setLanguage(v as "en" | "nl")}
+                >
+                  <SelectTrigger id="language" className="w-full">
+                    <SelectValue placeholder="Select language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {LANGUAGES.map(({ value, label }) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={handleCancel}>
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleSubmit}
+                disabled={!websiteUrl.trim()}
+              >
+                OK
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <div className="mt-8 text-center">
           <p className="text-lg text-muted-foreground flex items-center justify-center gap-2">
