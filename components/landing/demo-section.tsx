@@ -39,19 +39,43 @@ export function DemoSection() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [language, setLanguage] = useState<"en" | "nl">("en");
+  const [isScraping, setIsScraping] = useState(false);
+  const [scrapeError, setScrapeError] = useState<string | null>(null);
 
-  const handleOpenDemo = () => setDialogOpen(true);
+  const handleOpenDemo = () => {
+    setScrapeError(null);
+    setDialogOpen(true);
+  };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const url = websiteUrl.trim();
     if (!url) return;
-    // TODO: call scrape API, save to DB, format with OpenAI, start VAPI
-    console.log({ websiteUrl: url, language });
-    setDialogOpen(false);
+    setIsScraping(true);
+    setScrapeError(null);
+    try {
+      const res = await fetch("/api/scrape", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setScrapeError(data.error ?? data.details ?? "Scraping failed");
+        return;
+      }
+      console.log("scraped data",data);
+      // TODO: save to DB, format with OpenAI, start VAPI; data.scrapedContent available
+      setDialogOpen(false);
+    } catch {
+      setScrapeError("Network error. Please try again.");
+    } finally {
+      setIsScraping(false);
+    }
   };
 
   const handleCancel = () => {
     setDialogOpen(false);
+    setScrapeError(null);
   };
 
   return (
@@ -128,6 +152,11 @@ export function DemoSection() {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
+              {scrapeError && (
+                <p className="text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2">
+                  {scrapeError}
+                </p>
+              )}
               <div className="grid gap-2">
                 <Label htmlFor="website-url">Website URL</Label>
                 <Input
@@ -136,6 +165,7 @@ export function DemoSection() {
                   placeholder="https://yourcompany.com"
                   value={websiteUrl}
                   onChange={(e) => setWebsiteUrl(e.target.value)}
+                  disabled={isScraping}
                 />
               </div>
               <div className="grid gap-2">
@@ -143,6 +173,7 @@ export function DemoSection() {
                 <Select
                   value={language}
                   onValueChange={(v) => setLanguage(v as "en" | "nl")}
+                  disabled={isScraping}
                 >
                   <SelectTrigger id="language" className="w-full">
                     <SelectValue placeholder="Select language" />
@@ -158,15 +189,20 @@ export function DemoSection() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleCancel}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancel}
+                disabled={isScraping}
+              >
                 Cancel
               </Button>
               <Button
                 type="button"
                 onClick={handleSubmit}
-                disabled={!websiteUrl.trim()}
+                disabled={!websiteUrl.trim() || isScraping}
               >
-                OK
+                {isScraping ? "Scraping…" : "OK"}
               </Button>
             </DialogFooter>
           </DialogContent>
