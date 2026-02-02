@@ -25,6 +25,31 @@ Given raw HTML or text from a website, return a single JSON object with exactly 
 
 If something is not found, use empty string "" or empty array []. Return only valid JSON.`;
 
+async function isWebsiteReachable(url: string): Promise<boolean> {
+  // First try a HEAD request
+  try {
+    const res = await fetch(url, {
+      method: "HEAD",
+      redirect: "follow",
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (res.ok) return true;
+  } catch {
+    // ignore and try GET below
+  }
+
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      redirect: "follow",
+      signal: AbortSignal.timeout(10_000),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: NextRequest) {
   const token = process.env.SCRAPE_DO_TOKEN;
   if (!token) {
@@ -68,75 +93,136 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const params = new URLSearchParams({ token, url: targetUrl });
-  params.set("render", "true");
-  const apiUrl = `${SCRAPE_DO_BASE}/?${params.toString()}`;
+  const supabase = createServerSupabaseClient();
 
-  let scrapedContent: string;
+  // 1) Check for existing demo for this website + language
+  type ExistingDemo = {
+    id: string;
+    scraped_content: string | null;
+    formatted_data: unknown | null;
+  };
+  let existingDemo: ExistingDemo | null = null;
+
   try {
-    const response = await fetch(apiUrl, {
-      method: "GET",
-      headers: { Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" },
-      signal: AbortSignal.timeout(90_000),
-    });
-
-    if (!response.ok) {
-      const text = await response.text();
-      return NextResponse.json(
-        {
-          error: `Scrape.do request failed (${response.status})`,
-          details: text.slice(0, 500),
-        },
-        { status: response.status >= 500 ? 502 : 400 }
-      );
-    }
-
-    scrapedContent = await response.text();
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Scraping failed";
-    return NextResponse.json(
-      { error: "Scraping failed", details: message },
-      { status: 502 }
-    );
-  }
-
-  // Save to Supabase
-  let demoId: string;
-  try {
-    const supabase = createServerSupabaseClient();
     const { data, error } = await supabase
       .from("demos")
-      .insert({
-        website_url: targetUrl,
-        language,
-        scraped_content: scrapedContent,
-      })
-      .select("id")
-      .single();
+      .select("id, scraped_content, formatted_data")
+      .eq("website_url", targetUrl)
+      .eq("language", language)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle<ExistingDemo>();
 
-    if (error) {
-      console.error("Supabase insert error:", error);
-      return NextResponse.json(
-        { error: "Failed to save demo", details: error.message },
-        { status: 500 }
-      );
+    if (error && error.code !== "PGRST116") {
+      console.error("Supabase lookup error:", error);
+    } else if (data) {
+      existingDemo = data;
     }
-    if (!data?.id) {
-      return NextResponse.json(
-        { error: "Failed to save demo: no id returned" },
-        { status: 500 }
-      );
-    }
-    demoId = data.id;
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Database error";
-    return NextResponse.json(
-      { error: "Failed to save demo", details: message },
-      { status: 500 }
-    );
+    console.error("Supabase lookup threw:", err);
   }
 
-  // Format with OpenAI
+  // If we already have formatted data, return it immediately
+  if (existingDemo?.formatted_data) {
+    return NextResponse.json({
+      success: true,
+      demoId: existingDemo.id,
+      url: targetUrl,
+      language,
+      formattedData: existingDemo.formatted_data,
+      fromCache: true,
+    });
+  }
+
+  // 2) Determine source content: reuse scraped_content if we have it; otherwise scrape.
+  let scrapedContent: string;
+  let demoId: string;
+
+  if (existingDemo?.scraped_content) {
+    scrapedContent = existingDemo.scraped_content;
+    demoId = existingDemo.id;
+  } else {
+    // Check that website is reachable before scraping
+    const reachable = await isWebsiteReachable(targetUrl);
+    if (!reachable) {
+      return NextResponse.json(
+        {
+          error: "Website appears unreachable. Please check the URL and try again.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const params = new URLSearchParams({ token, url: targetUrl });
+    params.set("render", "true");
+    const apiUrl = `${SCRAPE_DO_BASE}/?${params.toString()}`;
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        },
+        signal: AbortSignal.timeout(90_000),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        return NextResponse.json(
+          {
+            error: `Scrape.do request failed (${response.status})`,
+            details: text.slice(0, 500),
+          },
+          { status: response.status >= 500 ? 502 : 400 },
+        );
+      }
+
+      scrapedContent = await response.text();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Scraping failed";
+      return NextResponse.json(
+        { error: "Scraping failed", details: message },
+        { status: 502 },
+      );
+    }
+
+    // Save new demo row
+    try {
+      const { data, error } = await supabase
+        .from("demos")
+        .insert({
+          website_url: targetUrl,
+          language,
+          scraped_content: scrapedContent,
+        })
+        .select("id")
+        .single();
+
+      if (error) {
+        console.error("Supabase insert error:", error);
+        return NextResponse.json(
+          { error: "Failed to save demo", details: error.message },
+          { status: 500 },
+        );
+      }
+      if (!data?.id) {
+        return NextResponse.json(
+          { error: "Failed to save demo: no id returned" },
+          { status: 500 },
+        );
+      }
+      demoId = data.id;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Database error";
+      return NextResponse.json(
+        { error: "Failed to save demo", details: message },
+        { status: 500 },
+      );
+    }
+  }
+
+  // 3) Format with OpenAI (either from cached scrape or fresh scrape)
   const openaiKey = process.env.OPENAI_API_KEY;
   if (!openaiKey) {
     return NextResponse.json(
