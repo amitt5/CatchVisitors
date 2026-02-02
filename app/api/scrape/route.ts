@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
+import OpenAI from "openai";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 const SCRAPE_DO_BASE = "https://api.scrape.do";
+
+export type FormattedFirmData = {
+  FIRM_NAME: string;
+  PRACTICE_AREAS: string;
+  SCRAPED_WEBSITE_DATA: string;
+  services: string[] | string;
+  locations: string[] | string;
+  Typical_clients: string[] | string;
+};
+
+const OPENAI_EXTRACT_SYSTEM = `You are extracting structured data from a law firm (or similar professional services) website.
+
+Given raw HTML or text from a website, return a single JSON object with exactly these keys (no extra keys, no markdown, no code block):
+- FIRM_NAME: string — the firm or company name
+- PRACTICE_AREAS: string — e.g. "employment law", "personal injury"
+- SCRAPED_WEBSITE_DATA: string — a concise summary of the firm's details (services, approach, key info) suitable for an AI voice assistant to use when answering visitor questions. Include only the most relevant facts.
+- services: array of strings — list of services offered (e.g. ["Wrongful termination", "Discrimination claims"])
+- locations: string or array — office location(s) or service areas
+- Typical_clients: string or array — who they typically serve (e.g. "Employees", "Small businesses")
+
+If something is not found, use empty string "" or empty array []. Return only valid JSON.`;
 
 export async function POST(request: NextRequest) {
   const token = process.env.SCRAPE_DO_TOKEN;
@@ -11,7 +34,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let body: { url?: string };
+  let body: { url?: string; language?: string };
   try {
     body = await request.json();
   } catch {
@@ -29,7 +52,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Ensure URL has a protocol for validation
+  const language = body.language === "nl" ? "nl" : "en";
+
   let targetUrl = rawUrl;
   if (!/^https?:\/\//i.test(targetUrl)) {
     targetUrl = `https://${targetUrl}`;
@@ -44,14 +68,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const params = new URLSearchParams({
-    token,
-    url: targetUrl, // Scrape.do accepts url as separate param; encoding is applied by URLSearchParams
-  });
-  // Use render=true for JS-rendered pages (e.g. React/Next sites)
+  const params = new URLSearchParams({ token, url: targetUrl });
   params.set("render", "true");
   const apiUrl = `${SCRAPE_DO_BASE}/?${params.toString()}`;
 
+  let scrapedContent: string;
   try {
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -70,13 +91,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const scrapedContent = await response.text();
-    return NextResponse.json({
-      success: true,
-      url: targetUrl,
-      scrapedContent,
-      length: scrapedContent.length,
-    });
+    scrapedContent = await response.text();
   } catch (err) {
     const message = err instanceof Error ? err.message : "Scraping failed";
     return NextResponse.json(
@@ -84,4 +99,135 @@ export async function POST(request: NextRequest) {
       { status: 502 }
     );
   }
+
+  // Save to Supabase
+  let demoId: string;
+  try {
+    const supabase = createServerSupabaseClient();
+    const { data, error } = await supabase
+      .from("demos")
+      .insert({
+        website_url: targetUrl,
+        language,
+        scraped_content: scrapedContent,
+      })
+      .select("id")
+      .single();
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+      return NextResponse.json(
+        { error: "Failed to save demo", details: error.message },
+        { status: 500 }
+      );
+    }
+    if (!data?.id) {
+      return NextResponse.json(
+        { error: "Failed to save demo: no id returned" },
+        { status: 500 }
+      );
+    }
+    demoId = data.id;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Database error";
+    return NextResponse.json(
+      { error: "Failed to save demo", details: message },
+      { status: 500 }
+    );
+  }
+
+  // Format with OpenAI
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (!openaiKey) {
+    return NextResponse.json(
+      { error: "OpenAI API key not configured. Add OPENAI_API_KEY to .env.local." },
+      { status: 500 }
+    );
+  }
+
+  const openai = new OpenAI({ apiKey: openaiKey });
+  const truncatedContent = scrapedContent.slice(0, 120_000);
+
+  let formattedData: FormattedFirmData;
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: OPENAI_EXTRACT_SYSTEM },
+        {
+          role: "user",
+          content: `Extract the JSON from this website content:\n\n${truncatedContent}`,
+        },
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.2,
+    });
+
+    const raw = completion.choices[0]?.message?.content;
+    if (!raw) {
+      return NextResponse.json(
+        { error: "OpenAI returned no content" },
+        { status: 502 }
+      );
+    }
+
+    const parsed = JSON.parse(raw) as FormattedFirmData;
+    formattedData = {
+      FIRM_NAME: String(parsed.FIRM_NAME ?? ""),
+      PRACTICE_AREAS: String(parsed.PRACTICE_AREAS ?? ""),
+      SCRAPED_WEBSITE_DATA: String(parsed.SCRAPED_WEBSITE_DATA ?? ""),
+      services: Array.isArray(parsed.services)
+        ? parsed.services
+        : typeof parsed.services === "string"
+          ? parsed.services
+          : [],
+      locations: Array.isArray(parsed.locations)
+        ? parsed.locations
+        : typeof parsed.locations === "string"
+          ? parsed.locations
+          : "",
+      Typical_clients: Array.isArray(parsed.Typical_clients)
+        ? parsed.Typical_clients
+        : typeof parsed.Typical_clients === "string"
+          ? parsed.Typical_clients
+          : [],
+    };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "OpenAI request failed";
+    return NextResponse.json(
+      { error: "Failed to format content", details: message },
+      { status: 502 }
+    );
+  }
+
+  // Update row with formatted_data
+  try {
+    const supabase = createServerSupabaseClient();
+    const { error } = await supabase
+      .from("demos")
+      .update({ formatted_data: formattedData })
+      .eq("id", demoId);
+
+    if (error) {
+      console.error("Supabase update error:", error);
+      return NextResponse.json(
+        { error: "Demo saved but failed to store formatted data", details: error.message, demoId, formattedData },
+        { status: 500 }
+      );
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Database update failed";
+    return NextResponse.json(
+      { error: "Demo saved but failed to store formatted data", details: message, demoId, formattedData },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({
+    success: true,
+    demoId,
+    url: targetUrl,
+    language,
+    formattedData,
+  });
 }

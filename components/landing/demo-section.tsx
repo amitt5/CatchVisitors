@@ -41,6 +41,7 @@ export function DemoSection() {
   const [language, setLanguage] = useState<"en" | "nl">("en");
   const [isScraping, setIsScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState<string | null>(null);
+  const [testMessage, setTestMessage] = useState<string | null>(null);
 
   const handleOpenDemo = () => {
     setScrapeError(null);
@@ -56,15 +57,14 @@ export function DemoSection() {
       const res = await fetch("/api/scrape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, language }),
       });
       const data = await res.json();
       if (!res.ok) {
         setScrapeError(data.error ?? data.details ?? "Scraping failed");
         return;
       }
-      console.log("scraped data",data);
-      // TODO: save to DB, format with OpenAI, start VAPI; data.scrapedContent available
+      // data.demoId, data.formattedData ready for VAPI assistant
       setDialogOpen(false);
     } catch {
       setScrapeError("Network error. Please try again.");
@@ -76,6 +76,25 @@ export function DemoSection() {
   const handleCancel = () => {
     setDialogOpen(false);
     setScrapeError(null);
+  };
+
+  const handleTestSupabase = async () => {
+    setTestMessage(null);
+    try {
+      const res = await fetch("/api/test-supabase", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setTestMessage(
+          `Supabase test failed: ${data.error ?? data.details ?? "Unknown error"}`,
+        );
+        return;
+      }
+      setTestMessage(
+        `Supabase test OK (demo id: ${data.demoId ?? "n/a"})`,
+      );
+    } catch {
+      setTestMessage("Supabase test failed: network error");
+    }
   };
 
   return (
@@ -142,6 +161,17 @@ export function DemoSection() {
             </div>
           </CardContent>
         </Card>
+
+        <div className="mt-4 max-w-3xl mx-auto text-xs text-muted-foreground space-y-2">
+          <button
+            type="button"
+            onClick={handleTestSupabase}
+            className="underline underline-offset-2 hover:text-foreground"
+          >
+            Test Supabase connection (dev only)
+          </button>
+          {testMessage && <p>{testMessage}</p>}
+        </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent className="sm:max-w-md">
