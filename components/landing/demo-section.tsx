@@ -53,40 +53,64 @@ export function DemoSection() {
   const handleSubmit = async () => {
     const url = websiteUrl.trim();
     if (!url) return;
+    console.log('🚀 Starting demo setup for URL:', url, 'Language:', language);
     setIsScraping(true);
     setScrapeError(null);
     try {
-      // Step 1: Scrape website and format data
-      const scrapeRes = await fetch("/api/scrape", {
+      // Step 1: Research website with Gemini API via OpenRouter
+      console.log('📡 Calling Gemini research API...');
+      const geminiRes = await fetch("/api/gemini-research", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, language }),
       });
-      const scrapeData = await scrapeRes.json();
-      if (!scrapeRes.ok) {
-        setScrapeError(scrapeData.error ?? scrapeData.details ?? "Scraping failed");
+      const geminiData = await geminiRes.json();
+      console.log('📊 Gemini research response:', { 
+        status: geminiRes.status, 
+        success: geminiData.success,
+        fromCache: geminiData.fromCache,
+        demoId: geminiData.demoId,
+        hasPrompt: !!geminiData.prompt
+      });
+      
+      if (!geminiRes.ok) {
+        console.error('❌ Gemini research failed:', geminiData);
+        setScrapeError(geminiData.error ?? geminiData.details ?? "Website research failed");
         return;
       }
 
-      // Step 2: Create VAPI assistant
+      // Step 2: Create VAPI assistant using Gemini's prompt
+      console.log('🤖 Creating VAPI assistant...');
       const vapiRes = await fetch("/api/vapi-call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          demoId: scrapeData.demoId, 
-          formattedData: scrapeData.formattedData 
+          demoId: geminiData.demoId, 
+          prompt: geminiData.prompt 
         }),
       });
       const vapiData = await vapiRes.json();
+      console.log('🎙️ VAPI assistant response:', { 
+        status: vapiRes.status,
+        success: vapiData.success,
+        assistantId: vapiData.assistantId,
+        hasPhoneNumber: !!vapiData.phoneNumber,
+        hasWebConfig: !!vapiData.webConfig
+      });
+      
       if (!vapiRes.ok) {
+        console.error('❌ VAPI setup failed:', vapiData);
         setScrapeError(vapiData.error ?? vapiData.details ?? "VAPI setup failed");
         return;
       }
 
       // Store VAPI config for the web widget
+      console.log('💾 Storing VAPI config for web widget');
       setVapiConfig(vapiData.webConfig);
       setDialogOpen(false);
-    } catch {
+      console.log('✅ Demo setup completed successfully!');
+    } catch (error) {
+      console.error('💥 Unexpected error in handleSubmit:', error);
       setScrapeError("Network error. Please try again.");
     } finally {
       setIsScraping(false);
