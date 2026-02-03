@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Vapi from "@vapi-ai/web";
 import { Mic, MessageCircle, X, Settings } from "lucide-react";
 
 const suggestedQuestions = [
@@ -124,6 +125,78 @@ export function DemoSection() {
     setScrapeError(null);
   };
 
+  const handleTestAssistant = async () => {
+    console.log('🧪 Test button clicked!');
+    setIsScraping(true);
+    setScrapeError(null);
+    
+    try {
+      console.log('🎙️ Starting test assistant setup...');
+      
+      // Check environment variables
+      const assistantId = process.env.NEXT_PUBLIC_TEST_VAPI_ASSISTANT_ID;
+      const apiKey = process.env.NEXT_PUBLIC_VAPI_API_KEY;
+      
+      console.log('🔍 Environment variables:', {
+        assistantId: assistantId,
+        apiKey: apiKey ? 'PRESENT' : 'MISSING',
+        assistantIdLength: assistantId?.length,
+        apiKeyLength: apiKey?.length
+      });
+      
+      if (!assistantId || !apiKey) {
+        throw new Error(`Missing env vars: assistantId=${!!assistantId}, apiKey=${!!apiKey}`);
+      }
+      
+      const testConfig = {
+        assistantId: assistantId,
+        apiKey: apiKey
+      };
+      
+      setVapiConfig(testConfig);
+      console.log('✅ VAPI config set successfully');
+      
+      setDialogOpen(false);
+      console.log('✅ Dialog closed');
+      
+      // Now try to start the VAPI call using the imported Vapi class
+      console.log('📞 Attempting to start VAPI call...');
+      
+      // Initialize VAPI instance
+      const vapi = new Vapi(apiKey);
+      console.log('✅ VAPI instance created');
+      
+      setIsCallActive(true);
+      
+      await vapi.start(testConfig.assistantId);
+
+      vapi.on('call-start', () => {
+        console.log('🎉 Test call started successfully!');
+      });
+
+      vapi.on('call-end', () => {
+        console.log('📞 Test call ended');
+        setIsCallActive(false);
+      });
+
+      vapi.on('error', (error: any) => {
+        console.error('❌ Test VAPI call error:', error);
+        setScrapeError(`VAPI call error: ${error.message}`);
+        setIsCallActive(false);
+      });
+      
+      setScrapeError('✅ VAPI call started! You should hear the assistant soon.');
+      
+    } catch (error) {
+      console.error('💥 Test assistant error:', error);
+      setScrapeError(`❌ Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setIsCallActive(false);
+    } finally {
+      console.log('🏁 Test function finished');
+      setIsScraping(false);
+    }
+  };
+
   const startVapiCall = async () => {
     if (!vapiConfig) {
       setScrapeError("Please set up your website first");
@@ -132,47 +205,32 @@ export function DemoSection() {
 
     setIsCallActive(true);
     try {
-      // Initialize VAPI widget
-      if (typeof window !== 'undefined' && (window as any).vapi) {
-        const vapi = (window as any).vapi;
-        
-        // Start the call
-        await vapi.start({
-          assistantId: vapiConfig.assistantId,
-          apiKey: vapiConfig.apiKey,
-        });
+      console.log('📞 Starting VAPI call with config:', { assistantId: vapiConfig.assistantId });
+      
+      // Initialize VAPI instance
+      const vapi = new Vapi(vapiConfig.apiKey);
+      
+      // Start the call
+      await vapi.start(vapiConfig.assistantId);
 
-        // Handle call events
-        vapi.on('call-start', () => {
-          console.log('Call started');
-        });
+      // Handle call events
+      vapi.on('call-start', () => {
+        console.log('Call started');
+      });
 
-        vapi.on('call-end', () => {
-          console.log('Call ended');
-          setIsCallActive(false);
-        });
+      vapi.on('call-end', () => {
+        console.log('Call ended');
+        setIsCallActive(false);
+      });
 
-        vapi.on('error', (error: any) => {
-          console.error('VAPI error:', error);
-          setScrapeError('Call failed: ' + error.message);
-          setIsCallActive(false);
-        });
-      } else {
-        // Load VAPI SDK dynamically
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/@vapi-ai/web@latest/dist/index.js';
-        script.onload = async () => {
-          const vapi = (window as any).vapi;
-          await vapi.start({
-            assistantId: vapiConfig.assistantId,
-            apiKey: vapiConfig.apiKey,
-          });
-        };
-        document.head.appendChild(script);
-      }
+      vapi.on('error', (error: any) => {
+        console.error('VAPI call error:', error);
+        setScrapeError(`VAPI call error: ${error.message}`);
+        setIsCallActive(false);
+      });
     } catch (error) {
-      console.error('Failed to start VAPI call:', error);
-      setScrapeError('Failed to start call');
+      console.error('💥 VAPI call error:', error);
+      setScrapeError(`Failed to start VAPI call: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setIsCallActive(false);
     }
   };
@@ -329,6 +387,15 @@ export function DemoSection() {
               </div>
             </div>
             <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleTestAssistant}
+                disabled={isScraping}
+                className="mr-2"
+              >
+                {isScraping ? "Testing…" : "Test Assistant"}
+              </Button>
               <Button
                 type="button"
                 variant="outline"
