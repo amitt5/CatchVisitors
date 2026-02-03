@@ -10,6 +10,7 @@ export interface Database {
           language: string;
           scraped_content: string | null;
           formatted_data: Json | null;
+          gemini_prompt: string | null;
           call_id: string | null;
           transcript: string | null;
           summary: string | null;
@@ -26,6 +27,7 @@ export interface Database {
           language: string;
           scraped_content?: string | null;
           formatted_data?: Json | null;
+          gemini_prompt?: string | null;
           call_id?: string | null;
           transcript?: string | null;
           summary?: string | null;
@@ -42,6 +44,7 @@ export interface Database {
           language?: string;
           scraped_content?: string | null;
           formatted_data?: Json | null;
+          gemini_prompt?: string | null;
           call_id?: string | null;
           transcript?: string | null;
           summary?: string | null;

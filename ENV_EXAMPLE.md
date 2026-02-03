@@ -10,6 +10,11 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 ```
 
+### OpenRouter (for Gemini access)
+```
+OPENROUTER_API_KEY=your_openrouter_api_key
+```
+
 ### OpenAI
 ```
 OPENAI_API_KEY=your_openai_api_key
@@ -39,12 +44,20 @@ Make sure your Supabase `demos` table includes these columns:
 
 ```sql
 ALTER TABLE demos 
+ADD COLUMN gemini_prompt TEXT NULL,
 ADD COLUMN vapi_assistant_id TEXT NULL,
 ADD COLUMN vapi_assistant_data JSON NULL,
 ADD COLUMN vapi_phone_number TEXT NULL;
 ```
 
-## VAPI Setup
+## API Keys Setup
+
+### OpenRouter Setup
+1. Get your API key from [OpenRouter Dashboard](https://openrouter.ai/keys)
+2. OpenRouter provides access to Google Gemini models and many others
+3. Copy the API key to your environment variables
+
+### VAPI Setup
 
 1. Get your VAPI API key from [VAPI Dashboard](https://vapi.ai)
 2. Set up a webhook secret for security
