@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mic, MessageCircle } from "lucide-react";
+import { Mic, MessageCircle, X, Settings } from "lucide-react";
 
 const suggestedQuestions = [
   "How much do you charge?",
@@ -42,6 +42,8 @@ export function DemoSection() {
   const [isScraping, setIsScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState<string | null>(null);
   const [testMessage, setTestMessage] = useState<string | null>(null);
+  const [vapiConfig, setVapiConfig] = useState<any>(null);
+  const [isCallActive, setIsCallActive] = useState(false);
 
   const handleOpenDemo = () => {
     setScrapeError(null);
@@ -54,17 +56,35 @@ export function DemoSection() {
     setIsScraping(true);
     setScrapeError(null);
     try {
-      const res = await fetch("/api/scrape", {
+      // Step 1: Scrape website and format data
+      const scrapeRes = await fetch("/api/scrape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, language }),
       });
-      const data = await res.json();
-      if (!res.ok) {
-        setScrapeError(data.error ?? data.details ?? "Scraping failed");
+      const scrapeData = await scrapeRes.json();
+      if (!scrapeRes.ok) {
+        setScrapeError(scrapeData.error ?? scrapeData.details ?? "Scraping failed");
         return;
       }
-      // data.demoId, data.formattedData ready for VAPI assistant
+
+      // Step 2: Create VAPI assistant
+      const vapiRes = await fetch("/api/vapi-call", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          demoId: scrapeData.demoId, 
+          formattedData: scrapeData.formattedData 
+        }),
+      });
+      const vapiData = await vapiRes.json();
+      if (!vapiRes.ok) {
+        setScrapeError(vapiData.error ?? vapiData.details ?? "VAPI setup failed");
+        return;
+      }
+
+      // Store VAPI config for the web widget
+      setVapiConfig(vapiData.webConfig);
       setDialogOpen(false);
     } catch {
       setScrapeError("Network error. Please try again.");
@@ -76,6 +96,59 @@ export function DemoSection() {
   const handleCancel = () => {
     setDialogOpen(false);
     setScrapeError(null);
+  };
+
+  const startVapiCall = async () => {
+    if (!vapiConfig) {
+      setScrapeError("Please set up your website first");
+      return;
+    }
+
+    setIsCallActive(true);
+    try {
+      // Initialize VAPI widget
+      if (typeof window !== 'undefined' && (window as any).vapi) {
+        const vapi = (window as any).vapi;
+        
+        // Start the call
+        await vapi.start({
+          assistantId: vapiConfig.assistantId,
+          apiKey: vapiConfig.apiKey,
+        });
+
+        // Handle call events
+        vapi.on('call-start', () => {
+          console.log('Call started');
+        });
+
+        vapi.on('call-end', () => {
+          console.log('Call ended');
+          setIsCallActive(false);
+        });
+
+        vapi.on('error', (error: any) => {
+          console.error('VAPI error:', error);
+          setScrapeError('Call failed: ' + error.message);
+          setIsCallActive(false);
+        });
+      } else {
+        // Load VAPI SDK dynamically
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@vapi-ai/web@latest/dist/index.js';
+        script.onload = async () => {
+          const vapi = (window as any).vapi;
+          await vapi.start({
+            assistantId: vapiConfig.assistantId,
+            apiKey: vapiConfig.apiKey,
+          });
+        };
+        document.head.appendChild(script);
+      }
+    } catch (error) {
+      console.error('Failed to start VAPI call:', error);
+      setScrapeError('Failed to start call');
+      setIsCallActive(false);
+    }
   };
 
   const handleTestSupabase = async () => {
@@ -126,19 +199,30 @@ export function DemoSection() {
                 {/* Main Button */}
                 <button
                   type="button"
-                  onClick={handleOpenDemo}
-                  className="relative w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center shadow-2xl shadow-[#2563EB]/30 hover:scale-105 transition-transform cursor-pointer"
-                  aria-label="Start voice conversation"
+                  onClick={vapiConfig ? startVapiCall : handleOpenDemo}
+                  disabled={isCallActive}
+                  className={`relative w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center shadow-2xl transition-all cursor-pointer ${
+                    isCallActive 
+                      ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                      : 'bg-gradient-to-br from-[#2563EB] to-[#7C3AED] hover:scale-105 shadow-[#2563EB]/30'
+                  }`}
+                  aria-label={isCallActive ? "End call" : vapiConfig ? "Start voice conversation" : "Set up demo"}
                 >
-                  <Mic className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                  {isCallActive ? (
+                    <X className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                  ) : vapiConfig ? (
+                    <Mic className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                  ) : (
+                    <Settings className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                  )}
                 </button>
               </div>
 
               <p className="text-lg font-semibold text-foreground mb-2">
-                Click to Talk
+                {isCallActive ? "Call in Progress..." : vapiConfig ? "Click to Talk" : "Setup Required"}
               </p>
               <p className="text-sm text-muted-foreground mb-8">
-                Microphone permission required
+                {isCallActive ? "Click to end the call" : vapiConfig ? "Microphone permission required" : "Configure your website first"}
               </p>
 
               {/* Suggested Questions */}

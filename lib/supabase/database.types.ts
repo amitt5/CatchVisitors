@@ -16,6 +16,9 @@ export interface Database {
           email: string | null;
           created_at: string;
           call_completed_at: string | null;
+          vapi_assistant_id: string | null;
+          vapi_assistant_data: Json | null;
+          vapi_phone_number: string | null;
         };
         Insert: {
           id?: string;
@@ -29,6 +32,9 @@ export interface Database {
           email?: string | null;
           created_at?: string;
           call_completed_at?: string | null;
+          vapi_assistant_id?: string | null;
+          vapi_assistant_data?: Json | null;
+          vapi_phone_number?: string | null;
         };
         Update: {
           id?: string;
@@ -42,6 +48,9 @@ export interface Database {
           email?: string | null;
           created_at?: string;
           call_completed_at?: string | null;
+          vapi_assistant_id?: string | null;
+          vapi_assistant_data?: Json | null;
+          vapi_phone_number?: string | null;
         };
       };
     };

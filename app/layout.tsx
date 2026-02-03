@@ -36,6 +36,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script 
+          src="https://unpkg.com/@vapi-ai/web@latest/dist/index.js" 
+          async 
+        />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         {children}
         <Analytics />
