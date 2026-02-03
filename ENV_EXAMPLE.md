@@ -45,6 +45,7 @@ Make sure your Supabase `demos` table includes these columns:
 ```sql
 ALTER TABLE demos 
 ADD COLUMN gemini_prompt TEXT NULL,
+ADD COLUMN organisation_name TEXT NULL,
 ADD COLUMN vapi_assistant_id TEXT NULL,
 ADD COLUMN vapi_assistant_data JSON NULL,
 ADD COLUMN vapi_phone_number TEXT NULL;

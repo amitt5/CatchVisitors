@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
     type ExistingResearch = {
       id: string;
       gemini_prompt: string | null;
+      organisation_name: string | null;
     };
     
     let existingResearch: ExistingResearch | null = null;
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
     try {
       const { data, error } = await supabase
         .from("demos")
-        .select("id, gemini_prompt")
+        .select("id, gemini_prompt, organisation_name")
         .eq("website_url", targetUrl)
         .eq("language", language)
         .order("created_at", { ascending: false })
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
         console.error('❌ Supabase lookup error:', error);
       } else if (data) {
         existingResearch = data;
-        console.log('✅ Found existing research:', { demoId: data.id, hasPrompt: !!data.gemini_prompt });
+        console.log('✅ Found existing research:', { demoId: data.id, hasPrompt: !!data.gemini_prompt, hasOrganisationName: !!data.organisation_name });
       }
     } catch (err) {
       console.error('💥 Supabase lookup threw:', err);
@@ -86,6 +87,7 @@ export async function POST(request: NextRequest) {
         demoId: existingResearch.id,
         url: targetUrl,
         language,
+        organisationName: existingResearch.organisation_name,
         prompt: existingResearch.gemini_prompt,
         fromCache: true,
       });
@@ -96,10 +98,26 @@ export async function POST(request: NextRequest) {
     const researchPrompt = language === "nl" 
       ? `${targetUrl}
 
-Onderzoek deze website met het doel van het schrijven van een uitgebreide assistent-prompt voor een behulpzame VAPI AI-stemagent receptionist stem/chat widget op de website die veelgestelde vragen zou beantwoorden en de potentiële klant zou begeleiden om een afspraak te boeken.`
+Onderzoek deze website met het doel van het schrijven van een uitgebreide assistent-prompt voor een behulpzame VAPI AI-stemagent receptionist stem/chat widget op de website die veelgestelde vragen zou beantwoorden en de potentiële klant zou begeleiden om een afspraak te boeken.
+
+Retourneer ALLEEN een JSON-object met deze structuur:
+{
+  "organisation_name": "de naam van het bedrijf",
+  "vapi_prompt": "de volledige assistent-prompt"
+}
+
+Geen andere tekst, geen uitleg, alleen het JSON-object.`
       : `${targetUrl}
 
-Research this website with the goal of writing a comprehensive assistant prompt for a helpful VAPI AI voice agent receptionist voice/chat widget on the website that would answer frequently asked questions and guide the potential customer to book an appointment.`;
+Research this website with the goal of writing a comprehensive assistant prompt for a helpful VAPI AI voice agent receptionist voice/chat widget on the website that would answer frequently asked questions and guide the potential customer to book an appointment.
+
+Return ONLY a JSON object with this structure:
+{
+  "organisation_name": "the company name",
+  "vapi_prompt": "the complete assistant prompt"
+}
+
+No other text, no explanation, only the JSON object.`;
 
     const openrouterResponse = await fetch(OPENROUTER_API_URL, {
       method: "POST",
@@ -139,10 +157,28 @@ Research this website with the goal of writing a comprehensive assistant prompt 
     
     // Extract the prompt from OpenRouter response
     let prompt = "";
+    let organisationName = "";
     try {
       if (openrouterData.choices?.[0]?.message?.content) {
-        prompt = openrouterData.choices[0].message.content;
-        console.log('📝 OpenRouter returned content, using directly');
+        let content = openrouterData.choices[0].message.content;
+        console.log('📝 OpenRouter returned content:', content.substring(0, 200) + '...');
+        
+        // Clean markdown code blocks if present
+        if (content.includes('```')) {
+          console.log('🧹 Cleaning markdown code blocks...');
+          content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+          console.log('✅ Cleaned content:', content.substring(0, 200) + '...');
+        }
+        
+        // Parse JSON response
+        const jsonResponse = JSON.parse(content);
+        organisationName = jsonResponse.organisation_name || "";
+        prompt = jsonResponse.vapi_prompt || "";
+        
+        console.log('✅ Parsed JSON response:', { 
+          organisationName, 
+          promptLength: prompt.length 
+        });
       } else {
         throw new Error("No content found in OpenRouter response");
       }
@@ -165,7 +201,10 @@ Research this website with the goal of writing a comprehensive assistant prompt 
       // Update existing record
       const { error: updateError } = await supabase
         .from("demos")
-        .update({ gemini_prompt: prompt })
+        .update({ 
+          gemini_prompt: prompt,
+          organisation_name: organisationName
+        })
         .eq("id", demoId);
 
       if (updateError) {
@@ -184,6 +223,7 @@ Research this website with the goal of writing a comprehensive assistant prompt 
           website_url: targetUrl,
           language,
           gemini_prompt: prompt,
+          organisation_name: organisationName,
         })
         .select("id")
         .single();
@@ -214,6 +254,7 @@ Research this website with the goal of writing a comprehensive assistant prompt 
       demoId,
       url: targetUrl,
       language,
+      organisationName,
       prompt,
     });
 
