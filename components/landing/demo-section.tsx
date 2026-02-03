@@ -197,6 +197,28 @@ export function DemoSection() {
     }
   };
 
+  const handleEndCall = () => {
+    console.log('📞 Ending call manually...');
+    setIsCallActive(false);
+    setScrapeError(null);
+    
+    // Stop any active VAPI instance
+    if (typeof window !== 'undefined') {
+      // Try to access any VAPI instance and stop it
+      const scripts = document.querySelectorAll('script');
+      scripts.forEach(script => {
+        if (script.src.includes('vapi-ai')) {
+          // If VAPI is loaded globally, try to stop it
+          if ((window as any).vapi) {
+            (window as any).vapi.stop().catch(error => {
+              console.error('Failed to stop VAPI call:', error);
+            });
+          }
+        }
+      });
+    }
+  };
+
   const startVapiCall = async () => {
     if (!vapiConfig) {
       setScrapeError("Please set up your website first");
@@ -309,8 +331,8 @@ export function DemoSection() {
                 {/* Main Button */}
                 <button
                   type="button"
-                  onClick={vapiConfig ? startVapiCall : handleOpenDemo}
-                  disabled={isCallActive}
+                  onClick={isCallActive ? handleEndCall : (vapiConfig ? startVapiCall : handleOpenDemo)}
+                  disabled={isScraping}
                   className={`relative w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center shadow-2xl transition-all cursor-pointer ${
                     isCallActive 
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
