@@ -210,21 +210,47 @@ export function DemoSection() {
       // Initialize VAPI instance
       const vapi = new Vapi(vapiConfig.apiKey);
       
-      // Start the call
-      await vapi.start(vapiConfig.assistantId);
+      // Get the stored Gemini prompt from the database
+      console.log('🔍 Fetching Gemini prompt from database...');
+      const response = await fetch('/api/get-prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ assistantId: vapiConfig.assistantId })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch Gemini prompt');
+      }
+      
+      const { prompt } = await response.json();
+      console.log('✅ Gemini prompt retrieved, length:', prompt?.length);
+      
+      if (!prompt) {
+        throw new Error('No Gemini prompt found');
+      }
+      
+      // Start the call with the Gemini prompt
+      const assistantOverrides = {
+        variableValues: {
+          prompt: prompt
+        }
+      };
+      
+      console.log('🚀 Starting VAPI call with Gemini prompt...');
+      await vapi.start(vapiConfig.assistantId, assistantOverrides);
 
       // Handle call events
       vapi.on('call-start', () => {
-        console.log('Call started');
+        console.log('✅ Call started with Gemini prompt!');
       });
 
       vapi.on('call-end', () => {
-        console.log('Call ended');
+        console.log('📞 Call ended');
         setIsCallActive(false);
       });
 
       vapi.on('error', (error: any) => {
-        console.error('VAPI call error:', error);
+        console.error('❌ VAPI call error:', error);
         setScrapeError(`VAPI call error: ${error.message}`);
         setIsCallActive(false);
       });

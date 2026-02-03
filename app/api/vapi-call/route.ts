@@ -17,13 +17,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Store the Gemini prompt in Supabase
     const supabase = createServerSupabaseClient();
+    
+    // Store only the Gemini prompt (assistant ID comes from env)
     console.log('💾 Storing Gemini prompt in database...');
     const { error: updateError } = await supabase
       .from("demos")
       .update({ 
-        gemini_prompt: prompt 
+        gemini_prompt: prompt
       })
       .eq("id", demoId);
 
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     console.log('✅ Gemini prompt stored successfully');
     return NextResponse.json({
       success: true,
-      message: "Gemini prompt stored successfully. Use NEXT_PUBLIC_VAPI_ASSISTANT_ID in frontend with {{prompt}} placeholder.",
+      message: "Gemini prompt stored successfully.",
       demoId,
     });
 
