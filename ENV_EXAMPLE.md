@@ -22,7 +22,8 @@ OPENAI_API_KEY=your_openai_api_key
 
 ### VAPI
 ```
-VAPI_API_KEY=your_vapi_api_key
+NEXT_PUBLIC_VAPI_API_KEY=your_vapi_api_key
+NEXT_PUBLIC_VAPI_ASSISTANT_ID=your_vapi_assistant_id
 VAPI_WEBHOOK_SECRET=your_webhook_secret
 ```
 

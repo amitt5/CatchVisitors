@@ -70,7 +70,8 @@ export function DemoSection() {
         success: geminiData.success,
         fromCache: geminiData.fromCache,
         demoId: geminiData.demoId,
-        hasPrompt: !!geminiData.prompt
+        hasPrompt: !!geminiData.prompt,
+        organisationName: geminiData.organisationName
       });
       
       if (!geminiRes.ok) {
@@ -79,8 +80,8 @@ export function DemoSection() {
         return;
       }
 
-      // Step 2: Create VAPI assistant using Gemini's prompt
-      console.log('🤖 Creating VAPI assistant...');
+      // Step 2: Store Gemini prompt for VAPI
+      console.log('🤖 Storing Gemini prompt for VAPI...');
       const vapiRes = await fetch("/api/vapi-call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,23 +91,24 @@ export function DemoSection() {
         }),
       });
       const vapiData = await vapiRes.json();
-      console.log('🎙️ VAPI assistant response:', { 
+      console.log('🎙️ VAPI prompt storage response:', { 
         status: vapiRes.status,
         success: vapiData.success,
-        assistantId: vapiData.assistantId,
-        hasPhoneNumber: !!vapiData.phoneNumber,
-        hasWebConfig: !!vapiData.webConfig
+        message: vapiData.message
       });
       
       if (!vapiRes.ok) {
-        console.error('❌ VAPI setup failed:', vapiData);
+        console.error('❌ VAPI prompt storage failed:', vapiData);
         setScrapeError(vapiData.error ?? vapiData.details ?? "VAPI setup failed");
         return;
       }
 
-      // Store VAPI config for the web widget
-      console.log('💾 Storing VAPI config for web widget');
-      setVapiConfig(vapiData.webConfig);
+      // Set up VAPI config using public environment variables
+      console.log('💾 Setting up VAPI config with public variables');
+      setVapiConfig({
+        assistantId: process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID,
+        apiKey: process.env.NEXT_PUBLIC_VAPI_API_KEY
+      });
       setDialogOpen(false);
       console.log('✅ Demo setup completed successfully!');
     } catch (error) {
