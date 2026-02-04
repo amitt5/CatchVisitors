@@ -7,6 +7,12 @@ export async function POST(request: NextRequest) {
   console.log('🌟 Gemini research API called (via OpenRouter)');
   
   const openrouterApiKey = process.env.OPENROUTER_API_KEY;
+  console.log('🔑 OpenRouter API key check:', { 
+    hasKey: !!openrouterApiKey, 
+    keyLength: openrouterApiKey?.length,
+    keyPrefix: openrouterApiKey?.substring(0, 10) + '...'
+  });
+  
   if (!openrouterApiKey) {
     console.error('❌ OpenRouter API key not configured');
     return NextResponse.json(

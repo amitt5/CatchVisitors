@@ -23,13 +23,22 @@ import {
 import Vapi from "@vapi-ai/web";
 import { Mic, MessageCircle, X } from "lucide-react";
 
-const suggestedQuestions = [
-  "How much do you charge?",
-  "Can they fire me without severance?",
-  "What's your success rate?",
-  "How long does the process take?",
-  "Do I have a case?",
-];
+const suggestedQuestions = {
+  en: [
+    "How much do you charge?",
+    "Can they fire me without severance?",
+    "What's your success rate?",
+    "How long does the process take?",
+    "Do I have a case?",
+  ],
+  nl: [
+    "Hoeveel kosten jullie?",
+    "Kunnen me ontslaan zonder ontslagvergoeding?",
+    "Wat is jullie slagingspercentage?",
+    "Hoe lang duurt het proces?",
+    "Heb ik een zaak?",
+  ]
+};
 
 const LANGUAGES = [
   { value: "en", label: "English" },
@@ -111,12 +120,16 @@ export function DemoSection() {
       
       try {
         // Get the stored Gemini prompt from database
-        console.log('� Fetching Gemini prompt from database...');
+        console.log('📡 Fetching Gemini prompt from database...');
+        const assistantId = language === 'nl' 
+          ? process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_DUTCH 
+          : process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+        
         const promptRes = await fetch('/api/get-prompt', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
-            assistantId: process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID 
+            assistantId: assistantId 
           })
         });
         
@@ -133,7 +146,6 @@ export function DemoSection() {
         
         // Initialize VAPI and start the call
         const apiKey = process.env.NEXT_PUBLIC_VAPI_API_KEY;
-        const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
         
         if (!apiKey || !assistantId) {
           throw new Error('Missing VAPI configuration');
@@ -357,10 +369,10 @@ export function DemoSection() {
               <div className="w-full">
                 <p className="text-sm font-medium text-muted-foreground mb-4 flex items-center gap-2">
                   <MessageCircle className="w-4 h-4" />
-                  Try asking:
+                  {language === 'nl' ? 'Probeer te vragen:' : 'Try asking:'}
                 </p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {suggestedQuestions.map((question, index) => (
+                  {suggestedQuestions[language].map((question, index) => (
                     <span
                       key={index}
                       className="px-4 py-2 rounded-full bg-secondary text-sm text-foreground hover:bg-[#2563EB]/10 transition-colors cursor-pointer"
