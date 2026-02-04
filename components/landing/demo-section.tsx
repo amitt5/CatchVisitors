@@ -104,14 +104,75 @@ export function DemoSection() {
         return;
       }
 
-      // Set up VAPI config using public environment variables
-      console.log('💾 Setting up VAPI config with public variables');
-      setVapiConfig({
-        assistantId: process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID,
-        apiKey: process.env.NEXT_PUBLIC_VAPI_API_KEY
-      });
+      // Step 3: Auto-start VAPI call with Gemini prompt
+      console.log('🚀 Auto-starting VAPI call with Gemini prompt...');
       setDialogOpen(false);
-      console.log('✅ Demo setup completed successfully!');
+      
+      try {
+        // Get the stored Gemini prompt from database
+        console.log('� Fetching Gemini prompt from database...');
+        const promptRes = await fetch('/api/get-prompt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            assistantId: process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID 
+          })
+        });
+        
+        if (!promptRes.ok) {
+          throw new Error('Failed to fetch Gemini prompt');
+        }
+        
+        const { prompt } = await promptRes.json();
+        console.log('✅ Gemini prompt retrieved, length:', prompt?.length);
+        
+        if (!prompt) {
+          throw new Error('No Gemini prompt found');
+        }
+        
+        // Initialize VAPI and start the call
+        const apiKey = process.env.NEXT_PUBLIC_VAPI_API_KEY;
+        const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+        
+        if (!apiKey || !assistantId) {
+          throw new Error('Missing VAPI configuration');
+        }
+        
+        console.log('📞 Starting VAPI call with Gemini prompt...');
+        const vapi = new Vapi(apiKey);
+        setIsCallActive(true);
+        
+        // Start the call with the Gemini prompt
+        const assistantOverrides = {
+          variableValues: {
+            prompt: prompt
+          }
+        };
+        
+        await vapi.start(assistantId, assistantOverrides);
+
+        // Handle call events
+        vapi.on('call-start', () => {
+          console.log('✅ Call started automatically with Gemini prompt!');
+        });
+
+        vapi.on('call-end', () => {
+          console.log('📞 Call ended');
+          setIsCallActive(false);
+        });
+
+        vapi.on('error', (error: any) => {
+          console.error('❌ VAPI call error:', error);
+          setScrapeError(`VAPI call error: ${error.message}`);
+          setIsCallActive(false);
+        });
+        
+        console.log('✅ Demo setup and call started successfully!');
+        
+      } catch (vapiError) {
+        console.error('💥 Failed to start VAPI call:', vapiError);
+        setScrapeError(`Failed to start call: ${vapiError instanceof Error ? vapiError.message : 'Unknown error'}`);
+      }
     } catch (error) {
       console.error('💥 Unexpected error in handleSubmit:', error);
       setScrapeError("Network error. Please try again.");
@@ -331,30 +392,28 @@ export function DemoSection() {
                 {/* Main Button */}
                 <button
                   type="button"
-                  onClick={isCallActive ? handleEndCall : (vapiConfig ? startVapiCall : handleOpenDemo)}
+                  onClick={isCallActive ? handleEndCall : handleOpenDemo}
                   disabled={isScraping}
                   className={`relative w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center shadow-2xl transition-all cursor-pointer ${
                     isCallActive 
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
                       : 'bg-gradient-to-br from-[#2563EB] to-[#7C3AED] hover:scale-105 shadow-[#2563EB]/30'
                   }`}
-                  aria-label={isCallActive ? "End call" : vapiConfig ? "Start voice conversation" : "Set up demo"}
+                  aria-label={isCallActive ? "End call" : "Start voice conversation"}
                 >
                   {isCallActive ? (
                     <X className="w-12 h-12 md:w-16 md:h-16 text-white" />
-                  ) : vapiConfig ? (
-                    <Mic className="w-12 h-12 md:w-16 md:h-16 text-white" />
                   ) : (
-                    <Settings className="w-12 h-12 md:w-16 md:h-16 text-white" />
+                    <Mic className="w-12 h-12 md:w-16 md:h-16 text-white" />
                   )}
                 </button>
               </div>
 
               <p className="text-lg font-semibold text-foreground mb-2">
-                {isCallActive ? "Call in Progress..." : vapiConfig ? "Click to Talk" : "Setup Required"}
+                {isCallActive ? "Call in Progress..." : "Click to Talk"}
               </p>
               <p className="text-sm text-muted-foreground mb-8">
-                {isCallActive ? "Click to end the call" : vapiConfig ? "Microphone permission required" : "Configure your website first"}
+                {isCallActive ? "Click to end the call" : "Microphone permission required"}
               </p>
 
               {/* Suggested Questions */}
