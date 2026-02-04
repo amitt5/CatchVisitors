@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Vapi from "@vapi-ai/web";
-import { Mic, MessageCircle, X, Settings } from "lucide-react";
+import { Mic, MessageCircle, X } from "lucide-react";
 
 const suggestedQuestions = [
   "How much do you charge?",
@@ -43,8 +43,9 @@ export function DemoSection() {
   const [isScraping, setIsScraping] = useState(false);
   const [scrapeError, setScrapeError] = useState<string | null>(null);
   const [testMessage, setTestMessage] = useState<string | null>(null);
-  const [vapiConfig, setVapiConfig] = useState<any>(null);
   const [isCallActive, setIsCallActive] = useState(false);
+  const [isCallStarting, setIsCallStarting] = useState(false);
+  const vapiRef = useRef<Vapi | null>(null);
 
   const handleOpenDemo = () => {
     setScrapeError(null);
@@ -140,7 +141,8 @@ export function DemoSection() {
         
         console.log('📞 Starting VAPI call with Gemini prompt...');
         const vapi = new Vapi(apiKey);
-        setIsCallActive(true);
+        vapiRef.current = vapi;
+        setIsCallStarting(true);
         
         // Start the call with the Gemini prompt
         const assistantOverrides = {
@@ -154,17 +156,23 @@ export function DemoSection() {
         // Handle call events
         vapi.on('call-start', () => {
           console.log('✅ Call started automatically with Gemini prompt!');
+          setIsCallStarting(false);
+          setIsCallActive(true);
         });
 
         vapi.on('call-end', () => {
           console.log('📞 Call ended');
           setIsCallActive(false);
+          setIsCallStarting(false);
+          vapiRef.current = null;
         });
 
         vapi.on('error', (error: any) => {
           console.error('❌ VAPI call error:', error);
           setScrapeError(`VAPI call error: ${error.message}`);
           setIsCallActive(false);
+          setIsCallStarting(false);
+          vapiRef.current = null;
         });
         
         console.log('✅ Demo setup and call started successfully!');
@@ -214,8 +222,7 @@ export function DemoSection() {
         apiKey: apiKey
       };
       
-      setVapiConfig(testConfig);
-      console.log('✅ VAPI config set successfully');
+      console.log('✅ Test VAPI config prepared');
       
       setDialogOpen(false);
       console.log('✅ Dialog closed');
@@ -261,86 +268,16 @@ export function DemoSection() {
   const handleEndCall = () => {
     console.log('📞 Ending call manually...');
     setIsCallActive(false);
+    setIsCallStarting(false);
     setScrapeError(null);
     
-    // Stop any active VAPI instance
-    if (typeof window !== 'undefined') {
-      // Try to access any VAPI instance and stop it
-      const scripts = document.querySelectorAll('script');
-      scripts.forEach(script => {
-        if (script.src.includes('vapi-ai')) {
-          // If VAPI is loaded globally, try to stop it
-          if ((window as any).vapi) {
-            (window as any).vapi.stop().catch(error => {
-              console.error('Failed to stop VAPI call:', error);
-            });
-          }
-        }
+    // Stop the VAPI instance using the ref
+    if (vapiRef.current) {
+      console.log('🛑 Stopping VAPI instance...');
+      vapiRef.current.stop().catch(error => {
+        console.error('Failed to stop VAPI call:', error);
       });
-    }
-  };
-
-  const startVapiCall = async () => {
-    if (!vapiConfig) {
-      setScrapeError("Please set up your website first");
-      return;
-    }
-
-    setIsCallActive(true);
-    try {
-      console.log('📞 Starting VAPI call with config:', { assistantId: vapiConfig.assistantId });
-      
-      // Initialize VAPI instance
-      const vapi = new Vapi(vapiConfig.apiKey);
-      
-      // Get the stored Gemini prompt from the database
-      console.log('🔍 Fetching Gemini prompt from database...');
-      const response = await fetch('/api/get-prompt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assistantId: vapiConfig.assistantId })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch Gemini prompt');
-      }
-      
-      const { prompt } = await response.json();
-      console.log('✅ Gemini prompt retrieved, length:', prompt?.length);
-      
-      if (!prompt) {
-        throw new Error('No Gemini prompt found');
-      }
-      
-      // Start the call with the Gemini prompt
-      const assistantOverrides = {
-        variableValues: {
-          prompt: prompt
-        }
-      };
-      
-      console.log('🚀 Starting VAPI call with Gemini prompt...');
-      await vapi.start(vapiConfig.assistantId, assistantOverrides);
-
-      // Handle call events
-      vapi.on('call-start', () => {
-        console.log('✅ Call started with Gemini prompt!');
-      });
-
-      vapi.on('call-end', () => {
-        console.log('📞 Call ended');
-        setIsCallActive(false);
-      });
-
-      vapi.on('error', (error: any) => {
-        console.error('❌ VAPI call error:', error);
-        setScrapeError(`VAPI call error: ${error.message}`);
-        setIsCallActive(false);
-      });
-    } catch (error) {
-      console.error('💥 VAPI call error:', error);
-      setScrapeError(`Failed to start VAPI call: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      setIsCallActive(false);
+      vapiRef.current = null;
     }
   };
 
@@ -392,14 +329,14 @@ export function DemoSection() {
                 {/* Main Button */}
                 <button
                   type="button"
-                  onClick={isCallActive ? handleEndCall : handleOpenDemo}
+                  onClick={isCallActive || isCallStarting ? handleEndCall : handleOpenDemo}
                   disabled={isScraping}
                   className={`relative w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center shadow-2xl transition-all cursor-pointer ${
-                    isCallActive 
+                    isCallActive || isCallStarting
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
                       : 'bg-gradient-to-br from-[#2563EB] to-[#7C3AED] hover:scale-105 shadow-[#2563EB]/30'
                   }`}
-                  aria-label={isCallActive ? "End call" : "Start voice conversation"}
+                  aria-label={isCallActive ? "End call" : isCallStarting ? "Cancel call" : "Start voice conversation"}
                 >
                   {isCallActive ? (
                     <X className="w-12 h-12 md:w-16 md:h-16 text-white" />
@@ -410,10 +347,10 @@ export function DemoSection() {
               </div>
 
               <p className="text-lg font-semibold text-foreground mb-2">
-                {isCallActive ? "Call in Progress..." : "Click to Talk"}
+                {isCallActive ? "Call in Progress..." : isCallStarting ? "Starting Call..." : "Click to Talk"}
               </p>
               <p className="text-sm text-muted-foreground mb-8">
-                {isCallActive ? "Click to end the call" : "Microphone permission required"}
+                {isCallActive ? "Click to end the call" : isCallStarting ? "Click to cancel" : "Microphone permission required"}
               </p>
 
               {/* Suggested Questions */}
