@@ -73,22 +73,16 @@ export default function CallsPage() {
   const [selectedTranscript, setSelectedTranscript] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <h1 className="text-3xl font-bold text-gray-900">Call History</h1>
-          </div>
+    <div className="p-6">
+      <div className="bg-white shadow rounded-lg overflow-hidden">
+        <div className="p-6 border-b border-gray-200">
+          <h1 className="text-2xl font-bold text-gray-900">Call History</h1>
         </div>
-      </header>
-      
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
+        
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Start Time
                     </th>
@@ -162,8 +156,6 @@ export default function CallsPage() {
               </table>
             </div>
           </div>
-        </div>
-      </main>
 
       {/* Summary Modal */}
       {selectedSummary && (
