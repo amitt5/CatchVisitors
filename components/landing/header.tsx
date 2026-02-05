@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { BookOpen } from "lucide-react";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,6 +33,15 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
+            <SignedIn>
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <BookOpen className="w-4 h-4" />
+                Dashboard
+              </Link>
+            </SignedIn>
             {navLinks.map((link) => (
               <a
                 key={link.href}
@@ -43,13 +54,25 @@ export function Header() {
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden md:block">
-            <Button
-              asChild
-              className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg"
-            >
-              <a href="#book-demo">Book Demo</a>
-            </Button>
+          <div className="hidden md:flex items-center gap-4">
+            <SignedOut>
+              <Button
+                asChild
+                variant="outline"
+                className="rounded-lg"
+              >
+                <Link href="/sign-in">Sign In</Link>
+              </Button>
+              <Button
+                asChild
+                className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg"
+              >
+                <Link href="/sign-up">Sign Up</Link>
+              </Button>
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
           </div>
 
           {/* Mobile Menu Button */}
@@ -71,6 +94,16 @@ export function Header() {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <nav className="flex flex-col gap-4">
+              <SignedIn>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  Dashboard
+                </Link>
+              </SignedIn>
               {navLinks.map((link) => (
                 <a
                   key={link.href}
@@ -81,12 +114,26 @@ export function Header() {
                   {link.label}
                 </a>
               ))}
-              <Button
-                asChild
-                className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg w-full mt-2"
-              >
-                <a href="#book-demo">Book Demo</a>
-              </Button>
+              <SignedOut>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="rounded-lg w-full"
+                >
+                  <Link href="/sign-in">Sign In</Link>
+                </Button>
+                <Button
+                  asChild
+                  className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg w-full"
+                >
+                  <Link href="/sign-up">Sign Up</Link>
+                </Button>
+              </SignedOut>
+              <SignedIn>
+                <div className="flex items-center justify-center">
+                  <UserButton />
+                </div>
+              </SignedIn>
             </nav>
           </div>
         )}

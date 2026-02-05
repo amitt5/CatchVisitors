@@ -20,6 +20,12 @@ OPENROUTER_API_KEY=your_openrouter_api_key
 OPENAI_API_KEY=your_openai_api_key
 ```
 
+### Clerk Authentication
+```
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+```
+
 ### VAPI
 ```
 NEXT_PUBLIC_VAPI_API_KEY=your_vapi_api_key
