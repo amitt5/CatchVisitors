@@ -4,12 +4,66 @@ import { getAuth } from "@clerk/nextjs/server";
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-export async function POST(request: NextRequest) {
-  console.log('🌟 Gemini research API called (via OpenRouter)');
+// GET - Fetch user's agents
+export async function GET(request: NextRequest) {
+  console.log('📋 Fetching user agents');
   
-  // Get authenticated user (optional - can be null for visitors)
+  // Get authenticated user
   const { userId } = getAuth(request);
-  console.log('👤 User authentication:', { userId: userId || 'visitor' });
+  if (!userId) {
+    console.error('❌ Unauthorized: No user ID found');
+    return NextResponse.json(
+      { error: "Unauthorized. Please sign in." },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const supabase = createServerSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from("agents")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error('❌ Failed to fetch agents:', error);
+      return NextResponse.json(
+        { error: "Failed to fetch agents", details: error.message },
+        { status: 500 }
+      );
+    }
+
+    console.log('✅ Successfully fetched agents:', { count: data?.length || 0 });
+    return NextResponse.json({
+      success: true,
+      agents: data || [],
+    });
+
+  } catch (error) {
+    console.error('💥 Error fetching agents:', error);
+    return NextResponse.json(
+      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
+    );
+  }
+}
+
+// POST - Create new agent
+
+export async function POST(request: NextRequest) {
+  console.log('🤖 Agent creation API called');
+  
+  // Get authenticated user (required for agent creation)
+  const { userId } = getAuth(request);
+  if (!userId) {
+    console.error('❌ Unauthorized: No user ID found');
+    return NextResponse.json(
+      { error: "Unauthorized. Please sign in." },
+      { status: 401 }
+    );
+  }
   
   const openrouterApiKey = process.env.OPENROUTER_API_KEY;
   console.log('🔑 OpenRouter API key check:', { 
@@ -28,19 +82,19 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { url, language = "en", businessName } = body;
-    console.log('📝 Request received:', { url, language, businessName, userId });
+    const { businessName, website, languages } = body;
+    console.log('📝 Agent creation request received:', { businessName, website, languages, userId });
 
-    if (!url?.trim()) {
-      console.error('❌ Missing URL in request');
+    if (!businessName?.trim() || !website?.trim() || !languages?.length) {
+      console.error('❌ Missing required fields');
       return NextResponse.json(
-        { error: "Missing or empty url in request body" },
+        { error: "Missing required fields: businessName, website, and languages are required" },
         { status: 400 }
       );
     }
 
     // Normalize URL
-    let targetUrl = url.trim();
+    let targetUrl = website.trim();
     if (!/^https?:\/\//i.test(targetUrl)) {
       targetUrl = `https://${targetUrl}`;
     }
@@ -60,75 +114,51 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServerSupabaseClient();
 
-    // Check for existing research for this website + language + user
-    console.log('🔍 Checking for existing research...');
-    type ExistingResearch = {
+    // Check for existing agent for this website + user
+    console.log('🔍 Checking for existing agent...');
+    type ExistingAgent = {
       id: string;
-      gemini_prompt: string | null;
-      organisation_name: string | null;
+      prompt: string | null;
     };
     
-    let existingResearch: ExistingResearch | null = null;
+    let existingAgent: ExistingAgent | null = null;
 
     try {
-      // Build query - for authenticated users, only return their data; for visitors, return any data
-      let query = supabase
-        .from("demos")
-        .select("id, gemini_prompt, organisation_name")
+      const { data, error } = await supabase
+        .from("agents")
+        .select("id, prompt")
+        .eq("user_id", userId)
         .eq("website_url", targetUrl)
-        .eq("language", language);
-      
-      // Only filter by user_id if user is authenticated
-      if (userId) {
-        query = query.eq("user_id", userId);
-      }
-      
-      const { data, error } = await query
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle<ExistingResearch>();
+        .maybeSingle<ExistingAgent>();
 
       if (error && error.code !== "PGRST116") {
         console.error('❌ Supabase lookup error:', error);
       } else if (data) {
-        existingResearch = data;
-        console.log('✅ Found existing research:', { demoId: data.id, hasPrompt: !!data.gemini_prompt, hasOrganisationName: !!data.organisation_name });
+        existingAgent = data;
+        console.log('✅ Found existing agent:', { agentId: data.id, hasPrompt: !!data.prompt });
       }
     } catch (err) {
       console.error('💥 Supabase lookup threw:', err);
     }
 
-    // Return cached prompt if available
-    if (existingResearch?.gemini_prompt) {
-      console.log('📋 Returning cached prompt');
+    // Return existing prompt if available
+    if (existingAgent?.prompt) {
+      console.log('📋 Returning existing agent prompt');
       return NextResponse.json({
         success: true,
-        demoId: existingResearch.id,
-        url: targetUrl,
-        language,
-        organisationName: existingResearch.organisation_name,
-        prompt: existingResearch.gemini_prompt,
+        agentId: existingAgent.id,
+        prompt: existingAgent.prompt,
         fromCache: true,
       });
     }
 
     // Call OpenRouter API with Gemini model
     console.log('🚀 Calling OpenRouter API with Gemini model...');
-    const researchPrompt = language === "nl" 
-      ? `${targetUrl}
-
-Onderzoek deze website met het doel van het schrijven van een uitgebreide assistent-prompt voor een behulpzame VAPI AI-stemagent receptionist stem/chat widget op de website die veelgestelde vragen zou beantwoorden en de potentiële klant zou begeleiden om een afspraak te boeken.
-
-Retourneer ALLEEN een JSON-object met deze structuur:
-{
-  "organisation_name": "de naam van het bedrijf",
-  "vapi_prompt": "de volledige assistent-prompt"
-}
-
-Geen andere tekst, geen uitleg, alleen het JSON-object.`
-      : `${targetUrl}
+    const researchPrompt = `${targetUrl}
 
 Research this website with the goal of writing a comprehensive assistant prompt for a helpful VAPI AI voice agent receptionist voice/chat widget on the website that would answer frequently asked questions and guide the potential customer to book an appointment.
+
+Business name: ${businessName}
 
 Return ONLY a JSON object with this structure:
 {
@@ -143,11 +173,11 @@ No other text, no explanation, only the JSON object.`;
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${openrouterApiKey}`,
-        "HTTP-Referer": "https://catch-visitors.com", // Optional: your app URL
-        "X-Title": "CatchVisitors Demo", // Optional: your app name
+        "HTTP-Referer": "https://catch-visitors.com",
+        "X-Title": "CatchVisitors Agent",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-lite", // Gemini model via OpenRouter
+        model: "google/gemini-2.5-flash-lite",
         messages: [
           {
             role: "user",
@@ -191,7 +221,7 @@ No other text, no explanation, only the JSON object.`;
         
         // Parse JSON response
         const jsonResponse = JSON.parse(content);
-        organisationName = jsonResponse.organisation_name || "";
+        organisationName = jsonResponse.organisation_name || businessName;
         prompt = jsonResponse.vapi_prompt || "";
         
         console.log('✅ Parsed JSON response:', { 
@@ -211,83 +241,75 @@ No other text, no explanation, only the JSON object.`;
 
     console.log('✅ Successfully extracted prompt from OpenRouter, length:', prompt.length);
 
-    // Save new research or update existing
-    let demoId: string;
+    // Save new agent or update existing
+    let agentId: string;
     
-    if (existingResearch) {
-      demoId = existingResearch.id;
-      console.log('💾 Updating existing research record:', demoId);
-      // Update existing record
-      const updateData: any = {
-        gemini_prompt: prompt,
-        organisation_name: organisationName || businessName,
-      };
-      
+    if (existingAgent) {
+      agentId = existingAgent.id;
+      console.log('💾 Updating existing agent:', agentId);
+      // Update existing agent
       const { error: updateError } = await supabase
-        .from("demos")
-        .update(updateData)
-        .eq("id", demoId);
+        .from("agents")
+        .update({ 
+          prompt: prompt,
+          name: businessName,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", agentId);
 
       if (updateError) {
-        console.error('❌ Failed to update demo with Gemini prompt:', updateError);
+        console.error('❌ Failed to update agent:', updateError);
         return NextResponse.json(
-          { error: "Failed to save research", details: updateError.message },
+          { error: "Failed to save agent", details: updateError.message },
           { status: 500 }
         );
       }
     } else {
-      console.log('🆕 Creating new research record...');
-      // Create new record
-      const insertData: any = {
-        website_url: targetUrl,
-        language,
-        gemini_prompt: prompt,
-        organisation_name: organisationName || businessName,
-      };
-      
-      // Only add user_id if user is authenticated
-      if (userId) {
-        insertData.user_id = userId;
-      }
-      
+      console.log('🆕 Creating new agent...');
+      // Create new agent
       const { data, error } = await supabase
-        .from("demos")
-        .insert(insertData)
+        .from("agents")
+        .insert({
+          user_id: userId,
+          name: businessName,
+          website_url: targetUrl,
+          languages: languages,
+          prompt: prompt,
+          status: 'active',
+          calls: 0,
+        })
         .select("id")
         .single();
 
       if (error) {
-        console.error('❌ Failed to save new demo:', error);
+        console.error('❌ Failed to save new agent:', error);
         return NextResponse.json(
-          { error: "Failed to save research", details: error.message },
+          { error: "Failed to save agent", details: error.message },
           { status: 500 }
         );
       }
       
       if (!data?.id) {
-        console.error('❌ Failed to save research: no id returned');
+        console.error('❌ Failed to save agent: no id returned');
         return NextResponse.json(
-          { error: "Failed to save research: no id returned" },
+          { error: "Failed to save agent: no id returned" },
           { status: 500 }
         );
       }
       
-      demoId = data.id;
-      console.log('✅ New research record created:', demoId);
+      agentId = data.id;
+      console.log('✅ New agent created:', agentId);
     }
 
-    console.log('🎉 Gemini research completed successfully');
+    console.log('🎉 Agent creation completed successfully');
     return NextResponse.json({
       success: true,
-      demoId,
-      url: targetUrl,
-      language,
-      organisationName,
+      agentId,
       prompt,
     });
 
   } catch (error) {
-    console.error('💥 Gemini research error:', error);
+    console.error('💥 Agent creation error:', error);
     return NextResponse.json(
       { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }

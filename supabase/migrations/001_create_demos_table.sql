@@ -8,12 +8,17 @@ CREATE TABLE IF NOT EXISTS demos (
   language TEXT NOT NULL CHECK (language IN ('en', 'nl')),
   scraped_content TEXT,
   formatted_data JSONB,
+  gemini_prompt TEXT,
+  organisation_name TEXT,
   call_id TEXT,
   transcript TEXT,
   summary TEXT,
   email TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  call_completed_at TIMESTAMPTZ
+  call_completed_at TIMESTAMPTZ,
+  vapi_assistant_id TEXT,
+  vapi_assistant_data JSONB,
+  vapi_phone_number TEXT
 );
 
 -- Optional: index for listing demos by creation time and looking up by call_id

@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { ArrowLeft, Copy, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 interface Language {
@@ -26,6 +27,9 @@ export default function CreateAgentPage() {
   const [businessName, setBusinessName] = useState("");
   const [website, setWebsite] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const handleLanguageChange = (languageId: string, checked: boolean) => {
     if (checked) {
@@ -35,12 +39,56 @@ export default function CreateAgentPage() {
     }
   };
 
-  const handleGenerate = () => {
-    console.log("Generating agent with:", {
-      businessName,
-      website,
-      languages: selectedLanguages,
-    });
+  const handleGenerate = async () => {
+    if (!businessName.trim() || !website.trim() || selectedLanguages.length === 0) {
+      setError("Please fill in all fields and select at least one language");
+      return;
+    }
+
+    setIsGenerating(true);
+    setError("");
+    setGeneratedPrompt("");
+
+    try {
+      console.log('🚀 Starting agent generation for:', { businessName, website });
+      
+      // Step 1: Create agent with Gemini research
+      const agentRes = await fetch("/api/agents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          businessName: businessName,
+          website: website,
+          languages: selectedLanguages,
+        }),
+      });
+      
+      const agentData = await agentRes.json();
+      console.log('📊 Agent creation response:', { 
+        status: agentRes.status, 
+        success: agentData.success,
+        hasPrompt: !!agentData.prompt,
+        agentId: agentData.agentId
+      });
+      
+      if (!agentRes.ok || !agentData.success) {
+        throw new Error(agentData.error || agentData.details || "Agent creation failed");
+      }
+
+      // Step 2: Show the generated prompt
+      setGeneratedPrompt(agentData.prompt || "");
+      console.log('✅ Agent created successfully!');
+      
+    } catch (error) {
+      console.error('💥 Error generating agent:', error);
+      setError(error instanceof Error ? error.message : "Failed to generate agent");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(generatedPrompt);
   };
 
   return (
@@ -118,13 +166,54 @@ export default function CreateAgentPage() {
               <Button 
                 onClick={handleGenerate}
                 className="w-full"
-                disabled={!businessName || !website || selectedLanguages.length === 0}
+                disabled={!businessName || !website || selectedLanguages.length === 0 || isGenerating}
               >
-                Generate Agent
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Generating Agent...
+                  </>
+                ) : (
+                  "Generate Agent"
+                )}
               </Button>
             </div>
+
+            {/* Error Display */}
+            {error && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-800 text-sm">{error}</p>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Generated Prompt Section */}
+        {generatedPrompt && (
+          <div className="mt-6 bg-white shadow rounded-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Generated Agent Prompt</h2>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={copyToClipboard}
+                className="flex items-center gap-2"
+              >
+                <Copy className="w-4 h-4" />
+                Copy
+              </Button>
+            </div>
+            <Textarea
+              value={generatedPrompt}
+              readOnly
+              className="min-h-[300px] font-mono text-sm"
+              placeholder="Generated prompt will appear here..."
+            />
+            <p className="text-gray-600 text-sm mt-2">
+              This prompt has been saved to your agent and is ready to use.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
