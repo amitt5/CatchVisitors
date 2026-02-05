@@ -17,6 +17,13 @@ export function Header() {
     { href: "#faq", label: "FAQ" },
   ];
 
+  const authNavLinks = [
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/calls", label: "Calls" },
+    { href: "/agent", label: "Agent" },
+    { href: "/settings", label: "Settings" },
+  ];
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,23 +41,27 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <SignedIn>
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <BookOpen className="w-4 h-4" />
-                Dashboard
-              </Link>
+              {authNavLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </SignedIn>
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
+            <SignedOut>
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </SignedOut>
           </nav>
 
           {/* Desktop CTA */}
@@ -95,25 +106,29 @@ export function Header() {
           <div className="md:hidden py-4 border-t border-border">
             <nav className="flex flex-col gap-4">
               <SignedIn>
-                <Link
-                  href="/dashboard"
-                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <BookOpen className="w-4 h-4" />
-                  Dashboard
-                </Link>
+                {authNavLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </SignedIn>
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
-              ))}
+              <SignedOut>
+                {navLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </SignedOut>
               <SignedOut>
                 <Button
                   asChild
