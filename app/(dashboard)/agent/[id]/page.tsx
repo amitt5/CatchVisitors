@@ -61,7 +61,9 @@ export default function AgentPage() {
   const fetchAgent = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/agents/${agentId}`);
+      console.log('Fetching agent:', agentId);
+      const response = await fetch(`/api/agents?id=${agentId}`);
+      console.log('Fetching agent response:', response);
       if (!response.ok) {
         throw new Error("Failed to fetch agent");
       }
