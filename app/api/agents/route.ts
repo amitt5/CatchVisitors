@@ -20,29 +20,149 @@ export async function GET(request: NextRequest) {
 
   try {
     const supabase = createServerSupabaseClient();
+    const url = new URL(request.url || 'http://localhost:3000');
+    const agentId = url.searchParams.get('id');
     
+    if (agentId) {
+      // Fetch single agent
+      console.log('🔍 Fetching single agent:', agentId);
+      const { data, error } = await supabase
+        .from("agents")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("id", agentId)
+        .single();
+
+      if (error) {
+        console.error('❌ Failed to fetch agent:', error);
+        return NextResponse.json(
+          { error: "Failed to fetch agent", details: error.message },
+          { status: 500 }
+        );
+      }
+
+      if (!data) {
+        console.error('❌ Agent not found:', agentId);
+        return NextResponse.json(
+          { error: "Agent not found" },
+          { status: 404 }
+        );
+      }
+
+      console.log('✅ Successfully fetched agent:', { id: data.id, name: data.name });
+      return NextResponse.json({
+        success: true,
+        agent: data,
+      });
+    } else {
+      // Fetch all agents
+      console.log('📋 Fetching all agents for user:', userId);
+      const { data, error } = await supabase
+        .from("agents")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error('❌ Failed to fetch agents:', error);
+        return NextResponse.json(
+          { error: "Failed to fetch agents", details: error.message },
+          { status: 500 }
+        );
+      }
+
+      console.log('✅ Successfully fetched agents:', { count: data?.length || 0 });
+      return NextResponse.json({
+        success: true,
+        agents: data || [],
+      });
+    }
+  } catch (error) {
+    console.error('💥 Error fetching agents:', error);
+    return NextResponse.json(
+      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT - Update existing agent
+export async function PUT(request: NextRequest) {
+  console.log('🔄 Agent update API called');
+  
+  // Get authenticated user
+  const { userId } = getAuth(request);
+  if (!userId) {
+    console.error('❌ Unauthorized: No user ID found');
+    return NextResponse.json(
+      { error: "Unauthorized. Please sign in." },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const body = await request.json();
+    const { name, website_url, languages, prompt } = body;
+    const url = new URL(request.url || 'http://localhost:3000');
+    const agentId = url.searchParams.get('id');
+    
+    if (!agentId) {
+      console.error('❌ Missing agent ID');
+      return NextResponse.json(
+        { error: "Missing agent ID in URL" },
+        { status: 400 }
+      );
+    }
+
+    if (!name?.trim() || !website_url?.trim() || !languages?.length) {
+      console.error('❌ Missing required fields');
+      return NextResponse.json(
+        { error: "Missing required fields: name, website_url, and languages are required" },
+        { status: 400 }
+      );
+    }
+
+    console.log('📝 Updating agent:', { agentId, name, website_url, languages, userId });
+    
+    const supabase = createServerSupabaseClient();
     const { data, error } = await supabase
       .from("agents")
-      .select("*")
+      .update({
+        name: name.trim(),
+        website_url: website_url.trim(),
+        languages: languages,
+        prompt: prompt,
+        updated_at: new Date().toISOString(),
+      })
       .eq("user_id", userId)
-      .order("created_at", { ascending: false });
+      .eq("id", agentId)
+      .select()
+      .single();
 
     if (error) {
-      console.error('❌ Failed to fetch agents:', error);
+      console.error('❌ Failed to update agent:', error);
       return NextResponse.json(
-        { error: "Failed to fetch agents", details: error.message },
+        { error: "Failed to update agent", details: error.message },
         { status: 500 }
       );
     }
 
-    console.log('✅ Successfully fetched agents:', { count: data?.length || 0 });
+    if (!data) {
+      console.error('❌ Agent not found:', agentId);
+      return NextResponse.json(
+        { error: "Agent not found" },
+        { status: 404 }
+      );
+    }
+
+    console.log('✅ Agent updated successfully:', { id: data.id, name: data.name });
     return NextResponse.json({
       success: true,
-      agents: data || [],
+      agent: data,
     });
 
   } catch (error) {
-    console.error('💥 Error fetching agents:', error);
+    console.error('💥 Agent update error:', error);
     return NextResponse.json(
       { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }

@@ -49,7 +49,7 @@ export default function AgentPage() {
   };
 
   const handleEdit = (agentId: string) => {
-    console.log("Edit agent:", agentId);
+    window.location.href = `/agent/${agentId}`;
   };
 
   const handleDelete = (agentId: string) => {
