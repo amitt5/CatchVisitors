@@ -38,6 +38,8 @@ export default function AgentPage() {
   const [vapiAssistantId, setVapiAssistantId] = useState("");
   const [isTesting, setIsTesting] = useState(false);
   const [isCallActive, setIsCallActive] = useState(false);
+  const [isGeneratingWidget, setIsGeneratingWidget] = useState(false);
+  const [widgetConfig, setWidgetConfig] = useState<any>(null);
   const vapiRef = useRef<Vapi | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
@@ -249,6 +251,44 @@ export default function AgentPage() {
     }
   };
 
+  const handleGenerateWidget = async () => {
+    if (!vapiAssistantId) {
+      setError("No VAPI assistant ID available for widget generation");
+      return;
+    }
+
+    setIsGeneratingWidget(true);
+    setError("");
+
+    try {
+      console.log('🧩 Generating widget for agent:', agentId);
+      
+      const response = await fetch("/api/widgets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          agentId: agentId,
+        }),
+      });
+
+      const data = await response.json();
+      console.log('📊 Widget generation response:', data);
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || data.details || "Widget generation failed");
+      }
+
+      setWidgetConfig(data.widget);
+      console.log('✅ Widget generated successfully!');
+      
+    } catch (error) {
+      console.error('💥 Error generating widget:', error);
+      setError(error instanceof Error ? error.message : "Failed to generate widget");
+    } finally {
+      setIsGeneratingWidget(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6">
@@ -364,6 +404,29 @@ export default function AgentPage() {
               </Button>
             </div>
 
+            {/* Generate Widget Button - Only show if VAPI assistant ID exists and in edit mode */}
+            {isEditMode && vapiAssistantId && (
+              <div className="pt-2">
+                <Button 
+                  onClick={handleGenerateWidget}
+                  variant="secondary"
+                  className="w-full"
+                  disabled={isGeneratingWidget}
+                >
+                  {isGeneratingWidget ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Generating Widget...
+                    </>
+                  ) : (
+                    <>
+                      🧩 Generate Widget
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
             {/* Test Agent Button - Only show if VAPI assistant ID exists and in edit mode */}
             {isEditMode && vapiAssistantId && (
               <div className="pt-2">
@@ -415,30 +478,55 @@ export default function AgentPage() {
                 {isEditMode ? "Updated Agent Prompt" : "Generated Agent Prompt"}
               </h2>
               <Button
+                onClick={copyToClipboard}
                 variant="outline"
                 size="sm"
-                onClick={copyToClipboard}
-                className="flex items-center gap-2"
               >
-                <Copy className="w-4 h-4" />
+                <Copy className="w-4 h-4 mr-2" />
                 Copy
               </Button>
             </div>
             <Textarea
               value={generatedPrompt}
               readOnly
-              className="min-h-[300px] font-mono text-sm"
-              placeholder="Generated prompt will appear here..."
+              className="min-h-[200px] w-full p-4 border rounded-lg bg-gray-50"
             />
-            <p className="text-gray-600 text-sm mt-2">
-              {isEditMode 
-                ? "This prompt has been updated and saved to your agent."
-                : "This prompt has been generated and saved to your agent."
-              }
-            </p>
+          </div>
+        )}
+
+        {/* Widget Embed Section */}
+        {widgetConfig && (
+          <div className="mt-6 bg-white shadow rounded-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">
+                🧩 Widget Embed Code
+              </h2>
+              <Button
+                onClick={() => navigator.clipboard.writeText(widgetConfig.embed_code)}
+                variant="outline"
+                size="sm"
+              >
+                <Copy className="w-4 h-4 mr-2" />
+                Copy Code
+              </Button>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg border">
+              <code className="text-sm text-gray-800 break-all">
+                {widgetConfig.embed_code}
+              </code>
+            </div>
+            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="font-semibold text-blue-900 mb-2">Installation Instructions:</h3>
+              <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800">
+                <li>Copy the embed code above</li>
+                <li>Paste it into your website's HTML</li>
+                <li>Place it before the closing &lt;/body&gt; tag</li>
+                <li>The widget will appear as a floating button in the bottom-right corner</li>
+              </ol>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
-}
+};

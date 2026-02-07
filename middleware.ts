@@ -5,6 +5,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
+  "/api/widgets/(.*)",  // Allow public access to widget API
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -19,7 +20,7 @@ export default clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req)) {
     return;
   }
-
+  
   // Protect non-public routes - if user is not authenticated, redirect to sign-in
   const authResult = await auth();
   if (!authResult.userId) {

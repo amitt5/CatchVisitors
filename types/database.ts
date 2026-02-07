@@ -8,8 +8,19 @@ export interface Agent {
   languages: string[];
   prompt: string;
   vapi_assistant_id: string | null;
+  widget_id: string | null;
   status: 'active' | 'paused';
   calls: number;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export interface Widget {
+  id: string;
+  agent_id: string;
+  user_id: string;
+  widget_id: string;
+  is_active: boolean;
   created_at: string;
   updated_at: string | null;
 }
