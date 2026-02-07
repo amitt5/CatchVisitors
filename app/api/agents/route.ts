@@ -1,3 +1,4 @@
+import { createVapiAssistant } from "@/lib/vapi";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getAuth } from "@clerk/nextjs/server";
@@ -156,6 +157,33 @@ export async function PUT(request: NextRequest) {
     }
 
     console.log('✅ Agent updated successfully:', { id: data.id, name: data.name });
+    
+    // Create/update VAPI agent with the prompt
+    try {
+      const vapiResponse =  await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/vapi-agent`, {
+  method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: prompt,
+          agentId: data.id
+        })
+      });
+      
+      const vapiData = await vapiResponse.json();
+      console.log('🤖 VAPI agent response:', vapiData);
+      
+      if (vapiData.success && vapiData.assistantId) {
+        // Update agent with VAPI assistant ID
+        await supabase
+          .from('agents')
+          .update({ vapi_assistant_id: vapiData.assistantId })
+          .eq('id', data.id);
+      }
+    } catch (vapiError) {
+      console.error('❌ Failed to create VAPI agent:', vapiError);
+      // Don't fail the whole operation if VAPI fails
+    }
+    
     return NextResponse.json({
       success: true,
       agent: data,
@@ -362,77 +390,93 @@ No other text, no explanation, only the JSON object.`;
     console.log('✅ Successfully extracted prompt from OpenRouter, length:', prompt.length);
 
     // Save new agent or update existing
-    let agentId: string;
-    
-    if (existingAgent) {
-      agentId = existingAgent.id;
-      console.log('💾 Updating existing agent:', agentId);
-      // Update existing agent
-      const { error: updateError } = await supabase
-        .from("agents")
-        .update({ 
-          prompt: prompt,
-          name: businessName,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", agentId);
+let agentId: string;
 
-      if (updateError) {
-        console.error('❌ Failed to update agent:', updateError);
-        return NextResponse.json(
-          { error: "Failed to save agent", details: updateError.message },
-          { status: 500 }
-        );
-      }
-    } else {
-      console.log('🆕 Creating new agent...');
-      // Create new agent
-      const { data, error } = await supabase
-        .from("agents")
-        .insert({
-          user_id: userId,
-          name: businessName,
-          website_url: targetUrl,
-          languages: languages,
-          prompt: prompt,
-          status: 'active',
-          calls: 0,
-        })
-        .select("id")
-        .single();
+if (existingAgent) {
+  agentId = existingAgent.id;
+  console.log('💾 Updating existing agent:', agentId);
+  // Update existing agent
+  const { error: updateError } = await supabase
+    .from("agents")
+    .update({ 
+      prompt: prompt,
+      name: businessName,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", agentId);
 
-      if (error) {
-        console.error('❌ Failed to save new agent:', error);
-        return NextResponse.json(
-          { error: "Failed to save agent", details: error.message },
-          { status: 500 }
-        );
-      }
-      
-      if (!data?.id) {
-        console.error('❌ Failed to save agent: no id returned');
-        return NextResponse.json(
-          { error: "Failed to save agent: no id returned" },
-          { status: 500 }
-        );
-      }
-      
-      agentId = data.id;
-      console.log('✅ New agent created:', agentId);
-    }
-
-    console.log('🎉 Agent creation completed successfully');
-    return NextResponse.json({
-      success: true,
-      agentId,
-      prompt,
-    });
-
-  } catch (error) {
-    console.error('💥 Agent creation error:', error);
+  if (updateError) {
+    console.error('❌ Failed to update agent:', updateError);
     return NextResponse.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
+      { error: "Failed to save agent", details: updateError.message },
       { status: 500 }
     );
   }
+} else {
+  console.log('🆕 Creating new agent...');
+  // Create new agent
+  const { data, error } = await supabase
+    .from("agents")
+    .insert({
+      user_id: userId,
+      name: businessName,
+      website_url: targetUrl,
+      languages: languages,
+      prompt: prompt,
+      status: 'active',
+      calls: 0,
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error('❌ Failed to save new agent:', error);
+    return NextResponse.json(
+      { error: "Failed to save agent", details: error.message },
+      { status: 500 }
+    );
+  }
+  
+  if (!data?.id) {
+    console.error('❌ Failed to save agent: no id returned');
+    return NextResponse.json(
+      { error: "Failed to save agent: no id returned" },
+      { status: 500 }
+    );
+  }
+  
+  agentId = data.id;
+  console.log('✅ New agent created:', agentId);
 }
+
+// Create VAPI agent with prompt
+try {
+  const vapiData = await createVapiAssistant(prompt, agentId);
+  console.log('🤖 VAPI agent response:', vapiData);
+  
+  if (vapiData.id) {
+    await supabase
+      .from('agents')
+      .update({ vapi_assistant_id: vapiData.id })
+      .eq('id', agentId);
+  }
+} catch (vapiError) {
+  console.error('❌ Failed to create VAPI agent:', vapiError);
+}
+
+console.log('🎉 Agent creation completed successfully');
+
+return NextResponse.json({
+  success: true,
+  agentId: agentId,  // ← Changed from data.id to agentId
+  prompt: prompt,
+});
+
+} catch (error) {
+  console.error('💥 Agent creation error:', error);
+  return NextResponse.json(
+    { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
+    { status: 500 }
+  );
+}
+}  // ← This closes the POST function
