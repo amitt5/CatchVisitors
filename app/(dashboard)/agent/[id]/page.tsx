@@ -278,7 +278,7 @@ export default function AgentPage() {
         throw new Error(data.error || data.details || "Widget generation failed");
       }
 
-      setWidgetConfig(data.widget);
+      setWidgetConfig(data);
       console.log('✅ Widget generated successfully!');
       
     } catch (error) {
