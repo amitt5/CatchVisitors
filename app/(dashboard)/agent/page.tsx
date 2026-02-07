@@ -13,15 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, Plus } from "lucide-react";
 import Link from "next/link";
-
-interface Agent {
-  id: string;
-  name: string;
-  languages: string[];
-  status: "active" | "paused";
-  calls: number;
-  created_at: string;
-}
+import { Agent } from "@/types/database";
 
 export default function AgentPage() {
   const [agents, setAgents] = useState<Agent[]>([]);

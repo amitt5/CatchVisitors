@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Copy, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { Agent } from "@/types/database";
 
 interface Language {
   id: string;
@@ -24,17 +25,6 @@ const languages: Language[] = [
   { id: "spanish", name: "Spanish" },
 ];
 
-interface Agent {
-  id: string;
-  name: string;
-  website_url: string;
-  languages: string[];
-  prompt: string;
-  status: "active" | "paused";
-  calls: number;
-  created_at: string;
-}
-
 export default function AgentPage() {
   const params = useParams();
   const router = useRouter();
@@ -44,6 +34,7 @@ export default function AgentPage() {
   const [businessName, setBusinessName] = useState("");
   const [website, setWebsite] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [vapiAssistantId, setVapiAssistantId] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -74,6 +65,7 @@ export default function AgentPage() {
         setBusinessName(agent.name);
         setWebsite(agent.website_url);
         setSelectedLanguages(agent.languages);
+        setVapiAssistantId(agent.vapi_assistant_id || "");
         setGeneratedPrompt(agent.prompt);
       }
     } catch (err) {
@@ -83,8 +75,9 @@ export default function AgentPage() {
     }
   };
 
-  const handleLanguageChange = (languageId: string, checked: boolean) => {
-    if (checked) {
+  const handleLanguageChange = (languageId: string, checked: boolean | string) => {
+    const isChecked = typeof checked === 'boolean' ? checked : checked === 'true';
+    if (isChecked) {
       setSelectedLanguages([...selectedLanguages, languageId]);
     } else {
       setSelectedLanguages(selectedLanguages.filter(id => id !== languageId));
@@ -114,6 +107,7 @@ export default function AgentPage() {
             website_url: website,
             languages: selectedLanguages,
             prompt: generatedPrompt,
+            vapi_assistant_id: vapiAssistantId || null,
           }),
         });
         
@@ -138,6 +132,7 @@ export default function AgentPage() {
             businessName: businessName,
             website: website,
             languages: selectedLanguages,
+            vapi_assistant_id: vapiAssistantId || null,
           }),
         });
         
@@ -256,6 +251,21 @@ export default function AgentPage() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* VAPI Assistant ID */}
+            <div className="space-y-2">
+              <Label htmlFor="vapiAssistantId">VAPI Assistant ID (Optional)</Label>
+              <Input
+                id="vapiAssistantId"
+                placeholder="Enter VAPI assistant ID after creating it manually"
+                value={vapiAssistantId}
+                onChange={(e) => setVapiAssistantId(e.target.value)}
+                disabled={isGenerating}
+              />
+              <p className="text-sm text-gray-500">
+                After creating your assistant manually on the VAPI platform, enter the assistant ID here.
+              </p>
             </div>
 
             {/* Generate/Update Button */}

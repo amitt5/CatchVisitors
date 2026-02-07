@@ -2,6 +2,7 @@ import { createVapiAssistant } from "@/lib/vapi";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getAuth } from "@clerk/nextjs/server";
+import { Agent } from "@/types/database";
 
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -103,7 +104,7 @@ export async function PUT(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, website_url, languages, prompt } = body;
+    const { name, website_url, languages, prompt, vapi_assistant_id } = body;
     const url = new URL(request.url || 'http://localhost:3000');
     const agentId = url.searchParams.get('id');
     
@@ -123,7 +124,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    console.log('📝 Updating agent:', { agentId, name, website_url, languages, userId });
+    console.log('📝 Updating agent:', { agentId, name, website_url, languages, vapi_assistant_id, userId });
     
     const supabase = createServerSupabaseClient();
     const { data, error } = await supabase
@@ -133,6 +134,7 @@ export async function PUT(request: NextRequest) {
         website_url: website_url.trim(),
         languages: languages,
         prompt: prompt,
+        vapi_assistant_id: vapi_assistant_id || null,
         updated_at: new Date().toISOString(),
       })
       .eq("user_id", userId)
@@ -159,30 +161,32 @@ export async function PUT(request: NextRequest) {
     console.log('✅ Agent updated successfully:', { id: data.id, name: data.name });
     
     // Create/update VAPI agent with the prompt
-    try {
-      const vapiResponse =  await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/vapi-agent`, {
-  method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt: prompt,
-          agentId: data.id
-        })
-      });
-      
-      const vapiData = await vapiResponse.json();
-      console.log('🤖 VAPI agent response:', vapiData);
-      
-      if (vapiData.success && vapiData.assistantId) {
-        // Update agent with VAPI assistant ID
-        await supabase
-          .from('agents')
-          .update({ vapi_assistant_id: vapiData.assistantId })
-          .eq('id', data.id);
-      }
-    } catch (vapiError) {
-      console.error('❌ Failed to create VAPI agent:', vapiError);
-      // Don't fail the whole operation if VAPI fails
-    }
+// try {
+//   const vapiResponse =  await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/vapi-agent`, {
+// method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({
+//           prompt: prompt,
+//           agentId: data.id
+//         })
+//       });
+//       
+//       const vapiData = await vapiResponse.json();
+//       console.log('🤖 VAPI agent response:', vapiData);
+//       
+//       if (vapiData.success && vapiData.assistantId) {
+//         // Update agent with VAPI assistant ID
+//         await supabase
+//           .from('agents')
+//           .update({ vapi_assistant_id: vapiData.assistantId })
+//           .eq('id', data.id);
+//       }
+//     } catch (vapiError) {
+//       console.error('❌ Failed to create VAPI agent:', vapiError);
+//       // Don't fail the whole operation if VAPI fails
+//     }
+
+// VAPI assistant will be created manually and ID added via edit form
     
     return NextResponse.json({
       success: true,
@@ -230,8 +234,8 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { businessName, website, languages } = body;
-    console.log('📝 Agent creation request received:', { businessName, website, languages, userId });
+    const { businessName, website, languages, vapi_assistant_id } = body;
+    console.log('📝 Agent creation request received:', { businessName, website, languages, vapi_assistant_id, userId });
 
     if (!businessName?.trim() || !website?.trim() || !languages?.length) {
       console.error('❌ Missing required fields');
@@ -423,6 +427,7 @@ if (existingAgent) {
       website_url: targetUrl,
       languages: languages,
       prompt: prompt,
+      vapi_assistant_id: vapi_assistant_id || null,
       status: 'active',
       calls: 0,
     })
@@ -450,19 +455,21 @@ if (existingAgent) {
 }
 
 // Create VAPI agent with prompt
-try {
-  const vapiData = await createVapiAssistant(prompt, agentId);
-  console.log('🤖 VAPI agent response:', vapiData);
-  
-  if (vapiData.id) {
-    await supabase
-      .from('agents')
-      .update({ vapi_assistant_id: vapiData.id })
-      .eq('id', agentId);
-  }
-} catch (vapiError) {
-  console.error('❌ Failed to create VAPI agent:', vapiError);
-}
+// try {
+//   const vapiData = await createVapiAssistant(prompt, agentId);
+//   console.log('🤖 VAPI agent response:', vapiData);
+//   
+//   if (vapiData.id) {
+//     await supabase
+//       .from('agents')
+//       .update({ vapi_assistant_id: vapiData.id })
+//       .eq('id', agentId);
+//   }
+// } catch (vapiError) {
+//   console.error('❌ Failed to create VAPI agent:', vapiError);
+// }
+
+// VAPI assistant will be created manually and ID added via edit form
 
 console.log('🎉 Agent creation completed successfully');
 
