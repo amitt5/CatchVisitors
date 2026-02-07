@@ -99,10 +99,11 @@ export default function AgentPage() {
       
       if (isEditMode && existingAgent) {
         // Update existing agent
-        const updateRes = await fetch(`/api/agents/${agentId}`, {
+        const updateRes = await fetch(`/api/agents?id=${agentId}&update=true`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
+            id: agentId,
             name: businessName,
             website_url: website,
             languages: selectedLanguages,
