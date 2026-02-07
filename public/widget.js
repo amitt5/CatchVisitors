@@ -53,9 +53,12 @@
   // Get widget ID from script tag
   const scripts = document.getElementsByTagName('script');
   let widgetId = null;
+  let scriptSrc = null;
+  
   for (let script of scripts) {
     if (script.hasAttribute(WIDGET_ID)) {
       widgetId = script.getAttribute(WIDGET_ID);
+      scriptSrc = script.src;
       break;
     }
   }
@@ -66,6 +69,10 @@
     console.error('❌ No widget ID found');
     return;
   }
+  
+  // Get API URL from where the widget.js was loaded from
+  const apiUrl = scriptSrc ? new URL(scriptSrc).origin : 'https://www.catchvisitors.com';
+  console.log('🔗 API URL:', apiUrl);
   
   try {
     // Load VAPI SDK as ES module
@@ -84,12 +91,7 @@
   
   async function initializeWidget(Vapi) {
     try {
-      console.log('📡 Fetching widget config...');
-      
-      // Dynamically determine the API URL
-      const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3000'
-        : 'https://www.catchvisitors.com';
+      console.log('📡 Fetching widget config from:', `${apiUrl}/api/widgets/${widgetId}`);
       
       const response = await fetch(`${apiUrl}/api/widgets/${widgetId}`);
       
@@ -132,7 +134,7 @@
           button.style.background = '#ef4444';
           
           vapi.on('call-start', () => {
-            console.log('�� Call started!');
+            console.log('📞 Call started!');
             isCallActive = true;
           });
           

@@ -2,27 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getAuth } from "@clerk/nextjs/server";
 
-// POST - Create new widget for an agent
+// POST - Create widget for an agent
 export async function POST(request: NextRequest) {
-  console.log('🧩 Widget creation API called');
+  console.log('🎨 Widget creation API called');
   
-  // Get authenticated user
-  const { userId } = getAuth(request);
-  if (!userId) {
-    console.error('❌ Unauthorized: No user ID found');
-    return NextResponse.json(
-      { error: "Unauthorized. Please sign in." },
-      { status: 401 }
-    );
-  }
-
   try {
-    const body = await request.json();
-    const { agentId } = body;
+    const { userId } = await getAuth(request);
     
-    console.log('📝 Widget creation request:', { agentId, userId });
+    if (!userId) {
+      console.error('❌ Unauthorized: No user ID');
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
 
-    if (!agentId?.trim()) {
+    const body = await request.json();
+    const { agent_id } = body;
+    
+    if (!agent_id?.trim()) {
       console.error('❌ Missing agent ID');
       return NextResponse.json(
         { error: "Missing agent ID" },
@@ -30,20 +28,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('🔍 Creating widget for agent:', agent_id);
+
     const supabase = createServerSupabaseClient();
     
-    // Verify agent belongs to user
+    // Check if agent exists and belongs to user
     const { data: agent, error: agentError } = await supabase
       .from("agents")
-      .select("id, name, vapi_assistant_id")
-      .eq("id", agentId)
+      .select("id, user_id, vapi_assistant_id")
+      .eq("id", agent_id)
       .eq("user_id", userId)
-      .single();
+      .single() as any;
 
     if (agentError || !agent) {
-      console.error('❌ Agent not found or access denied');
+      console.error('❌ Agent not found or unauthorized');
       return NextResponse.json(
-        { error: "Agent not found or access denied" },
+        { error: "Agent not found or unauthorized" },
         { status: 404 }
       );
     }
@@ -56,35 +56,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if widget already exists
+    // Check if widget already exists for this agent
     const { data: existingWidget } = await supabase
       .from("widgets")
-      .select("id")
-      .eq("agent_id", agentId)
-      .single();
+      .select("*")
+      .eq("agent_id", agent_id)
+      .eq("user_id", userId)
+      .single() as any;
 
     if (existingWidget) {
-      console.error('❌ Widget already exists for this agent');
-      return NextResponse.json(
-        { error: "Widget already exists for this agent" },
-        { status: 409 }
-      );
+      console.log('✅ Widget already exists:', existingWidget.widget_id);
+      return NextResponse.json({
+        success: true,
+        widget: existingWidget,
+        embed_code: `<script src="https://www.catchvisitors.com/widget.js" data-widget-id="${existingWidget.widget_id}"></script>`,
+        message: "Widget already exists for this agent"
+      });
     }
 
     // Generate unique widget ID
-    const widgetId = `widget_${Date.now()}_${Math.random().toString(36).substr(2, 8)}`;
+    const widgetId = `widget_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    
+    console.log('🆕 Generated widget ID:', widgetId);
 
     // Create widget
     const { data: widget, error: widgetError } = await supabase
       .from("widgets")
       .insert({
-        agent_id: agentId,
-        user_id: userId,
         widget_id: widgetId,
-        is_active: true,
+        agent_id: agent_id,
+        user_id: userId,
+        is_active: true
       })
-      .select("id, widget_id")
-      .single();
+      .select()
+      .single() as any;
 
     if (widgetError) {
       console.error('❌ Failed to create widget:', widgetError);
@@ -94,117 +99,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update agent with widget reference
-    const { error: updateError } = await supabase
-      .from("agents")
-      .update({ widget_id: widgetId })
-      .eq("id", agentId)
-      .eq("user_id", userId);
+    console.log('✅ Widget created successfully');
 
-    if (updateError) {
-      console.error('❌ Failed to update agent with widget ID:', updateError);
-      // Don't fail the operation, but log the error
-    }
-
-    console.log('✅ Widget created successfully:', { widgetId, agentId });
-    
     return NextResponse.json({
       success: true,
-      widget: {
-        id: widget.id,
-        widget_id: widgetId,
-        embed_code: `<script src="'https://www.catchvisitors.com'}/widget.js" data-widget-id="${widgetId}"></script>`,
-        instructions: "Add this code to your website's HTML before the closing </body> tag."
-      }
+      widget,
+      embed_code: `<script src="https://www.catchvisitors.com/widget.js" data-widget-id="${widgetId}"></script>`,
+      message: "Widget created successfully"
     });
 
   } catch (error) {
     console.error('💥 Widget creation error:', error);
-    return NextResponse.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
-    );
-  }
-}
-
-// GET - Public endpoint to fetch widget configuration
-export async function GET(request: NextRequest) {
-  console.log('📋 Widget fetch API called');
-  
-  try {
-    const url = new URL(request.url || 'http://localhost:3000');
-    const widgetId = url.pathname.split('/').pop();
-    
-    if (!widgetId?.trim()) {
-      console.error('❌ Missing widget ID');
-      return NextResponse.json(
-        { error: "Missing widget ID" },
-        { status: 400 }
-      );
-    }
-
-    const supabase = createServerSupabaseClient();
-    
-    // Get widget with agent information
-    const { data: widget, error: widgetError } = await supabase
-      .from("widgets")
-      .select(`
-        id,
-        agent_id,
-        widget_id,
-        is_active
-      `)
-      .eq("widget_id", widgetId)
-      .eq("is_active", true)
-      .single();
-
-    if (widgetError || !widget) {
-      console.error('❌ Widget not found:', widgetId);
-      return NextResponse.json(
-        { error: "Widget not found" },
-        { status: 404 }
-      );
-    }
-
-    // Get agent details
-    const { data: agent, error: agentError } = await supabase
-      .from("agents")
-      .select("name, vapi_assistant_id")
-      .eq("id", widget.agent_id)
-      .single();
-
-    if (agentError || !agent) {
-      console.error('❌ Agent not found for widget:', widget.agent_id);
-      return NextResponse.json(
-        { error: "Agent configuration not found" },
-        { status: 404 }
-      );
-    }
-
-    if (!agent.vapi_assistant_id) {
-      console.error('❌ Agent has no VAPI assistant ID');
-      return NextResponse.json(
-        { error: "Agent not configured for voice calls" },
-        { status: 400 }
-      );
-    }
-
-    console.log('✅ Widget configuration fetched:', { widgetId, agentName: agent.name });
-    
-    return NextResponse.json({
-      success: true,
-      widget: {
-        id: widget.id,
-        widget_id: widget.widget_id,
-        agent_name: agent.name,
-        vapi_assistant_id: agent.vapi_assistant_id,
-        is_active: widget.is_active,
-        app_url: process.env.NEXT_PUBLIC_APP_URL
-      }
-    });
-
-  } catch (error) {
-    console.error('💥 Widget fetch error:', error);
     return NextResponse.json(
       { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
       { status: 500 }
