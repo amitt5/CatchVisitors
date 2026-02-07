@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Copy, Loader2 } from "lucide-react";
+import { ArrowLeft, Copy, Loader2, Phone, PhoneOff } from "lucide-react";
 import Link from "next/link";
 import { Agent } from "@/types/database";
+import Vapi from "@vapi-ai/web";
 
 interface Language {
   id: string;
@@ -35,6 +36,9 @@ export default function AgentPage() {
   const [website, setWebsite] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [vapiAssistantId, setVapiAssistantId] = useState("");
+  const [isTesting, setIsTesting] = useState(false);
+  const [isCallActive, setIsCallActive] = useState(false);
+  const vapiRef = useRef<Vapi | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPrompt, setGeneratedPrompt] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -172,6 +176,79 @@ export default function AgentPage() {
     navigator.clipboard.writeText(generatedPrompt);
   };
 
+  const handleTestAgent = async () => {
+    if (!vapiAssistantId) {
+      setError("No VAPI assistant ID available for testing");
+      return;
+    }
+
+    if (isCallActive) {
+      // End the call
+      if (vapiRef.current) {
+        vapiRef.current.stop();
+        vapiRef.current = null;
+      }
+      setIsCallActive(false);
+      return;
+    }
+
+    setIsTesting(true);
+    setError("");
+
+    try {
+      console.log('🚀 Testing VAPI agent:', vapiAssistantId);
+      
+      // Get test configuration from API
+      const response = await fetch("/api/test-vapi-agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          assistantId: vapiAssistantId,
+        }),
+      });
+
+      const data = await response.json();
+      console.log('📊 VAPI test response:', data);
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || data.details || "VAPI test failed");
+      }
+
+      // Initialize VAPI and start the call (like landing page)
+      const vapi = new Vapi(data.apiKey);
+      vapiRef.current = vapi;
+
+      // Set up event listeners
+      vapi.on('call-start', () => {
+        console.log('✅ Test call started!');
+        setIsCallActive(true);
+        setIsTesting(false);
+      });
+
+      vapi.on('call-end', () => {
+        console.log('📞 Test call ended');
+        setIsCallActive(false);
+        vapiRef.current = null;
+      });
+
+      vapi.on('error', (error) => {
+        console.error('❌ VAPI call error:', error);
+        setError(`VAPI call error: ${error.message}`);
+        setIsCallActive(false);
+        vapiRef.current = null;
+        setIsTesting(false);
+      });
+
+      // Start the call with test configuration
+      await vapi.start(data.config.assistantId, data.config.assistantOverrides);
+      
+    } catch (error) {
+      console.error('💥 Error testing VAPI agent:', error);
+      setError(error instanceof Error ? error.message : "Failed to test VAPI agent");
+      setIsTesting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6">
@@ -286,6 +363,40 @@ export default function AgentPage() {
                 )}
               </Button>
             </div>
+
+            {/* Test Agent Button - Only show if VAPI assistant ID exists and in edit mode */}
+            {isEditMode && vapiAssistantId && (
+              <div className="pt-2">
+                <Button 
+                  onClick={handleTestAgent}
+                  variant={isCallActive ? "destructive" : "outline"}
+                  className="w-full"
+                  disabled={isTesting}
+                >
+                  {isTesting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Starting Test...
+                    </>
+                  ) : isCallActive ? (
+                    <>
+                      <PhoneOff className="w-4 h-4 mr-2" />
+                      End Test Call
+                    </>
+                  ) : (
+                    <>
+                      <Phone className="w-4 h-4 mr-2" />
+                      Test Agent
+                    </>
+                  )}
+                </Button>
+                {isCallActive && (
+                  <p className="text-sm text-green-600 mt-2 text-center">
+                    📞 Test call in progress... Speak to test your assistant!
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Error Display */}
             {error && (

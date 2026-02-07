@@ -28,7 +28,8 @@ CLERK_SECRET_KEY=your_clerk_secret_key
 
 ### VAPI
 ```
-NEXT_PUBLIC_VAPI_API_KEY=your_vapi_api_key
+NEXT_PUBLIC_VAPI_API_KEY=your_vapi_public_key
+VAPI_PRIVATE_KEY=your_vapi_private_key
 NEXT_PUBLIC_VAPI_ASSISTANT_ID=your_vapi_assistant_id
 NEXT_PUBLIC_TEST_VAPI_ASSISTANT_ID=your_test_vapi_assistant_id
 VAPI_WEBHOOK_SECRET=your_webhook_secret
