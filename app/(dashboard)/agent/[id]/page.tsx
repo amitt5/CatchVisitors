@@ -30,7 +30,8 @@ export default function AgentPage() {
   const params = useParams();
   const router = useRouter();
   const agentId = params.id as string;
-  const isEditMode = agentId !== "create";
+  const isCreateMode = agentId === "create";
+  const isEditMode = !isCreateMode && agentId !== "create";
 
   const [businessName, setBusinessName] = useState("");
   const [website, setWebsite] = useState("");
@@ -105,11 +106,10 @@ export default function AgentPage() {
       
       if (isEditMode && existingAgent) {
         // Update existing agent
-        const updateRes = await fetch(`/api/agents?id=${agentId}&update=true`, {
+        const updateRes = await fetch(`/api/agents?id=${agentId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
-            id: agentId,
             name: businessName,
             website_url: website,
             languages: selectedLanguages,
@@ -158,9 +158,10 @@ export default function AgentPage() {
         // Step 2: Show the generated prompt
         setGeneratedPrompt(agentData.prompt || "");
         
-        // Step 3: Redirect to edit mode if this was create mode
-        if (!isEditMode && agentData.agentId) {
-          router.replace(`/agent/${agentData.agentId}`);
+        // Step 3: Redirect to edit page after creation
+        if (agentData.agentId) {
+          console.log('🔄 Redirecting to agent edit page:', `/agent/${agentData.agentId}`);
+          router.push(`/agent/${agentData.agentId}`);
         }
         
         console.log('✅ Agent created successfully!');
@@ -310,12 +311,12 @@ export default function AgentPage() {
             Back to Agents
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">
-            {isEditMode ? "Edit Agent" : "Create New Agent"}
+            {isCreateMode ? "Create New Agent" : "Edit Agent"}
           </h1>
           <p className="text-gray-600 mt-2">
-            {isEditMode 
-              ? "Update your AI agent configuration and prompt."
-              : "Configure your AI agent by providing business details and language preferences."
+            {isCreateMode 
+              ? "Configure your AI agent by providing business details and language preferences."
+              : "Update your AI agent configuration and prompt."
             }
           </p>
         </div>
@@ -396,10 +397,10 @@ export default function AgentPage() {
                 {isGenerating ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    {isEditMode ? "Updating Agent..." : "Generating Agent..."}
+                    {isCreateMode ? "Creating Agent..." : "Updating Agent..."}
                   </>
                 ) : (
-                  isEditMode ? "Update Agent" : "Generate Agent"
+                  isCreateMode ? "Create Agent" : "Update Agent"
                 )}
               </Button>
             </div>
@@ -475,7 +476,7 @@ export default function AgentPage() {
           <div className="mt-6 bg-white shadow rounded-lg p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-900">
-                {isEditMode ? "Updated Agent Prompt" : "Generated Agent Prompt"}
+                {isCreateMode ? "Generated Agent Prompt" : "Updated Agent Prompt"}
               </h2>
               <Button
                 onClick={copyToClipboard}
