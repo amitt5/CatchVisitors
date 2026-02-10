@@ -1,11 +1,17 @@
 import React from "react"
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const instrumentSerif = Instrument_Serif({
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  subsets: ["latin"],
+  variable: "--font-serif"
+});
 
 export const metadata: Metadata = {
   title: 'CatchVisitors - AI Voice Assistant for Employment Lawyers | Convert More Website Visitors',
@@ -44,7 +50,7 @@ export default function RootLayout({
             async 
           />
         </head>
-        <body className={`${inter.variable} font-sans antialiased`}>
+        <body className={`${inter.variable} ${instrumentSerif.variable} font-sans antialiased`}>
           {children}
           <Analytics />
         </body>

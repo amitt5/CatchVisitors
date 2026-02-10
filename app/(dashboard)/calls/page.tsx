@@ -86,7 +86,7 @@ export default function CallsPage() {
         return 'bg-green-100 text-green-800';
       case 'started':
       case 'in-progress':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-gray-100 text-gray-800';
       case 'failed':
       case 'error':
         return 'bg-red-100 text-red-800';
@@ -224,7 +224,7 @@ export default function CallsPage() {
                         <Button
                           variant="link"
                           onClick={() => setSelectedSummary(call.summary!)}
-                          className="text-blue-600 hover:text-blue-800 p-0 h-auto font-normal"
+                          className="text-gray-700 hover:text-gray-900 p-0 h-auto font-normal"
                         >
                           <FileText className="w-4 h-4 mr-1" />
                           View
@@ -238,7 +238,7 @@ export default function CallsPage() {
                         <Button
                           variant="link"
                           onClick={() => setSelectedTranscript(call.transcript!)}
-                          className="text-blue-600 hover:text-blue-800 p-0 h-auto font-normal"
+                          className="text-gray-700 hover:text-gray-900 p-0 h-auto font-normal"
                         >
                           <FileText className="w-4 h-4 mr-1" />
                           View

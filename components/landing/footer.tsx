@@ -1,43 +1,49 @@
 import Link from "next/link";
+import { Mic } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="py-12 bg-[#1F2937] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="py-16 bg-white border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center">
-              <span className="text-white font-bold text-sm">CV</span>
+            <div className="w-7 h-7 rounded-lg bg-gray-900 flex items-center justify-center">
+              <Mic className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
             </div>
-            <span className="font-semibold text-lg">CatchVisitors</span>
+            <span
+              className="text-xl font-normal"
+              style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
+            >
+              CatchVisitors
+            </span>
           </Link>
 
           {/* Links */}
-          <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
-            <a href="#how-it-works" className="hover:text-white transition-colors">
+          <nav className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600">
+            <a href="#how-it-works" className="hover:text-gray-900 transition-colors">
               How It Works
             </a>
-            <a href="#benefits" className="hover:text-white transition-colors">
-              Benefits
+            <a href="#features" className="hover:text-gray-900 transition-colors">
+              Features
             </a>
-            <a href="#pricing" className="hover:text-white transition-colors">
+            <a href="#pricing" className="hover:text-gray-900 transition-colors">
               Pricing
             </a>
-            <a href="#faq" className="hover:text-white transition-colors">
+            <a href="#faq" className="hover:text-gray-900 transition-colors">
               FAQ
             </a>
             <a
               href="mailto:hello@catchvisitors.com"
-              className="hover:text-white transition-colors"
+              className="hover:text-gray-900 transition-colors"
             >
               Contact
             </a>
           </nav>
 
           {/* Copyright */}
-          <p className="text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} CatchVisitors. All rights reserved.
+          <p className="text-sm text-gray-500">
+            &copy; {new Date().getFullYear()} CatchVisitors
           </p>
         </div>
       </div>

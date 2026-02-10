@@ -294,7 +294,7 @@ export default function AgentPage() {
     return (
       <div className="p-6">
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
           <p className="text-gray-600 mt-2">Loading agent...</p>
         </div>
       </div>
@@ -516,9 +516,9 @@ export default function AgentPage() {
                 {widgetConfig.embed_code}
               </code>
             </div>
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h3 className="font-semibold text-blue-900 mb-2">Installation Instructions:</h3>
-              <ol className="list-decimal list-inside space-y-2 text-sm text-blue-800">
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h3 className="font-semibold text-gray-900 mb-2">Installation Instructions:</h3>
+              <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
                 <li>Copy the embed code above</li>
                 <li>Paste it into your website's HTML</li>
                 <li>Place it before the closing &lt;/body&gt; tag</li>

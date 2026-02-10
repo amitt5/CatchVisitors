@@ -1,112 +1,119 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden">
-      {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#2563EB]/5 via-white to-[#7C3AED]/5" />
-      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-[#2563EB]/10 to-transparent blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-[#7C3AED]/10 to-transparent blur-3xl" />
+    <section className="relative pt-32 pb-20 md:pt-40 md:pb-24 overflow-hidden text-center">
+      {/* Ambient gradient glows */}
+      <div
+        className="absolute -top-48 -right-32 w-[700px] h-[700px] rounded-full blur-[120px] opacity-35 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, #fecaca, #fda4af, transparent 70%)'
+        }}
+      />
+      <div
+        className="absolute -bottom-24 -left-24 w-[500px] h-[500px] rounded-full blur-[120px] opacity-35 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, #ddd6fe, #c4b5fd, transparent 70%)'
+        }}
+      />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#2563EB]/10 text-[#2563EB] text-sm font-medium mb-6">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]" />
-            </span>
-            Used by employment lawyers to capture 3-7% more qualified leads
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        {/* Badge */}
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 mb-10 rounded-full bg-white border border-gray-200 text-sm text-gray-600"
+          style={{ animation: 'fadeUp 0.8s ease both' }}
+        >
+          <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+          AI Voice Assistant for Professional Services
+        </div>
+
+        {/* Headline */}
+        <h1
+          className="text-5xl md:text-7xl lg:text-8xl font-normal mb-7 leading-[1.05] tracking-tight max-w-4xl mx-auto"
+          style={{
+            fontFamily: 'var(--font-serif, Georgia, serif)',
+            animation: 'fadeUp 0.8s ease 0.1s both'
+          }}
+        >
+          Turn every visitor<br />into a <em className="italic">booked consultation.</em>
+        </h1>
+
+        {/* Subtitle */}
+        <p
+          className="text-lg md:text-xl text-gray-600 max-w-xl mx-auto mb-11 leading-relaxed"
+          style={{ animation: 'fadeUp 0.8s ease 0.2s both' }}
+        >
+          An AI voice assistant that lives on your website. Visitors click, talk, and book — 24/7, in four languages, while you focus on billable work.
+        </p>
+
+        {/* CTA Buttons */}
+        <div
+          className="flex items-center justify-center gap-4 mb-20 flex-wrap"
+          style={{ animation: 'fadeUp 0.8s ease 0.3s both' }}
+        >
+          <Button
+            asChild
+            size="lg"
+            className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-9 py-6 text-base font-medium shadow-lg transition-all duration-300 group"
+          >
+            <a href="#try-it" className="flex items-center gap-2">
+              Try It With Your Website
+              <span className="transition-transform group-hover:translate-x-1">→</span>
+            </a>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="bg-white border border-gray-200 text-gray-900 hover:border-gray-900 hover:shadow-sm rounded-full px-9 py-6 text-base font-medium transition-all"
+          >
+            <a href="#how-it-works">
+              See How It Works
+            </a>
+          </Button>
+        </div>
+
+        {/* Stats */}
+        <div
+          className="flex items-center justify-center gap-12 flex-wrap"
+          style={{ animation: 'fadeUp 0.8s ease 0.4s both' }}
+        >
+          <div className="text-center">
+            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>3×</div>
+            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">More Bookings</div>
           </div>
-
-          {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight tracking-tight text-balance">
-            Stop Losing Website Visitors.{" "}
-            <span className="bg-gradient-to-r from-[#2563EB] to-[#7C3AED] bg-clip-text text-transparent">
-              Start Converting Them.
-            </span>
-          </h1>
-
-          {/* Subheadline */}
-          <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Your AI voice assistant answers visitor questions 24/7—in your own
-            voice. No forms. No commitment. Just conversations that convert into
-            consultations.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button
-              asChild
-              size="lg"
-              className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg px-8 py-6 text-lg font-semibold shadow-lg shadow-[#2563EB]/25 hover:shadow-xl hover:shadow-[#2563EB]/30 transition-all hover:scale-105"
-            >
-              <a href="#demo" className="flex items-center gap-2">
-                <Play className="w-5 h-5" />
-                See It In Action
-              </a>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-2 border-[#2563EB] text-[#2563EB] hover:bg-[#2563EB]/5 rounded-lg px-8 py-6 text-lg font-semibold transition-all hover:scale-105 bg-transparent"
-            >
-              <a href="#book-demo" className="flex items-center gap-2">
-                Book a Demo Call
-                <ArrowRight className="w-5 h-5" />
-              </a>
-            </Button>
+          <div className="w-px h-9 bg-gray-200" />
+          <div className="text-center">
+            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>24/7</div>
+            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">Always On</div>
           </div>
-
-          {/* Trust Elements */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-[#10B981]"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              No credit card required
-            </div>
-            <div className="flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-[#10B981]"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Free custom demo
-            </div>
-            <div className="flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-[#10B981]"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Setup in 48 hours
-            </div>
+          <div className="w-px h-9 bg-gray-200" />
+          <div className="text-center">
+            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>4</div>
+            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">Languages</div>
+          </div>
+          <div className="w-px h-9 bg-gray-200" />
+          <div className="text-center">
+            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>30 days</div>
+            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">Free Trial</div>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes fadeUp {
+          from {
+            opacity: 0;
+            transform: translateY(24px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </section>
   );
 }

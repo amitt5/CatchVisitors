@@ -9,61 +9,67 @@ const faqs = [
   {
     question: "How long does setup take?",
     answer:
-      "48-72 hours after your 30-minute voice recording session. You'll be live by end of week.",
+      "We build your custom AI agent in 48-72 hours. Just add the embed code to your website and you're live. No technical skills required.",
   },
   {
     question: "What if the AI gives wrong information?",
     answer:
-      'You approve all answers during setup. It clearly states "this is not legal advice, for informational purposes only." If it doesn\'t know something, it says "That\'s a great question for a consultation—would you like to book one?"',
+      'We train it on your website and business info during setup. If it encounters something it doesn\'t know, it gracefully books a consultation instead of guessing. You review and approve the knowledge base before going live.',
   },
   {
     question: "Do I need technical skills?",
     answer:
-      "No. We handle everything. You do one 30-minute recording call, we do the rest. Then it just lives on your site.",
+      "No. We provide a simple embed code snippet. Just paste it into your website (or ask your web person to). It works on any site—WordPress, Wix, custom builds, anywhere.",
   },
   {
     question: "What if visitors don't use it?",
     answer:
-      "Industry benchmarks: 3-7% of website visitors engage with voice assistants. That's 3-7 conversations per 100 visitors. Even ONE extra consultation per month pays for itself.",
+      "Even if only 3-5% engage, that's 15-25 conversations per 500 visitors. With voice, conversion is natural—people prefer talking. And remember: we guarantee 3X more bookings or your money back.",
   },
   {
     question: "Can I update the information?",
     answer:
-      "Yes. You can request updates anytime, or we can give you dashboard access to edit answers yourself.",
+      "Yes. Updates to business hours, services, pricing, etc. are included. You get dashboard access to manage it yourself or request changes from our team.",
   },
   {
     question: "What about privacy and compliance?",
     answer:
-      "Fully compliant with legal industry standards. Conversations are encrypted. Clear disclaimers about not being legal advice. GDPR/privacy compliant.",
+      "Fully compliant. All conversations are encrypted and stored securely. GDPR and CCPA compliant. Includes clear disclaimers for professional services. We handle all the legal requirements.",
   },
   {
     question: "What's the pricing?",
     answer:
-      "$500 one-time setup (voice cloning, knowledge base, website integration). Then $299/month. Covers up to 200 conversations/month. One employment case covers a full year.",
+      "$500 setup (we build your AI agent, train it on your website, integrate with your calendar). Then $399/month for unlimited calls. 30-day free trial. 3X bookings guarantee or your money back.",
   },
 ];
 
 export function FAQSection() {
   return (
-    <section id="faq" className="py-16 md:py-24 bg-secondary/50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="faq" className="py-24 md:py-32">
+      <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground text-balance">
-            Common Questions
+          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4 block">
+            FAQ
+          </span>
+          <h2
+            className="text-4xl md:text-5xl font-normal leading-tight tracking-tight"
+            style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
+          >
+            Questions? Answered.
           </h2>
         </div>
 
-        <Accordion type="single" collapsible className="space-y-4">
+        <Accordion type="single" collapsible className="space-y-3">
           {faqs.map((faq, index) => (
             <AccordionItem
               key={index}
               value={`item-${index}`}
-              className="bg-white rounded-lg border border-border shadow-sm px-6 data-[state=open]:shadow-md transition-shadow"
+              className="bg-white rounded-xl border border-gray-200 shadow-sm px-6 data-[state=open]:shadow-md transition-all"
             >
-              <AccordionTrigger className="text-left font-semibold text-foreground hover:text-[#2563EB] hover:no-underline py-4">
+              <AccordionTrigger className="text-left font-medium text-gray-900 hover:text-gray-700 hover:no-underline py-5">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground pb-4">
+              <AccordionContent className="text-gray-600 pb-5 leading-relaxed">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

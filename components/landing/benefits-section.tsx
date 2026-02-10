@@ -1,78 +1,73 @@
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Target,
-  Zap,
-  Clock,
-  ClipboardList,
-  Gem,
-  TrendingUp,
-} from "lucide-react";
+import { MessageCircle, Calendar, Globe, Users, TrendingUp, Mail } from "lucide-react";
 
-const benefits = [
+const features = [
   {
-    icon: Target,
-    title: "Catch Visitors Before They Leave",
-    description:
-      "Visitors can ask questions instantly without filling forms or booking calls. Lower friction = higher conversion.",
+    icon: MessageCircle,
+    title: "Natural conversation",
+    description: "Sounds human, not robotic. Handles interruptions, follow-ups, and complex questions about your services."
   },
   {
-    icon: Zap,
-    title: "Get More Qualified Consultations",
-    description:
-      "Only serious prospects book calls. The AI pre-qualifies by answering basic questions first—you only talk to ready buyers.",
+    icon: Calendar,
+    title: "Calendar booking",
+    description: "Checks your real-time availability and books consultations directly. No back-and-forth emails."
   },
   {
-    icon: Clock,
-    title: "Never Miss a Lead Again",
-    description:
-      "Your AI assistant works 24/7—nights, weekends, holidays. Capture leads while you sleep.",
+    icon: Globe,
+    title: "Four languages",
+    description: "English, Spanish, Dutch, and German. Auto-detects and switches seamlessly mid-conversation."
   },
   {
-    icon: ClipboardList,
-    title: "Walk Into Meetings Prepared",
-    description:
-      "Receive a full summary and transcript of every conversation before the consultation. Know exactly what they need.",
-  },
-  {
-    icon: Gem,
-    title: "Stand Out From Competitors",
-    description:
-      "You'll be the ONLY employment lawyer in your city with this. First-mover advantage while others are still using contact forms.",
+    icon: Users,
+    title: "Lead qualification",
+    description: "Asks the right intake questions, scores leads by fit, puts only qualified prospects on your calendar."
   },
   {
     icon: TrendingUp,
-    title: "One Client Pays For Everything",
-    description:
-      "Setup: $500. Monthly: $299. One employment case ($5K-$20K) covers a full year. The ROI is obvious.",
+    title: "Self-improving",
+    description: "Learns from every conversation. Gets better at answering your specific questions over time."
   },
+  {
+    icon: Mail,
+    title: "CRM & email sync",
+    description: "Every transcript lands in your inbox and CRM automatically. Full context before you pick up the phone."
+  }
 ];
 
 export function BenefitsSection() {
   return (
-    <section id="benefits" className="py-16 md:py-24 bg-secondary/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground text-balance">
-            Why Employment Lawyers Choose CatchVisitors
+    <section id="features" className="py-24 md:py-32">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4 block">
+            Capabilities
+          </span>
+          <h2
+            className="text-4xl md:text-5xl font-normal leading-tight tracking-tight"
+            style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
+          >
+            Everything your front desk<br />can't do at 2 AM
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {benefits.map((benefit, index) => (
-            <Card
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {features.map((feature, index) => (
+            <div
               key={index}
-              className="border-0 shadow-lg bg-white hover:shadow-xl transition-all hover:-translate-y-1 group"
+              className="p-8 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:border-gray-200 hover:-translate-y-1 hover:shadow-md"
             >
-              <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#2563EB]/10 to-[#7C3AED]/10 flex items-center justify-center mb-4 group-hover:from-[#2563EB]/20 group-hover:to-[#7C3AED]/20 transition-colors">
-                  <benefit.icon className="w-6 h-6 text-[#2563EB]" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {benefit.title}
-                </h3>
-                <p className="text-muted-foreground">{benefit.description}</p>
-              </CardContent>
-            </Card>
+              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center mb-5">
+                <feature.icon className="w-5 h-5 text-gray-900" strokeWidth={1.5} />
+              </div>
+              <h3
+                className="text-lg md:text-xl font-normal mb-2"
+                style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
+              >
+                {feature.title}
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {feature.description}
+              </p>
+            </div>
           ))}
         </div>
       </div>

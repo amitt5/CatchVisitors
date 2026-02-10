@@ -3,18 +3,19 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  Phone, 
-  MessageSquare, 
-  Settings, 
-  Bot, 
-  ChevronDown, 
+import {
+  LayoutDashboard,
+  Phone,
+  MessageSquare,
+  Settings,
+  Bot,
+  ChevronDown,
   ChevronRight,
   Menu,
   X,
   FileText,
-  BarChart3
+  BarChart3,
+  Mic
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -76,10 +77,15 @@ export function Sidebar() {
         <div className="flex h-16 items-center justify-between px-4 border-b border-gray-800">
           {!collapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#7C3AED] flex items-center justify-center">
-                <span className="text-white font-bold text-sm">CV</span>
+              <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
+                <Mic className="w-3.5 h-3.5 text-gray-900" strokeWidth={2.5} />
               </div>
-              <span className="font-semibold text-white">CatchVisitors</span>
+              <span
+                className="text-lg font-normal text-white"
+                style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
+              >
+                CatchVisitors
+              </span>
             </div>
           )}
           <Button
@@ -110,7 +116,7 @@ export function Sidebar() {
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     pathname === item.href
-                      ? "bg-blue-600 text-white"
+                      ? "bg-gray-800 text-white"
                       : "text-gray-300 hover:bg-gray-800 hover:text-white"
                   )}
                   onClick={() => setMobileOpen(false)}

@@ -1,18 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -21,464 +11,377 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Vapi from "@vapi-ai/web";
-import { Mic, MessageCircle, X } from "lucide-react";
-
-const suggestedQuestions = {
-  en: [
-    "How much do you charge?",
-    "Can they fire me without severance?",
-    "What's your success rate?",
-    "How long does the process take?",
-    "Do I have a case?",
-  ],
-  nl: [
-    "Hoeveel kosten jullie?",
-    "Kunnen me ontslaan zonder ontslagvergoeding?",
-    "Wat is jullie slagingspercentage?",
-    "Hoe lang duurt het proces?",
-    "Heb ik een zaak?",
-  ]
-};
+import { Mic, Globe, X } from "lucide-react";
 
 const LANGUAGES = [
   { value: "en", label: "English" },
+  { value: "es", label: "Spanish" },
   { value: "nl", label: "Dutch" },
+  { value: "de", label: "German" },
 ] as const;
 
+const demoResponses = [
+  "I'd be happy to help! I can answer questions about the services offered, provide information about availability, and help you book an appointment.",
+  "Consultations are typically 30 minutes. I see availability tomorrow at 10 AM and 2 PM. Would you like me to book one?",
+  "Great, I've reserved the 2 PM slot for you. You'll receive a confirmation email shortly. Is there anything else?"
+];
+
 export function DemoSection() {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [websiteUrl, setWebsiteUrl] = useState("");
-  const [language, setLanguage] = useState<"en" | "nl">("en");
-  const [isScraping, setIsScraping] = useState(false);
-  const [scrapeError, setScrapeError] = useState<string | null>(null);
-  const [testMessage, setTestMessage] = useState<string | null>(null);
+  const [language, setLanguage] = useState<"en" | "es" | "nl" | "de">("en");
+  const [isBuilding, setIsBuilding] = useState(false);
+  const [buildError, setBuildError] = useState<string | null>(null);
+  const [showDemo, setShowDemo] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isCallActive, setIsCallActive] = useState(false);
-  const [isCallStarting, setIsCallStarting] = useState(false);
+  const [demoListening, setDemoListening] = useState(false);
+  const [demoMessages, setDemoMessages] = useState<string[]>([
+    "Hi! I'm the AI assistant for your website. Click the microphone to start a conversation."
+  ]);
+  const [demoResponseIndex, setDemoResponseIndex] = useState(0);
   const vapiRef = useRef<Vapi | null>(null);
 
-  const handleOpenDemo = () => {
-    setScrapeError(null);
-    setDialogOpen(true);
-  };
+  const steps = [
+    "Scraping your website…",
+    "Analyzing content & services…",
+    "Building your voice assistant…",
+    "Initializing conversation engine…"
+  ];
 
-  const handleSubmit = async () => {
+  const handleBuild = async () => {
     const url = websiteUrl.trim();
     if (!url) return;
-    console.log('🚀 Starting demo setup for URL:', url, 'Language:', language);
-    setIsScraping(true);
-    setScrapeError(null);
+
+    setIsBuilding(true);
+    setBuildError(null);
+    setShowDemo(false);
+    setCurrentStep(0);
+
     try {
-      // Step 1: Research website with Gemini API via OpenRouter
-      console.log('📡 Calling Gemini research API...');
+      // Simulate step progress
+      for (let i = 0; i < steps.length; i++) {
+        setCurrentStep(i);
+        await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1500));
+      }
+
+      // Call your real API
+      console.log('🚀 Starting demo setup for URL:', url, 'Language:', language);
+
       const geminiRes = await fetch("/api/gemini-research", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, language }),
       });
       const geminiData = await geminiRes.json();
-      console.log('📊 Gemini research response:', { 
-        status: geminiRes.status, 
-        success: geminiData.success,
-        fromCache: geminiData.fromCache,
-        demoId: geminiData.demoId,
-        hasPrompt: !!geminiData.prompt,
-        organisationName: geminiData.organisationName
-      });
-      
+
       if (!geminiRes.ok) {
-        console.error('❌ Gemini research failed:', geminiData);
-        setScrapeError(geminiData.error ?? geminiData.details ?? "Website research failed");
+        setBuildError(geminiData.error ?? geminiData.details ?? "Website research failed");
         return;
       }
 
-      // Step 2: Store Gemini prompt for VAPI
-      console.log('🤖 Storing Gemini prompt for VAPI...');
       const vapiRes = await fetch("/api/vapi-call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          demoId: geminiData.demoId, 
-          prompt: geminiData.prompt 
+        body: JSON.stringify({
+          demoId: geminiData.demoId,
+          prompt: geminiData.prompt
         }),
       });
       const vapiData = await vapiRes.json();
-      console.log('🎙️ VAPI prompt storage response:', { 
-        status: vapiRes.status,
-        success: vapiData.success,
-        message: vapiData.message
-      });
-      
+
       if (!vapiRes.ok) {
-        console.error('❌ VAPI prompt storage failed:', vapiData);
-        setScrapeError(vapiData.error ?? vapiData.details ?? "VAPI setup failed");
+        setBuildError(vapiData.error ?? vapiData.details ?? "VAPI setup failed");
         return;
       }
 
-      // Step 3: Auto-start VAPI call with Gemini prompt
-      console.log('🚀 Auto-starting VAPI call with Gemini prompt...');
-      setDialogOpen(false);
-      
+      // Show demo widget
+      const siteName = url.replace(/^https?:\/\//, '').replace(/\/$/, '').split('.')[0];
+      setShowDemo(true);
+      setDemoMessages([`Hi! I'm the AI assistant for ${siteName}. Click the microphone to start a conversation.`]);
+      setDemoResponseIndex(0);
+
+      // Auto-start VAPI call
       try {
-        // Get the stored Gemini prompt from database
-        console.log('📡 Fetching Gemini prompt from database...');
-        const assistantId = language === 'nl' 
-          ? process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_DUTCH 
+        const assistantId = language === 'nl'
+          ? process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_DUTCH
           : process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
-        
+
         const promptRes = await fetch('/api/get-prompt', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            assistantId: assistantId 
-          })
+          body: JSON.stringify({ assistantId }),
         });
-        
-        if (!promptRes.ok) {
-          throw new Error('Failed to fetch Gemini prompt');
-        }
-        
+
+        if (!promptRes.ok) throw new Error('Failed to fetch prompt');
+
         const { prompt } = await promptRes.json();
-        console.log('✅ Gemini prompt retrieved, length:', prompt?.length);
-        
-        if (!prompt) {
-          throw new Error('No Gemini prompt found');
-        }
-        
-        // Initialize VAPI and start the call
         const apiKey = process.env.NEXT_PUBLIC_VAPI_API_KEY;
-        
-        if (!apiKey || !assistantId) {
-          throw new Error('Missing VAPI configuration');
-        }
-        
-        console.log('📞 Starting VAPI call with Gemini prompt...');
+
+        if (!apiKey || !assistantId) throw new Error('Missing VAPI configuration');
+
         const vapi = new Vapi(apiKey);
         vapiRef.current = vapi;
-        setIsCallStarting(true);
-        
-        // Start the call with the Gemini prompt
-        const assistantOverrides = {
-          variableValues: {
-            prompt: prompt
-          }
-        };
-        
-        await vapi.start(assistantId, assistantOverrides);
 
-        // Handle call events
+        await vapi.start(assistantId, {
+          variableValues: { prompt }
+        });
+
         vapi.on('call-start', () => {
-          console.log('✅ Call started automatically with Gemini prompt!');
-          setIsCallStarting(false);
           setIsCallActive(true);
         });
 
         vapi.on('call-end', () => {
-          console.log('📞 Call ended');
           setIsCallActive(false);
-          setIsCallStarting(false);
           vapiRef.current = null;
         });
 
         vapi.on('error', (error: any) => {
-          console.error('❌ VAPI call error:', error);
-          setScrapeError(`VAPI call error: ${error.message}`);
+          setBuildError(`Call error: ${error.message}`);
           setIsCallActive(false);
-          setIsCallStarting(false);
           vapiRef.current = null;
         });
-        
-        console.log('✅ Demo setup and call started successfully!');
-        
+
       } catch (vapiError) {
-        console.error('💥 Failed to start VAPI call:', vapiError);
-        setScrapeError(`Failed to start call: ${vapiError instanceof Error ? vapiError.message : 'Unknown error'}`);
+        console.error('Failed to start VAPI call:', vapiError);
       }
+
     } catch (error) {
-      console.error('💥 Unexpected error in handleSubmit:', error);
-      setScrapeError("Network error. Please try again.");
+      setBuildError("Network error. Please try again.");
     } finally {
-      setIsScraping(false);
+      setIsBuilding(false);
     }
   };
 
-  const handleCancel = () => {
-    setDialogOpen(false);
-    setScrapeError(null);
+  const handleReset = () => {
+    setShowDemo(false);
+    setWebsiteUrl("");
+    setBuildError(null);
+    setCurrentStep(0);
+    setDemoMessages(["Hi! I'm the AI assistant for your website. Click the microphone to start a conversation."]);
+    setDemoResponseIndex(0);
+
+    if (vapiRef.current) {
+      vapiRef.current.stop().catch(console.error);
+      vapiRef.current = null;
+    }
+    setIsCallActive(false);
   };
 
-  const handleTestAssistant = async () => {
-    console.log('🧪 Test button clicked!');
-    setIsScraping(true);
-    setScrapeError(null);
-    
-    try {
-      console.log('🎙️ Starting test assistant setup...');
-      
-      // Check environment variables
-      const assistantId = process.env.NEXT_PUBLIC_TEST_VAPI_ASSISTANT_ID;
-      const apiKey = process.env.NEXT_PUBLIC_VAPI_API_KEY;
-      
-      console.log('🔍 Environment variables:', {
-        assistantId: assistantId,
-        apiKey: apiKey ? 'PRESENT' : 'MISSING',
-        assistantIdLength: assistantId?.length,
-        apiKeyLength: apiKey?.length
-      });
-      
-      if (!assistantId || !apiKey) {
-        throw new Error(`Missing env vars: assistantId=${!!assistantId}, apiKey=${!!apiKey}`);
-      }
-      
-      const testConfig = {
-        assistantId: assistantId,
-        apiKey: apiKey
-      };
-      
-      console.log('✅ Test VAPI config prepared');
-      
-      setDialogOpen(false);
-      console.log('✅ Dialog closed');
-      
-      // Now try to start the VAPI call using the imported Vapi class
-      console.log('📞 Attempting to start VAPI call...');
-      
-      // Initialize VAPI instance
-      const vapi = new Vapi(apiKey);
-      console.log('✅ VAPI instance created');
-      
-      setIsCallActive(true);
-      
-      await vapi.start(testConfig.assistantId);
+  const toggleDemoMic = () => {
+    setDemoListening(!demoListening);
 
-      vapi.on('call-start', () => {
-        console.log('🎉 Test call started successfully!');
-      });
-
-      vapi.on('call-end', () => {
-        console.log('📞 Test call ended');
-        setIsCallActive(false);
-      });
-
-      vapi.on('error', (error: any) => {
-        console.error('❌ Test VAPI call error:', error);
-        setScrapeError(`VAPI call error: ${error.message}`);
-        setIsCallActive(false);
-      });
-      
-      setScrapeError('✅ VAPI call started! You should hear the assistant soon.');
-      
-    } catch (error) {
-      console.error('💥 Test assistant error:', error);
-      setScrapeError(`❌ Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      setIsCallActive(false);
-    } finally {
-      console.log('🏁 Test function finished');
-      setIsScraping(false);
+    if (!demoListening) {
+      setTimeout(() => {
+        setDemoListening(false);
+        if (demoResponseIndex < demoResponses.length) {
+          setDemoMessages(prev => [...prev, demoResponses[demoResponseIndex]]);
+          setDemoResponseIndex(prev => prev + 1);
+        }
+      }, 3000);
     }
   };
 
   const handleEndCall = () => {
-    console.log('📞 Ending call manually...');
     setIsCallActive(false);
-    setIsCallStarting(false);
-    setScrapeError(null);
-    
-    // Stop the VAPI instance using the ref
     if (vapiRef.current) {
-      console.log('🛑 Stopping VAPI instance...');
-      vapiRef.current.stop().catch(error => {
-        console.error('Failed to stop VAPI call:', error);
-      });
+      vapiRef.current.stop().catch(console.error);
       vapiRef.current = null;
     }
   };
 
-  const handleTestSupabase = async () => {
-    setTestMessage(null);
-    try {
-      const res = await fetch("/api/test-supabase", { method: "POST" });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        setTestMessage(
-          `Supabase test failed: ${data.error ?? data.details ?? "Unknown error"}`,
-        );
-        return;
-      }
-      setTestMessage(
-        `Supabase test OK (demo id: ${data.demoId ?? "n/a"})`,
-      );
-    } catch {
-      setTestMessage("Supabase test failed: network error");
-    }
-  };
-
   return (
-    <section id="demo" className="py-16 md:py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
-            Try It Right Now - Talk to Our Demo Employment Lawyer
+    <section id="try-it" className="py-24 md:py-32 relative overflow-hidden">
+      {/* Ambient glow */}
+      <div
+        className="absolute top-0 right-1/4 w-96 h-96 rounded-full blur-[120px] opacity-35 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, #fed7aa, #fdba74, transparent 70%)' }}
+      />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4 block">
+            Live Demo
+          </span>
+          <h2
+            className="text-4xl md:text-5xl lg:text-6xl font-normal mb-4 leading-tight tracking-tight"
+            style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
+          >
+            See it work on <em className="italic">your</em> website
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Click the button below and ask questions like a real visitor would.
-            No signup required.
+          <p className="text-lg text-gray-600 max-w-xl mx-auto mt-4 leading-relaxed">
+            Enter your URL. We'll analyze your site and build a custom voice assistant in under 60 seconds.
           </p>
         </div>
 
-        <Card className="max-w-3xl mx-auto border-2 border-[#2563EB]/20 shadow-xl bg-gradient-to-b from-white to-[#2563EB]/5">
-          <CardContent className="p-8 md:p-12">
-            {/* Voice Button Placeholder - Vapi Widget goes here */}
-            <div className="flex flex-col items-center">
-              <div
-                id="vapi-voice-widget"
-                className="relative mb-8"
-                aria-label="Voice assistant button placeholder"
-              >
-                {/* Pulse Animation Ring */}
-                <div className="absolute inset-0 rounded-full bg-[#2563EB]/20 animate-ping" />
-                <div className="absolute inset-2 rounded-full bg-[#2563EB]/30 animate-pulse" />
-
-                {/* Main Button */}
-                <button
-                  type="button"
-                  onClick={isCallActive || isCallStarting ? handleEndCall : handleOpenDemo}
-                  disabled={isScraping}
-                  className={`relative w-32 h-32 md:w-40 md:h-40 rounded-full flex items-center justify-center shadow-2xl transition-all cursor-pointer ${
-                    isCallActive || isCallStarting
-                      ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                      : 'bg-gradient-to-br from-[#2563EB] to-[#7C3AED] hover:scale-105 shadow-[#2563EB]/30'
-                  }`}
-                  aria-label={isCallActive ? "End call" : isCallStarting ? "Cancel call" : "Start voice conversation"}
-                >
-                  {isCallActive ? (
-                    <X className="w-12 h-12 md:w-16 md:h-16 text-white" />
-                  ) : (
-                    <Mic className="w-12 h-12 md:w-16 md:h-16 text-white" />
-                  )}
-                </button>
-              </div>
-
-              <p className="text-lg font-semibold text-foreground mb-2">
-                {isCallActive ? "Call in Progress..." : isCallStarting ? "Starting Call..." : "Click to Talk"}
-              </p>
-              <p className="text-sm text-muted-foreground mb-8">
-                {isCallActive ? "Click to end the call" : isCallStarting ? "Click to cancel" : "Microphone permission required"}
-              </p>
-
-              {/* Suggested Questions */}
-              <div className="w-full">
-                <p className="text-sm font-medium text-muted-foreground mb-4 flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4" />
-                  {language === 'nl' ? 'Probeer te vragen:' : 'Try asking:'}
-                </p>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {suggestedQuestions[language].map((question, index) => (
-                    <span
-                      key={index}
-                      className="px-4 py-2 rounded-full bg-secondary text-sm text-foreground hover:bg-[#2563EB]/10 transition-colors cursor-pointer"
-                    >
-                      "{question}"
-                    </span>
-                  ))}
+        <div className="max-w-2xl mx-auto bg-white border border-gray-200 rounded-2xl p-10 shadow-md relative z-10">
+          {!isBuilding && !showDemo && (
+            <div>
+              <div className="flex gap-2.5 mb-6">
+                <div className="flex-1 relative">
+                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    type="url"
+                    placeholder="yourwebsite.com"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleBuild()}
+                    className="pl-10 h-12 bg-gray-50 border-gray-200 focus:border-gray-900 rounded-xl"
+                  />
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="mt-4 max-w-3xl mx-auto text-xs text-muted-foreground space-y-2">
-          <button
-            type="button"
-            onClick={handleTestSupabase}
-            className="underline underline-offset-2 hover:text-foreground"
-          >
-            Test Supabase connection (dev only)
-          </button>
-          {testMessage && <p>{testMessage}</p>}
-        </div>
-
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Set up your demo</DialogTitle>
-              <DialogDescription>
-                Enter your company website and language. We&apos;ll create a custom voice agent from your site.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              {scrapeError && (
-                <p className="text-sm text-destructive bg-destructive/10 rounded-md px-3 py-2">
-                  {scrapeError}
-                </p>
-              )}
-              <div className="grid gap-2">
-                <Label htmlFor="website-url">Website URL</Label>
-                <Input
-                  id="website-url"
-                  type="url"
-                  placeholder="https://yourcompany.com"
-                  value={websiteUrl}
-                  onChange={(e) => setWebsiteUrl(e.target.value)}
-                  disabled={isScraping}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="language">Language</Label>
-                <Select
-                  value={language}
-                  onValueChange={(v) => setLanguage(v as "en" | "nl")}
-                  disabled={isScraping}
-                >
-                  <SelectTrigger id="language" className="w-full">
-                    <SelectValue placeholder="Select language" />
+                <Select value={language} onValueChange={(v: any) => setLanguage(v)}>
+                  <SelectTrigger className="w-32 h-12 bg-gray-50 border-gray-200 rounded-xl">
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {LANGUAGES.map(({ value, label }) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
-                      </SelectItem>
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <Button
+                  onClick={handleBuild}
+                  disabled={!websiteUrl.trim()}
+                  className="h-12 px-7 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-semibold"
+                >
+                  Build My Assistant
+                </Button>
+              </div>
+              <p className="text-center text-sm text-gray-400">
+                No sign-up required. Takes about 30 seconds.
+              </p>
+              {buildError && (
+                <p className="mt-4 text-sm text-red-600 text-center">{buildError}</p>
+              )}
+            </div>
+          )}
+
+          {isBuilding && (
+            <div className="py-8 text-center">
+              <div className="flex flex-col gap-4 max-w-xs mx-auto mb-6">
+                {steps.map((step, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center gap-3 text-sm transition-all ${
+                      i === currentStep ? 'text-gray-900 font-medium' :
+                      i < currentStep ? 'text-green-600' : 'text-gray-400'
+                    }`}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      i === currentStep ? 'border-gray-900 bg-gray-900' :
+                      i < currentStep ? 'border-green-600 bg-green-600' : 'border-gray-200'
+                    }`}>
+                      {i < currentStep && <span className="text-white text-xs">✓</span>}
+                      {i === currentStep && (
+                        <div className="w-2.5 h-2.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      )}
+                    </div>
+                    <span>{step}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-gray-400">
+                Building assistant for {websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+              </p>
+            </div>
+          )}
+
+          {showDemo && (
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 text-sm text-green-600 font-medium mb-6">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Your custom assistant is ready
+              </div>
+
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-7 max-w-sm mx-auto">
+                <div className="flex items-center gap-3 mb-5 pb-4 border-b border-gray-200">
+                  <div className="w-9 h-9 rounded-full bg-gray-900 flex items-center justify-center text-white">
+                    <Mic className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-sm font-semibold">Your AI Assistant</div>
+                    <div className="text-xs text-green-600 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-green-600 rounded-full" />
+                      Ready to talk
+                    </div>
+                  </div>
+                </div>
+
+                <div className="min-h-24 mb-5 space-y-2">
+                  {demoMessages.map((msg, i) => (
+                    <div
+                      key={i}
+                      className="text-sm text-gray-600 p-2.5 bg-white rounded-lg text-left leading-relaxed"
+                      style={{ animation: 'msgIn 0.4s ease' }}
+                    >
+                      {msg}
+                    </div>
+                  ))}
+                </div>
+
+                {demoListening && (
+                  <div className="flex items-center justify-center gap-1 h-6 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-0.5 h-2 bg-orange-500 rounded-sm"
+                        style={{
+                          animation: `wave 0.8s ease-in-out infinite`,
+                          animationDelay: `${i * 0.1}s`
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  onClick={isCallActive ? handleEndCall : toggleDemoMic}
+                  className={`w-13 h-13 rounded-full flex items-center justify-center mx-auto transition-all ${
+                    demoListening || isCallActive
+                      ? 'bg-orange-500 hover:scale-105'
+                      : 'bg-gray-900 hover:scale-105 hover:shadow-lg'
+                  }`}
+                  style={demoListening ? { animation: 'micPulse 1.5s ease infinite' } : {}}
+                >
+                  {isCallActive ? (
+                    <X className="w-5 h-5 text-white" />
+                  ) : (
+                    <Mic className="w-5 h-5 text-white" />
+                  )}
+                </button>
+                <p className="text-xs text-gray-400 mt-2.5">
+                  {demoListening ? 'Listening…' : 'Click to start talking'}
+                </p>
+              </div>
+
+              <div className="mt-6">
+                <Button
+                  onClick={handleReset}
+                  variant="outline"
+                  className="border-gray-200 rounded-full"
+                >
+                  Build Another
+                </Button>
               </div>
             </div>
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleTestAssistant}
-                disabled={isScraping}
-                className="mr-2"
-              >
-                {isScraping ? "Testing…" : "Test Assistant"}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleCancel}
-                disabled={isScraping}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={!websiteUrl.trim() || isScraping}
-              >
-                {isScraping ? "Scraping…" : "OK"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <div className="mt-8 text-center">
-          <p className="text-lg text-muted-foreground flex items-center justify-center gap-2">
-            <span className="text-2xl">👆</span>
-            This is what YOUR visitors would experience—except in YOUR voice,
-            answering YOUR questions, 24/7.
-          </p>
+          )}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes msgIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes wave {
+          0%, 100% { height: 8px; }
+          50% { height: 24px; }
+        }
+        @keyframes micPulse {
+          0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3); }
+          70% { box-shadow: 0 0 0 14px rgba(249, 115, 22, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+        }
+      `}</style>
     </section>
   );
 }
