@@ -52,6 +52,9 @@ export function DemoSection() {
     const url = websiteUrl.trim();
     if (!url) return;
 
+    console.log('🚀 Starting demo build process...');
+    console.log('📝 Input data:', { url, language });
+
     setIsBuilding(true);
     setBuildError(null);
     setShowDemo(false);
@@ -61,23 +64,32 @@ export function DemoSection() {
       // Simulate step progress
       for (let i = 0; i < steps.length; i++) {
         setCurrentStep(i);
+        console.log(`📊 Step ${i + 1}/${steps.length}: ${steps[i]}`);
         await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1500));
       }
 
       // Call your real API
-      console.log('🚀 Starting demo setup for URL:', url, 'Language:', language);
+      console.log('🌐 Calling gemini-research API...');
 
       const geminiRes = await fetch("/api/gemini-research", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, language }),
       });
-      const geminiData = await geminiRes.json();
-
+      
+      console.log('📡 Gemini research response status:', geminiRes.status);
+      
       if (!geminiRes.ok) {
-        setBuildError(geminiData.error ?? geminiData.details ?? "Website research failed");
+        const errorText = await geminiRes.text();
+        console.error('❌ Gemini research failed:', { status: geminiRes.status, error: errorText });
+        setBuildError(`Website research failed: ${errorText}`);
         return;
       }
+      
+      const geminiData = await geminiRes.json();
+      console.log('✅ Gemini research success:', { demoId: geminiData.demoId, hasPrompt: !!geminiData.prompt });
+
+      console.log('🎙️ Calling VAPI API...');
 
       const vapiRes = await fetch("/api/vapi-call", {
         method: "POST",
@@ -87,24 +99,36 @@ export function DemoSection() {
           prompt: geminiData.prompt
         }),
       });
-      const vapiData = await vapiRes.json();
-
+      
+      console.log('📡 VAPI response status:', vapiRes.status);
+      
       if (!vapiRes.ok) {
-        setBuildError(vapiData.error ?? vapiData.details ?? "VAPI setup failed");
+        const errorText = await vapiRes.text();
+        console.error('❌ VAPI setup failed:', { status: vapiRes.status, error: errorText });
+        setBuildError(`VAPI setup failed: ${errorText}`);
         return;
       }
+      
+      const vapiData = await vapiRes.json();
+      console.log('✅ VAPI setup success:', vapiData);
 
       // Show demo widget
       const siteName = url.replace(/^https?:\/\//, '').replace(/\/$/, '').split('.')[0];
+      console.log('🎉 Showing demo widget for:', siteName);
+      
       setShowDemo(true);
       setDemoMessages([`Hi! I'm the AI assistant for ${siteName}. Click the microphone to start a conversation.`]);
       setDemoResponseIndex(0);
 
       // Auto-start VAPI call
       try {
+        console.log('🔧 Initializing VAPI...');
+        
         const assistantId = language === 'nl'
           ? process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_DUTCH
           : process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+
+        console.log('🔑 Using assistant ID:', assistantId?.substring(0, 8) + '...');
 
         const promptRes = await fetch('/api/get-prompt', {
           method: 'POST',
@@ -112,13 +136,26 @@ export function DemoSection() {
           body: JSON.stringify({ assistantId }),
         });
 
-        if (!promptRes.ok) throw new Error('Failed to fetch prompt');
+        if (!promptRes.ok) {
+          const errorText = await promptRes.text();
+          console.error('❌ Failed to fetch prompt:', { status: promptRes.status, error: errorText });
+          throw new Error(`Failed to fetch prompt: ${errorText}`);
+        }
 
         const { prompt } = await promptRes.json();
+        console.log('✅ Retrieved prompt, length:', prompt.length);
+        
         const apiKey = process.env.NEXT_PUBLIC_VAPI_API_KEY;
 
-        if (!apiKey || !assistantId) throw new Error('Missing VAPI configuration');
+        if (!apiKey || !assistantId) {
+          console.error('❌ Missing VAPI configuration:', { 
+            hasApiKey: !!apiKey, 
+            hasAssistantId: !!assistantId 
+          });
+          throw new Error('Missing VAPI configuration');
+        }
 
+        console.log('🚀 Starting VAPI call...');
         const vapi = new Vapi(apiKey);
         vapiRef.current = vapi;
 
@@ -126,26 +163,33 @@ export function DemoSection() {
           variableValues: { prompt }
         });
 
+        console.log('✅ VAPI call started successfully');
+
         vapi.on('call-start', () => {
+          console.log('📞 VAPI call started');
           setIsCallActive(true);
         });
 
         vapi.on('call-end', () => {
+          console.log('📞 VAPI call ended');
           setIsCallActive(false);
           vapiRef.current = null;
         });
 
         vapi.on('error', (error: any) => {
+          console.error('❌ VAPI call error:', error);
           setBuildError(`Call error: ${error.message}`);
           setIsCallActive(false);
           vapiRef.current = null;
         });
 
       } catch (vapiError) {
-        console.error('Failed to start VAPI call:', vapiError);
+        console.error('💥 Failed to start VAPI call:', vapiError);
+        setBuildError(`VAPI initialization failed: ${vapiError instanceof Error ? vapiError.message : 'Unknown error'}`);
       }
 
     } catch (error) {
+      console.error('💥 Build process error:', error);
       setBuildError("Network error. Please try again.");
     } finally {
       setIsBuilding(false);

@@ -6,24 +6,21 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/api/webhooks(.*)",
   "/api/widgets/(.*)",  // Allow public access to widget API
+  "/api/gemini-research",  // Allow demo API
+  "/api/vapi-call",  // Allow demo API
+  "/api/get-prompt",  // Allow demo API
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // Handle the request to avoid header immutability issues
   const { userId } = await auth();
-  
-  // Redirect authenticated users from home to dashboard
-  if (userId && req.nextUrl.pathname === "/") {
-    const dashboardUrl = new URL("/dashboard", req.url);
-    return Response.redirect(dashboardUrl);
-  }
   
   if (isPublicRoute(req)) {
     return;
   }
   
-  // Protect non-public routes - if user is not authenticated, redirect to sign-in
-  const authResult = await auth();
-  if (!authResult.userId) {
+  // Protect non-public routes
+  if (!userId) {
     const signInUrl = new URL("/sign-in", req.url);
     return Response.redirect(signInUrl);
   }
