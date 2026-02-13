@@ -65,9 +65,8 @@ const MEDIA_SETS = {
 };
 
 export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hello! Welcome to Hotel Amsterdam Royal. I'm your AI concierge. How may I assist you today?" }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [mode, setMode] = useState<'initial' | 'voice' | 'text'>('initial');
   const [isCallActive, setIsCallActive] = useState(false);
   const [currentMedia, setCurrentMedia] = useState<typeof MEDIA_SETS.attractions | null>(null);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
@@ -216,6 +215,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
         // Use your hotel demo assistant ID
         const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || "c85624a3-e4f6-49fa-ba06-293342d10bb7";
         await vapiRef.current.start(assistantId);
+        setMode('voice'); // Switch to voice mode when call starts
       } catch (error) {
         console.error('Failed to start call:', error);
       }
@@ -235,6 +235,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     const userMessage = textInput.trim();
     setTextInput("");
     setIsSending(true);
+    setMode('text'); // Switch to text mode when first message sent
 
     // Add user message to chat
     setMessages(prev => [...prev, {
@@ -366,89 +367,183 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
               </Button>
             </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
-              {messages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            {/* Main Content Area */}
+            {mode === 'initial' ? (
+              /* Initial State - Show Both Options */
+              <div className="flex-1 flex flex-col items-center justify-center p-6">
+                <style jsx>{`
+                  @keyframes pulseBlue {
+                    0%, 100% {
+                      background: linear-gradient(135deg, rgb(59 130 246) 0%, rgb(37 99 235) 100%);
+                      transform: scale(1);
+                    }
+                    50% {
+                      background: linear-gradient(135deg, rgb(96 165 250) 0%, rgb(59 130 246) 100%);
+                      transform: scale(1.05);
+                    }
+                  }
+                  .pulse-blue {
+                    animation: pulseBlue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                  }
+                `}</style>
+                <button
+                  onClick={toggleCall}
+                  className="w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-lg pulse-blue"
                 >
-                  <div
-                    className={`max-w-[80%] px-4 py-3 rounded-2xl ${
-                      msg.role === 'user'
-                        ? 'bg-blue-500 text-white rounded-br-sm'
-                        : 'bg-gray-100 text-gray-900 rounded-bl-sm'
+                  <Mic className="w-12 h-12 text-white" />
+                </button>
+                <p className="text-base font-medium text-gray-700 mt-4">
+                  Start Voice Conversation
+                </p>
+
+                {/* Text Chat Alternative */}
+                <div className="w-full max-w-md mt-16">
+                  <div className="flex items-center gap-3">
+                    <Input
+                      type="text"
+                      placeholder="Or type your message here..."
+                      value={textInput}
+                      onChange={(e) => setTextInput(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      disabled={isSending}
+                      className="flex-1 h-12 bg-white"
+                    />
+                    <Button
+                      size="lg"
+                      onClick={handleSendMessage}
+                      disabled={!textInput.trim() || isSending}
+                      className="h-12 px-5 bg-blue-500 hover:bg-blue-600"
+                    >
+                      {isSending ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Send className="w-5 h-5" />
+                      )}
+                    </Button>
+                  </div>
+                  <div className="text-center text-xs text-gray-400 mt-3">
+                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, C=Calendar, H=Hide</p>
+                  </div>
+                </div>
+              </div>
+            ) : mode === 'voice' ? (
+              /* Voice Mode - Show Only Voice Controls */
+              <div className="flex-1 flex flex-col min-h-0">
+                {/* Messages/Transcription */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
+                  {messages.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+                          msg.role === 'user'
+                            ? 'bg-blue-500 text-white rounded-br-sm'
+                            : 'bg-gray-100 text-gray-900 rounded-bl-sm'
+                        }`}
+                      >
+                        <p className="text-sm leading-relaxed">{msg.content}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {isListening && (
+                    <div className="flex justify-start">
+                      <div className="bg-gray-100 px-4 py-3 rounded-2xl rounded-bl-sm">
+                        <div className="flex items-center gap-1">
+                          {[...Array(3)].map((_, i) => (
+                            <div
+                              key={i}
+                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                              style={{ animationDelay: `${i * 0.15}s` }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Voice Controls Only */}
+                <div className="px-6 py-5 border-t bg-gray-50 flex-shrink-0 flex flex-col items-center">
+                  <button
+                    onClick={toggleCall}
+                    className={`w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-lg ${
+                      isCallActive
+                        ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+                        : 'bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
                     }`}
                   >
-                    <p className="text-sm leading-relaxed">{msg.content}</p>
+                    {isCallActive ? (
+                      <MicOff className="w-9 h-9 text-white" />
+                    ) : (
+                      <Mic className="w-9 h-9 text-white" />
+                    )}
+                  </button>
+                  <p className="text-sm font-medium text-gray-700 mt-3">
+                    {isCallActive ? 'End Voice Call' : 'Start Voice Call'}
+                  </p>
+                  <div className="text-center text-xs text-gray-400 mt-3">
+                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, C=Calendar, H=Hide</p>
                   </div>
                 </div>
-              ))}
-              {isListening && (
-                <div className="flex justify-start">
-                  <div className="bg-gray-100 px-4 py-3 rounded-2xl rounded-bl-sm">
-                    <div className="flex items-center gap-1">
-                      {[...Array(3)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                          style={{ animationDelay: `${i * 0.15}s` }}
-                        />
-                      ))}
+              </div>
+            ) : (
+              /* Text Mode - Show Only Text Chat */
+              <div className="flex-1 flex flex-col min-h-0">
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
+                  {messages.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+                          msg.role === 'user'
+                            ? 'bg-blue-500 text-white rounded-br-sm'
+                            : 'bg-gray-100 text-gray-900 rounded-bl-sm'
+                        }`}
+                      >
+                        <p className="text-sm leading-relaxed">{msg.content}</p>
+                      </div>
                     </div>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Text Input Only - No Voice Button */}
+                <div className="px-6 py-4 border-t bg-gray-50 flex-shrink-0">
+                  <div className="flex items-center gap-3">
+                    <Input
+                      type="text"
+                      placeholder="Type your message..."
+                      value={textInput}
+                      onChange={(e) => setTextInput(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      disabled={isSending}
+                      className="flex-1 h-12 bg-white"
+                    />
+                    <Button
+                      size="lg"
+                      onClick={handleSendMessage}
+                      disabled={!textInput.trim() || isSending}
+                      className="h-12 px-6 bg-blue-500 hover:bg-blue-600"
+                    >
+                      {isSending ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Send className="w-5 h-5" />
+                      )}
+                    </Button>
+                  </div>
+                  <div className="text-center text-xs text-gray-400 mt-3">
+                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, C=Calendar, H=Hide</p>
                   </div>
                 </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Chat Input & Voice Control */}
-            <div className="px-6 py-4 border-t bg-gray-50 flex-shrink-0">
-              <div className="flex items-center gap-3 mb-3">
-                <Input
-                  type="text"
-                  placeholder="Type your message..."
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  disabled={isSending}
-                  className="flex-1 h-12 bg-white"
-                />
-                <Button
-                  size="lg"
-                  onClick={handleSendMessage}
-                  disabled={!textInput.trim() || isSending}
-                  className="h-12 px-6 bg-blue-500 hover:bg-blue-600"
-                >
-                  {isSending ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <Send className="w-5 h-5" />
-                  )}
-                </Button>
-                <Button
-                  size="lg"
-                  onClick={toggleCall}
-                  className={`h-12 w-12 rounded-full transition-all ${
-                    isCallActive
-                      ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                      : 'bg-gray-900 hover:bg-gray-800'
-                  }`}
-                >
-                  {isCallActive ? (
-                    <MicOff className="w-5 h-5 text-white" />
-                  ) : (
-                    <Mic className="w-5 h-5 text-white" />
-                  )}
-                </Button>
               </div>
-              <p className="text-center text-xs text-gray-500">
-                Type a message or use voice • {isCallActive ? 'Voice active' : 'Click mic to talk'}
-              </p>
-              <div className="text-center text-xs text-gray-400 mt-1">
-                <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, C=Calendar, H=Hide</p>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Right: Media Display / Calendar */}
