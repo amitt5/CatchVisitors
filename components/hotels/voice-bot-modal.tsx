@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
-import { X, Mic, MicOff, Calendar as CalendarIcon } from "lucide-react";
+import { X, Mic, MicOff, Calendar as CalendarIcon, Send } from "lucide-react";
 import Vapi from "@vapi-ai/web";
 
 interface Message {
@@ -73,6 +74,9 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [isListening, setIsListening] = useState(false);
+  const [textInput, setTextInput] = useState("");
+  const [chatId, setChatId] = useState<string | null>(null);
+  const [isSending, setIsSending] = useState(false);
 
   const vapiRef = useRef<Vapi | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -221,6 +225,91 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     onClose();
   };
 
+  const handleSendMessage = async () => {
+    if (!textInput.trim() || isSending) return;
+
+    const userMessage = textInput.trim();
+    setTextInput("");
+    setIsSending(true);
+
+    // Add user message to chat
+    setMessages(prev => [...prev, {
+      role: "user",
+      content: userMessage
+    }]);
+
+    try {
+      // Use Vapi Chat API for text messages
+      const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || "c85624a3-e4f6-49fa-ba06-293342d10bb7";
+
+      const requestBody: any = {
+        assistantId,
+        input: userMessage,
+      };
+
+      // Only include previousChatId from 2nd message onwards
+      if (chatId) {
+        requestBody.previousChatId = chatId;
+      }
+
+      const response = await fetch('/api/vapi-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+      
+      const data = await response.json();
+      console.log('data111:', data);
+
+      // Store chat ID for conversation continuity
+      if (data.id) {
+        setChatId(data.id);
+      }
+
+      // Add assistant's response to chat
+      if (data.output && data.output.length > 0) {
+        const assistantMessage = data.output[data.output.length - 1];
+        setMessages(prev => [...prev, {
+          role: "assistant",
+          content: assistantMessage.content
+        }]);
+
+        // Optional: Trigger media based on keywords in response
+        // const content = assistantMessage.content.toLowerCase();
+        // if (content.includes('room')) {
+        //   setTimeout(() => setCurrentMedia(MEDIA_SETS.rooms), 500);
+        // } else if (content.includes('attraction') || content.includes('nearby')) {
+        //   setTimeout(() => setCurrentMedia(MEDIA_SETS.attractions), 500);
+        // } else if (content.includes('book') || content.includes('reservation')) {
+        //   setTimeout(() => setShowCalendar(true), 500);
+        // } else if (content.includes('amenities') || content.includes('facilities')) {
+        //   setTimeout(() => setCurrentMedia(MEDIA_SETS.amenities), 500);
+        // }
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: "Sorry, I'm having trouble connecting. Please try again or use the microphone for voice chat."
+      }]);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="!max-w-[90vw] w-[90vw] h-[90vh] p-0 gap-0" showCloseButton={false}>
@@ -285,29 +374,50 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Voice Control */}
+            {/* Chat Input & Voice Control */}
             <div className="px-6 py-4 border-t bg-gray-50">
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex items-center gap-3 mb-3">
+                <Input
+                  type="text"
+                  placeholder="Type your message..."
+                  value={textInput}
+                  onChange={(e) => setTextInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  disabled={isSending}
+                  className="flex-1 h-12 bg-white"
+                />
+                <Button
+                  size="lg"
+                  onClick={handleSendMessage}
+                  disabled={!textInput.trim() || isSending}
+                  className="h-12 px-6 bg-blue-500 hover:bg-blue-600"
+                >
+                  {isSending ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                </Button>
                 <Button
                   size="lg"
                   onClick={toggleCall}
-                  className={`w-16 h-16 rounded-full transition-all ${
+                  className={`h-12 w-12 rounded-full transition-all ${
                     isCallActive
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                      : 'bg-blue-500 hover:bg-blue-600'
+                      : 'bg-gray-900 hover:bg-gray-800'
                   }`}
                 >
                   {isCallActive ? (
-                    <MicOff className="w-6 h-6 text-white" />
+                    <MicOff className="w-5 h-5 text-white" />
                   ) : (
-                    <Mic className="w-6 h-6 text-white" />
+                    <Mic className="w-5 h-5 text-white" />
                   )}
                 </Button>
               </div>
-              <p className="text-center text-xs text-gray-500 mt-3">
-                {isCallActive ? 'Click to end call' : 'Click to start talking'}
+              <p className="text-center text-xs text-gray-500">
+                Type a message or use voice • {isCallActive ? 'Voice active' : 'Click mic to talk'}
               </p>
-              <div className="text-center text-xs text-gray-400 mt-2">
+              <div className="text-center text-xs text-gray-400 mt-1">
                 <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, C=Calendar, H=Hide</p>
               </div>
             </div>
