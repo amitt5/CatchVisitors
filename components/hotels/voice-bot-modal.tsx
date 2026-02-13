@@ -265,7 +265,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
       }
       
       const data = await response.json();
-      console.log('data111:', data);
+      console.log('Vapi chat response:', data);
 
       // Store chat ID for conversation continuity
       if (data.id) {
@@ -279,6 +279,30 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
           role: "assistant",
           content: assistantMessage.content
         }]);
+
+        // Save chat session to database
+        try {
+          await fetch('/api/chat-sessions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: data.id,
+              assistantId: data.assistantId,
+              orgId: data.orgId,
+              messages: data.messages,
+              cost: data.cost,
+              costs: data.costs,
+              createdAt: data.createdAt,
+              updatedAt: data.updatedAt,
+            }),
+          });
+          console.log('Chat session saved to database');
+        } catch (dbError) {
+          console.error('Error saving chat session to database:', dbError);
+          // Don't throw - we don't want to break the chat if DB save fails
+        }
 
         // Optional: Trigger media based on keywords in response
         // const content = assistantMessage.content.toLowerCase();
@@ -312,13 +336,13 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="!max-w-[90vw] w-[90vw] h-[90vh] p-0 gap-0" showCloseButton={false}>
+      <DialogContent className="!max-w-[90vw] w-[90vw] h-[90vh] p-0 gap-0 overflow-hidden flex flex-col" showCloseButton={false}>
         <DialogTitle className="sr-only">Hotel Voice Concierge</DialogTitle>
-        <div className="flex h-full">
+        <div className="flex h-full overflow-hidden">
           {/* Left: Chat Interface */}
-          <div className="flex-1 flex flex-col border-r">
+          <div className="flex-1 flex flex-col border-r min-h-0 overflow-hidden">
             {/* Header */}
-            <div className="px-6 py-4 border-b bg-gray-50 flex items-center justify-between">
+            <div className="px-6 py-4 border-b bg-gray-50 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white">
                   <Mic className="w-5 h-5" />
@@ -339,7 +363,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
@@ -375,7 +399,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
             </div>
 
             {/* Chat Input & Voice Control */}
-            <div className="px-6 py-4 border-t bg-gray-50">
+            <div className="px-6 py-4 border-t bg-gray-50 flex-shrink-0">
               <div className="flex items-center gap-3 mb-3">
                 <Input
                   type="text"
