@@ -23,71 +23,36 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServerSupabaseClient();
 
-    // Check if chat session already exists
-    const { data: existing } = await supabase
+    // Use upsert to insert or update atomically (prevents duplicates)
+    const { data, error } = await supabase
       .from("chat_sessions")
-      .select("id")
-      .eq("id", id)
+      .upsert({
+        id,
+        assistant_id: assistantId,
+        org_id: orgId,
+        messages,
+        cost: cost || 0,
+        costs: costs || [],
+        created_at: createdAt || new Date().toISOString(),
+        updated_at: updatedAt || new Date().toISOString(),
+      }, {
+        onConflict: 'id', // Use id as the conflict column
+      })
+      .select()
       .single();
 
-    if (existing) {
-      // Update existing session
-      const { data, error } = await supabase
-        .from("chat_sessions")
-        .update({
-          messages,
-          cost: cost || 0,
-          costs: costs || [],
-          updated_at: updatedAt || new Date().toISOString(),
-        })
-        .eq("id", id)
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error updating chat session:", error);
-        return NextResponse.json(
-          { error: "Failed to update chat session" },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({
-        success: true,
-        action: "updated",
-        data
-      });
-    } else {
-      // Create new session
-      const { data, error } = await supabase
-        .from("chat_sessions")
-        .insert({
-          id,
-          assistant_id: assistantId,
-          org_id: orgId,
-          messages,
-          cost: cost || 0,
-          costs: costs || [],
-          created_at: createdAt || new Date().toISOString(),
-          updated_at: updatedAt || new Date().toISOString(),
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error creating chat session:", error);
-        return NextResponse.json(
-          { error: "Failed to create chat session" },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({
-        success: true,
-        action: "created",
-        data
-      });
+    if (error) {
+      console.error("Error upserting chat session:", error);
+      return NextResponse.json(
+        { error: "Failed to save chat session" },
+        { status: 500 }
+      );
     }
+
+    return NextResponse.json({
+      success: true,
+      data
+    });
 
   } catch (error) {
     console.error("Error in chat-sessions route:", error);

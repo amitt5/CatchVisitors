@@ -73,10 +73,13 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [checkoutDate, setCheckoutDate] = useState<Date | undefined>(undefined);
   const [isListening, setIsListening] = useState(false);
   const [textInput, setTextInput] = useState("");
   const [chatId, setChatId] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
+  const [bookingStep, setBookingStep] = useState<'calendar' | 'room' | 'payment' | 'confirmation'>('calendar');
+  const [selectedRoom, setSelectedRoom] = useState<{name: string; price: number; image: string} | null>(null);
 
   const vapiRef = useRef<Vapi | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -124,6 +127,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
         case 'C':
           setShowCalendar(true);
           setCurrentMedia(null);
+          setBookingStep('calendar');
           break;
         case 'h':
         case 'H':
@@ -475,23 +479,169 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                 </div>
               </div>
             ) : showCalendar ? (
-              <div className="bg-white rounded-lg p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <CalendarIcon className="w-5 h-5" />
-                  <h3 className="text-lg font-semibold">Select Your Dates</h3>
-                </div>
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  className="rounded-md border"
-                  disabled={(date) => date < new Date()}
-                />
-                {selectedDate && (
-                  <div className="mt-4">
-                    <Button className="w-full">
-                      Check Availability
-                    </Button>
+              <div className="bg-white rounded-lg p-6 max-h-full overflow-y-auto">
+                {/* Step 1: Calendar */}
+                {bookingStep === 'calendar' && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <CalendarIcon className="w-5 h-5" />
+                      <h3 className="text-lg font-semibold">Select Your Dates</h3>
+                    </div>
+                    <div className="flex gap-4">
+                      <div>
+                        <p className="text-sm font-medium mb-2 text-center">Check-in</p>
+                        <Calendar
+                          mode="single"
+                          selected={selectedDate}
+                          onSelect={setSelectedDate}
+                          className="rounded-md border"
+                          disabled={(date) => date < new Date()}
+                          defaultMonth={new Date(2026, 3, 1)} // April 2026
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium mb-2 text-center">Check-out</p>
+                        <Calendar
+                          mode="single"
+                          selected={checkoutDate}
+                          onSelect={setCheckoutDate}
+                          className="rounded-md border"
+                          disabled={(date) => !selectedDate || date <= selectedDate}
+                          defaultMonth={new Date(2026, 4, 1)} // May 2026
+                        />
+                      </div>
+                    </div>
+                    {selectedDate && checkoutDate && (
+                      <div className="mt-4">
+                        <Button
+                          className="w-full"
+                          onClick={() => setBookingStep('room')}
+                        >
+                          Continue to Room Selection
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Step 2: Room Selection */}
+                {bookingStep === 'room' && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Choose Your Room</h3>
+                    <div className="space-y-3">
+                      {[
+                        { name: 'Deluxe Canal View', price: 199, image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=400' },
+                        { name: 'Premium Suite', price: 299, image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=400' },
+                        { name: 'Executive Suite', price: 399, image: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=400' },
+                      ].map((room) => (
+                        <div
+                          key={room.name}
+                          className={`border rounded-lg p-3 cursor-pointer transition ${
+                            selectedRoom?.name === room.name ? 'border-blue-500 bg-blue-50' : 'hover:border-gray-400'
+                          }`}
+                          onClick={() => setSelectedRoom(room)}
+                        >
+                          <div className="flex gap-3">
+                            <img src={room.image} alt={room.name} className="w-24 h-24 object-cover rounded" />
+                            <div className="flex-1">
+                              <h4 className="font-semibold">{room.name}</h4>
+                              <p className="text-2xl font-bold mt-2">€{room.price}<span className="text-sm font-normal text-gray-500">/night</span></p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {selectedRoom && (
+                      <div className="mt-4 space-y-2">
+                        <div className="p-3 bg-gray-50 rounded-lg text-sm">
+                          <div className="flex justify-between mb-1">
+                            <span>€{selectedRoom.price} × {checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1} nights</span>
+                            <span>€{selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1)}</span>
+                          </div>
+                          <div className="flex justify-between font-semibold pt-2 border-t">
+                            <span>Total</span>
+                            <span>€{selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1)}</span>
+                          </div>
+                        </div>
+                        <Button
+                          className="w-full"
+                          onClick={() => setBookingStep('payment')}
+                        >
+                          Continue to Payment
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Step 3: Payment */}
+                {bookingStep === 'payment' && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Payment Details</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Card Number</label>
+                        <Input placeholder="1234 5678 9012 3456" className="h-10" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Expiry</label>
+                          <Input placeholder="MM/YY" className="h-10" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-1">CVV</label>
+                          <Input placeholder="123" className="h-10" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Cardholder Name</label>
+                        <Input placeholder="John Doe" className="h-10" />
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-lg text-sm mt-4">
+                        <div className="flex justify-between font-semibold">
+                          <span>Total to pay</span>
+                          <span>€{selectedRoom ? selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1) : 0}</span>
+                        </div>
+                      </div>
+                      <Button
+                        className="w-full"
+                        onClick={() => setBookingStep('confirmation')}
+                      >
+                        Confirm Booking
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 4: Confirmation */}
+                {bookingStep === 'confirmation' && (
+                  <div className="text-center py-6">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">Booking Confirmed!</h3>
+                    <p className="text-gray-600 mb-4">Your reservation has been successfully confirmed.</p>
+                    <div className="bg-gray-50 rounded-lg p-4 text-left space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Room:</span>
+                        <span className="font-medium">{selectedRoom?.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Check-in:</span>
+                        <span className="font-medium">{selectedDate?.toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Check-out:</span>
+                        <span className="font-medium">{checkoutDate?.toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex justify-between pt-2 border-t">
+                        <span className="text-gray-600">Total Paid:</span>
+                        <span className="font-semibold">€{selectedRoom ? selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1) : 0}</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-4">A confirmation email has been sent to your inbox.</p>
                   </div>
                 )}
               </div>
