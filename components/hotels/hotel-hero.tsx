@@ -9,21 +9,26 @@ interface HotelHeroProps {
 
 export function HotelHero({ onOpenVoiceBot }: HotelHeroProps) {
   return (
-    <div className="relative min-h-screen">
-      {/* Hero Image */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: "linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Hero Video */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source src="/videos/amsterdam.mp4" type="video/mp4" />
+        </video>
+        {/* Video overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
+      </div>
 
       {/* Header */}
       <header className="relative z-10 px-6 py-6 flex justify-between items-center">
         <div className="text-white">
-          <h1 className="text-2xl font-serif">Hotel Amsterdam Royal</h1>
+          <h1 className="text-2xl font-serif">Hotel Haven Amsterdam</h1>
           <div className="flex items-center gap-2 mt-1 text-sm">
             <MapPin className="w-3 h-3" />
             <span>Prinsengracht, Amsterdam</span>
@@ -53,14 +58,13 @@ export function HotelHero({ onOpenVoiceBot }: HotelHeroProps) {
         <div className="flex flex-col sm:flex-row gap-4">
           <Button
             size="lg"
-            className="bg-white text-black hover:bg-gray-100 text-lg px-8 py-6"
+            className="bg-white text-black hover:bg-gray-100 text-lg px-8 py-6 h-auto"
           >
             Book Your Stay
           </Button>
           <Button
             size="lg"
-            variant="outline"
-            className="border-2 border-white text-white hover:bg-white hover:text-black text-lg px-8 py-6"
+            className="bg-white/20 backdrop-blur-sm border-2 border-white text-white hover:bg-white hover:text-black text-lg px-8 py-6 h-auto"
             onClick={onOpenVoiceBot}
           >
             <Phone className="w-5 h-5 mr-2" />
