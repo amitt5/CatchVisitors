@@ -9,6 +9,9 @@ const isPublicRoute = createRouteMatcher([
   "/api/gemini-research",  // Allow demo API
   "/api/vapi-call",  // Allow demo API
   "/api/get-prompt",  // Allow demo API
+  "/hotels",  // Hotel demo page
+  "/api/vapi-chat",  // Hotel demo chat API
+  "/api/chat-sessions",  // Hotel demo sessions API
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
