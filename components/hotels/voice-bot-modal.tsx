@@ -188,10 +188,40 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
       console.log('Message received:', message);
       if (message.type === 'transcript' && message.transcript) {
         const role = message.role === 'assistant' ? 'assistant' : 'user';
-        setMessages(prev => [...prev, {
-          role,
-          content: message.transcript
-        }]);
+        const newTranscript = message.transcript.trim();
+
+        setMessages(prev => {
+          const lastMessage = prev[prev.length - 1];
+          const isSameRole = lastMessage && lastMessage.role === role;
+
+          if (!isSameRole) {
+            // Different role or no previous message - add new message
+            return [...prev, { role, content: newTranscript }];
+          }
+
+          // Same role - check if this is a progressive update or new content
+          const lastContent = lastMessage.content.trim();
+
+          // If new transcript starts with the old content, it's a progressive update
+          if (newTranscript.startsWith(lastContent)) {
+            // Progressive update - replace the message
+            return [
+              ...prev.slice(0, -1),
+              { role, content: newTranscript }
+            ];
+          }
+
+          // If old content starts with new transcript, keep the longer one (old)
+          if (lastContent.startsWith(newTranscript)) {
+            return prev;
+          }
+
+          // Completely different content - append as continuation
+          return [
+            ...prev.slice(0, -1),
+            { role, content: lastContent + ' ' + newTranscript }
+          ];
+        });
       }
     });
 
