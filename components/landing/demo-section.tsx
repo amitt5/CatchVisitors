@@ -126,7 +126,7 @@ export function DemoSection() {
         
         const assistantId = language === 'nl'
           ? process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_DUTCH
-          : process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+          : process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_ENGLISH;
 
         console.log('🔑 Using assistant ID:', assistantId?.substring(0, 8) + '...');
 

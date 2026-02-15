@@ -243,7 +243,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     } else {
       try {
         // Use your hotel demo assistant ID
-        const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || "c85624a3-e4f6-49fa-ba06-293342d10bb7";
+        const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_HOTEL || "61ecaf11-a10e-4205-8440-611bd394ede7";
         await vapiRef.current.start(assistantId);
         setMode('voice'); // Switch to voice mode when call starts
       } catch (error) {
@@ -275,7 +275,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
 
     try {
       // Use Vapi Chat API for text messages
-      const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID || "c85624a3-e4f6-49fa-ba06-293342d10bb7";
+      const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_HOTEL || "61ecaf11-a10e-4205-8440-611bd394ede7";
 
       const requestBody: any = {
         assistantId,

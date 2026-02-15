@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Vapi from "@vapi-ai/web";
 
-const VAPI_ASSISTANT_ID = "c85624a3-e4f6-49fa-ba06-293342d10bb7";
+const VAPI_ASSISTANT_ID = "61ecaf11-a10e-4205-8440-611bd394ede7";
 
 export function FloatingVoiceWidget() {
   const [isCallActive, setIsCallActive] = useState(false);
