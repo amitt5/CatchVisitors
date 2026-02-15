@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "What's the pricing?",
     answer:
-      "$500 setup (we build your AI agent, train it on your website, integrate with your calendar). Then $399/month for unlimited calls. 30-day free trial. 3X bookings guarantee or your money back.",
+      "€500 setup (we build your AI agent, train it on your website, integrate with your calendar). Then €399/month for unlimited calls. 30-day free trial. 3X bookings guarantee or your money back.",
   },
 ];
 

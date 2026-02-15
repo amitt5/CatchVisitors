@@ -45,7 +45,7 @@ export function HeroSection() {
           className="text-lg md:text-xl text-gray-600 max-w-xl mx-auto mb-11 leading-relaxed"
           style={{ animation: 'fadeUp 0.8s ease 0.2s both' }}
         >
-          An AI voice assistant that lives on your website. Visitors click, talk, and book — 24/7, in four languages, while you focus on billable work.
+          An AI voice assistant that lives on your website. Visitors click, talk, and book — 24/7, in 50+ languages, while you focus on patient care.
         </p>
 
         {/* CTA Buttons */}
@@ -91,7 +91,7 @@ export function HeroSection() {
           </div>
           <div className="w-px h-9 bg-gray-200" />
           <div className="text-center">
-            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>4</div>
+            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>50+</div>
             <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">Languages</div>
           </div>
           <div className="w-px h-9 bg-gray-200" />

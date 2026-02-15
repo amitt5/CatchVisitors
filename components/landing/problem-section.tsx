@@ -11,10 +11,10 @@ const stats = [
   },
   {
     icon: DollarSign,
-    stat: "$5K-$20K",
+    stat: "€5K-€20K",
     title: "lost per visitor",
     description:
-      "Just one wrongful termination case pays for a year of CatchVisitors.",
+      "Just one new patient can pay for months of CatchVisitors.",
   },
   {
     icon: Clock,

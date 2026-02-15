@@ -13,8 +13,8 @@ const features = [
   },
   {
     icon: Globe,
-    title: "Four languages",
-    description: "English, Spanish, Dutch, and German. Auto-detects and switches seamlessly mid-conversation."
+    title: "50+ languages",
+    description: "Supports over 50 languages including English, Dutch, German, French, and more. Auto-detects and switches seamlessly mid-conversation."
   },
   {
     icon: Users,

@@ -65,7 +65,7 @@ export function ComparisonSection() {
               <tr className="border-b border-gray-100">
                 <td className="p-3.5 font-medium text-gray-900">Multi-language</td>
                 <td className="p-3.5 bg-orange-50 font-medium text-gray-900">
-                  <span className="text-green-600">✓</span> 4 languages
+                  <span className="text-green-600">✓</span> 50+ languages
                 </td>
                 <td className="p-3.5 text-gray-600 text-gray-400">If bilingual</td>
                 <td className="p-3.5 text-gray-600 text-gray-400">Limited</td>
@@ -80,9 +80,9 @@ export function ComparisonSection() {
               </tr>
               <tr className="border-b border-gray-100">
                 <td className="p-3.5 font-medium text-gray-900">Monthly cost</td>
-                <td className="p-3.5 bg-orange-50 font-medium text-gray-900">$399/mo</td>
-                <td className="p-3.5 text-gray-600">$3,000–5,000/mo</td>
-                <td className="p-3.5 text-gray-600">$50–200/mo</td>
+                <td className="p-3.5 bg-orange-50 font-medium text-gray-900">€399/mo</td>
+                <td className="p-3.5 text-gray-600">€3,000–5,000/mo</td>
+                <td className="p-3.5 text-gray-600">€50–200/mo</td>
                 <td className="p-3.5 text-gray-600">Free</td>
               </tr>
               <tr>

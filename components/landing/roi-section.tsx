@@ -43,7 +43,7 @@ export function ROISection() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Average deal value ($)</label>
+              <label className="block text-sm font-medium mb-1.5">Average deal value (€)</label>
               <Input
                 type="number"
                 value={dealValue}
@@ -79,7 +79,7 @@ export function ROISection() {
                 className="text-3xl md:text-4xl text-white mb-1"
                 style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
               >
-                ${Math.round(currentRev).toLocaleString()}
+                €{Math.round(currentRev).toLocaleString()}
               </div>
               <div className="text-xs text-gray-400 uppercase tracking-wider">
                 Current Monthly Revenue
@@ -90,7 +90,7 @@ export function ROISection() {
                 className="text-3xl md:text-4xl text-white mb-1"
                 style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
               >
-                ${Math.round(newRev).toLocaleString()}
+                €{Math.round(newRev).toLocaleString()}
               </div>
               <div className="text-xs text-gray-400 uppercase tracking-wider">
                 With CatchVisitors (3×)
@@ -101,7 +101,7 @@ export function ROISection() {
                 className="text-3xl md:text-4xl text-green-400 mb-1"
                 style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
               >
-                +${Math.round(addedRev).toLocaleString()}
+                +€{Math.round(addedRev).toLocaleString()}
               </div>
               <div className="text-xs text-gray-400 uppercase tracking-wider">
                 Additional Monthly Revenue
