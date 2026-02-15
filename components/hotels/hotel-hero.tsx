@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Phone, MapPin, Star } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 
 interface HotelHeroProps {
   onOpenVoiceBot: () => void;
@@ -34,7 +34,7 @@ export function HotelHero({ onOpenVoiceBot }: HotelHeroProps) {
             <span>Prinsengracht, Amsterdam</span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-1 text-yellow-400">
             {[...Array(5)].map((_, i) => (
               <Star key={i} className="w-4 h-4 fill-current" />
@@ -43,7 +43,7 @@ export function HotelHero({ onOpenVoiceBot }: HotelHeroProps) {
           <Button variant="outline" className="text-white border-white hover:bg-white hover:text-black">
             Menu
           </Button>
-        </div>
+        </div> */}
       </header>
 
       {/* Hero Content */}
@@ -78,7 +78,7 @@ export function HotelHero({ onOpenVoiceBot }: HotelHeroProps) {
       </div>
 
       {/* Quick Info Bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 bg-black/40 backdrop-blur-sm border-t border-white/20">
+      {/* <div className="absolute bottom-0 left-0 right-0 z-10 bg-black/40 backdrop-blur-sm border-t border-white/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center text-white text-sm">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4" />
@@ -93,7 +93,7 @@ export function HotelHero({ onOpenVoiceBot }: HotelHeroProps) {
             <span>4.9/5 rating (2,847 reviews)</span>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
