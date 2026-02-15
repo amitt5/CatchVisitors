@@ -71,19 +71,12 @@ export async function POST(request: NextRequest) {
     let existingResearch: ExistingResearch | null = null;
 
     try {
-      // Build query - for authenticated users, only return their data; for visitors, return any data
-      let query = supabase
+      // Build query - return any data for the website + language
+      const { data, error } = await supabase
         .from("demos")
         .select("id, gemini_prompt, organisation_name")
         .eq("website_url", targetUrl)
-        .eq("language", language);
-      
-      // Only filter by user_id if user is authenticated
-      if (userId) {
-        query = query.eq("user_id", userId);
-      }
-      
-      const { data, error } = await query
+        .eq("language", language)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle<ExistingResearch>();
@@ -180,31 +173,43 @@ No other text, no explanation, only the JSON object.`;
     try {
       if (openrouterData.choices?.[0]?.message?.content) {
         let content = openrouterData.choices[0].message.content;
-        console.log('📝 OpenRouter returned content:', content.substring(0, 200) + '...');
-        
+        console.log('📝 OpenRouter returned full content:', content);
+
         // Clean markdown code blocks if present
         if (content.includes('```')) {
           console.log('🧹 Cleaning markdown code blocks...');
           content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-          console.log('✅ Cleaned content:', content.substring(0, 200) + '...');
+          console.log('✅ Cleaned content:', content);
         }
-        
+
+        // Try to extract JSON if wrapped in other text
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          content = jsonMatch[0];
+          console.log('🎯 Extracted JSON:', content);
+        }
+
         // Parse JSON response
         const jsonResponse = JSON.parse(content);
         organisationName = jsonResponse.organisation_name || "";
         prompt = jsonResponse.vapi_prompt || "";
-        
-        console.log('✅ Parsed JSON response:', { 
-          organisationName, 
-          promptLength: prompt.length 
+
+        console.log('✅ Parsed JSON response:', {
+          organisationName,
+          promptLength: prompt.length
         });
       } else {
         throw new Error("No content found in OpenRouter response");
       }
     } catch (error) {
       console.error('❌ Failed to parse OpenRouter response:', error);
+      console.error('❌ Raw content that failed to parse:', openrouterData.choices?.[0]?.message?.content);
       return NextResponse.json(
-        { error: "Failed to parse OpenRouter response", details: error instanceof Error ? error.message : "Unknown error" },
+        {
+          error: "Failed to parse OpenRouter response",
+          details: error instanceof Error ? error.message : "Unknown error",
+          rawContent: openrouterData.choices?.[0]?.message?.content?.substring(0, 500)
+        },
         { status: 502 }
       );
     }
@@ -238,21 +243,14 @@ No other text, no explanation, only the JSON object.`;
     } else {
       console.log('🆕 Creating new research record...');
       // Create new record
-      const insertData: any = {
-        website_url: targetUrl,
-        language,
-        gemini_prompt: prompt,
-        organisation_name: organisationName || businessName,
-      };
-      
-      // Only add user_id if user is authenticated
-      if (userId) {
-        insertData.user_id = userId;
-      }
-      
       const { data, error } = await supabase
         .from("demos")
-        .insert(insertData)
+        .insert({
+          website_url: targetUrl,
+          language,
+          gemini_prompt: prompt,
+          organisation_name: organisationName || businessName,
+        })
         .select("id")
         .single();
 
