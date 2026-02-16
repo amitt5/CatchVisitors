@@ -22,44 +22,40 @@ interface VoiceBotModalProps {
 const MEDIA_SETS = {
   attractions: [
     {
-      url: "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?q=80&w=2070",
-      caption: "Rembrandt Plein - 7 min walk"
+      url: "/videos/hotel-room/Rembrandt_Square.jpeg",
+      caption: "Rembrandt Square — 7 min walk"
     },
     {
-      url: "https://images.unsplash.com/photo-1555937949-4e0e2c8d3fd6?q=80&w=2071",
-      caption: "Anne Frank Museum - 12 min walk"
+      url: "/videos/hotel-room/anne_frank.avif",
+      caption: "Anne Frank House — 12 min walk"
     },
     {
-      url: "https://images.unsplash.com/photo-1583422409516-2895a77efded?q=80&w=2070",
-      caption: "Dam Square - 10 min walk"
+      url: "/videos/hotel-room/rijks.jpg",
+      caption: "Rijksmuseum — 15 min walk"
     }
   ],
   rooms: [
     {
-      url: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=2074",
-      caption: "Deluxe Canal View Room"
+      url: "/videos/hotel-room/canal_suite.png",
+      caption: "Canal Suite"
     },
     {
-      url: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070",
-      caption: "Premium Suite with Terrace"
-    },
-    {
-      url: "https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=2074",
-      caption: "Executive Suite"
+      url: "/videos/hotel-room/Classic_King.png",
+      caption: "Classic King"
     }
   ],
   amenities: [
     {
-      url: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=2080",
-      caption: "Rooftop Breakfast Restaurant"
+      url: "/videos/hotel-room/rooftop_restaurant.png",
+      caption: "Rooftop terrace restaurant"
     },
     {
-      url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=2070",
-      caption: "Wellness & Spa"
+      url: "/videos/hotel-room/sauna.jpg",
+      caption: "Spa: heated pool, sauna, steam room"
     },
     {
-      url: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=2070",
-      caption: "Canal-side Terrace"
+      url: "/videos/hotel-room/hotel_gym.jpg",
+      caption: "Gym"
     }
   ]
 };
@@ -670,9 +666,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                     <h3 className="text-lg font-semibold mb-4">Choose Your Room</h3>
                     <div className="space-y-3">
                       {[
-                        { name: 'Deluxe Canal View', price: 199, image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=400' },
-                        { name: 'Premium Suite', price: 299, image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=400' },
-                        { name: 'Executive Suite', price: 399, image: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?q=80&w=400' },
+                        { name: 'Canal Suite', price: 380, image: '/videos/hotel-room/canal_suite.png' },
+                        { name: 'Classic King', price: 210, image: '/videos/hotel-room/Classic_King.png' },
                       ].map((room) => (
                         <div
                           key={room.name}

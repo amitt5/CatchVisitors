@@ -31,7 +31,7 @@ export function HotelHero({ onOpenVoiceBot }: HotelHeroProps) {
           <h1 className="text-2xl font-serif">Hotel Haven Amsterdam</h1>
           <div className="flex items-center gap-2 mt-1 text-sm">
             <MapPin className="w-3 h-3" />
-            <span>Prinsengracht, Amsterdam</span>
+            <span>Singel, Amsterdam</span>
           </div>
         </div>
         {/* <div className="flex items-center gap-4">
