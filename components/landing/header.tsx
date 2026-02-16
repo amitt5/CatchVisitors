@@ -83,12 +83,12 @@ export function Header() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
           <SignedOut>
-            <Link
+            {/* <Link
               href="/sign-in"
               className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
             >
               Sign In
-            </Link>
+            </Link> */}
             <Button
               asChild
               variant="outline"
@@ -100,7 +100,7 @@ export function Header() {
               asChild
               className="bg-gray-900 hover:bg-gray-800 text-white rounded-full text-sm py-2 px-5 h-auto"
             >
-              <Link href="/sign-up">Sign Up</Link>
+              {/* <Link href="/sign-up">Sign Up</Link> */}
             </Button>
           </SignedOut>
           <SignedIn>

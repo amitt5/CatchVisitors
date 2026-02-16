@@ -1,14 +1,21 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import Vapi from "@vapi-ai/web";
 
 const VAPI_ASSISTANT_ID = "61ecaf11-a10e-4205-8440-611bd394ede7";
 
 export function FloatingVoiceWidget() {
+  const pathname = usePathname();
   const [isCallActive, setIsCallActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const vapiRef = useRef<Vapi | null>(null);
+
+  // Don't show on hotels page
+  if (pathname === '/hotels') {
+    return null;
+  }
 
   useEffect(() => {
     const apiKey = process.env.NEXT_PUBLIC_VAPI_API_KEY;
