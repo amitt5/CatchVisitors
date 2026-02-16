@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'navank.catchvisitors.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.navank.in',
+      },
     ],
   },
   async headers() {
