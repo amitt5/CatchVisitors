@@ -74,12 +74,6 @@ export default function StrategencePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      {/* Hide VAPI floating widget */}
-      <style jsx global>{`
-        [id*="vapi"] { display: none !important; }
-        button[aria-label*="Talk"] { display: none !important; }
-      `}</style>
-
       <div className="text-center flex flex-col items-center justify-center">
         <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
           Strategence
