@@ -14,6 +14,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/vapi-chat",  // Hotel demo chat API
   "/api/chat-sessions",  // Hotel demo sessions API
   "/navank(.*)",  // Navank subdomain page
+  "/strategence",  // Strategence demo page
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
