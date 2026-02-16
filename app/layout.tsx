@@ -1,5 +1,6 @@
 import React from "react"
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { Inter, Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ClerkProvider } from '@clerk/nextjs'
@@ -46,12 +47,26 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
-          <script 
-            src="https://unpkg.com/@vapi-ai/web@latest/dist/index.js" 
-            async 
+          <script
+            src="https://unpkg.com/@vapi-ai/web@latest/dist/index.js"
+            async
           />
         </head>
         <body className={`${inter.variable} ${instrumentSerif.variable} font-sans antialiased`}>
+          {/* Google Analytics */}
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-QD1CK8G6P5"
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-QD1CK8G6P5');
+            `}
+          </Script>
+
           {children}
           <FloatingVoiceWidget />
           <Analytics />

@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "What's the pricing?",
     answer:
-      "€500 setup (we build your AI agent, train it on your website, integrate with your calendar). Then €399/month for unlimited calls. 30-day free trial. 3X bookings guarantee or your money back.",
+      "We offer three plans: Starter (€100/month, 100 minutes), Growth (€200/month, 300 minutes), and Enterprise (custom pricing for high-volume). All plans include unlimited text chat, calendar integration, 50+ languages, and CRM sync. See our pricing section for full details.",
   },
 ];
 

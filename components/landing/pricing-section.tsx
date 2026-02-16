@@ -9,6 +9,7 @@ const plans = [
     description: "Small businesses Getting started",
     features: [
       "100 conversation minutes",
+      "Unlimited text chat",
       "Calendar integration",
       "50+ languages",
       "Email & CRM sync",
@@ -24,6 +25,7 @@ const plans = [
     description: "Growing businesses Higher volume",
     features: [
       "300 conversation minutes",
+      "Unlimited text chat",
       "Calendar integration",
       "50+ languages",
       "Email & CRM sync",
@@ -41,6 +43,7 @@ const plans = [
     description: "High-volume businesses, Discounted per-minute rates",
     features: [
       "Unlimited minutes",
+      "Unlimited text chat",
       "Volume discounts",
       "Dedicated support",
       "Custom integrations",
