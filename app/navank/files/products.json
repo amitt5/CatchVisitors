@@ -1,0 +1,216 @@
+{
+  "company": {
+    "name": "NAVANK",
+    "tagline": "Passion For Cables",
+    "founded": 1998,
+    "revenue_2022": "$14M USD",
+    "growth_rate": "22% YoY since inception",
+    "vision": "$100M company by 2030",
+    "description": "One of India's largest raw material suppliers for OFC, Data and Power cable industries. Expanding into US and European markets.",
+    "offices": {
+      "india": {
+        "address": "276, Niligiri Apartment, Alaknanda, New Delhi 110019, India",
+        "phone": "+91 8860364748",
+        "email": "abhinav@navank.onmicrosoft.com"
+      },
+      "netherlands": {
+        "name": "NAVANK Cable B.V.",
+        "address": "Pelikaanhof 134, Leidschendam 2264 JL, Netherlands",
+        "phone": "+31 619253386",
+        "email": "naval@navank.nl"
+      }
+    }
+  },
+  "product_categories": [
+    {
+      "id": "optical-fiber-cable",
+      "name": "Optical Fiber Cable",
+      "description": "Raw materials for manufacturing optical fiber cables",
+      "products": [
+        {
+          "id": "water-blocking-tape",
+          "name": "Water Blocking Tape",
+          "description": "Used in power, fibre and copper telecom cable to prevent longitudinal water penetration. Available in Non-conductive, Semi-conductive and PET laminated versions.",
+          "key_specs": [
+            "Non-conductive version",
+            "Semi-conductive version",
+            "PET laminated version",
+            "Available in JUMBO version",
+            "Custom widths available"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/Water-Blocking-Tape-500x400.jpg"
+        },
+        {
+          "id": "water-swellable-yarn",
+          "name": "Water Swellable Yarn",
+          "description": "Quick water absorption, high expansivity, high tensile strength, good heat resistance, high chemical stability. Used in waterproof FOC & communication cables.",
+          "key_specs": [
+            "Quick water absorption",
+            "High expansivity",
+            "High tensile strength",
+            "Good heat resistance",
+            "High chemical stability"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/images-1-1-500x400.jpg"
+        },
+        {
+          "id": "eccs-tape",
+          "name": "ECCS Tape",
+          "description": "Copolymer coated steel tape made from high quality cold rolled steel tape with EAA copolymer film. Used for armouring fiber optical cable against rodents & external forces.",
+          "key_specs": [
+            "High quality cold rolled steel",
+            "EAA copolymer film",
+            "Rodent protection",
+            "Available in JUMBO version",
+            "Custom widths available"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/images-6-1-500x400.jpg"
+        },
+        {
+          "id": "cjb-eccs-tape",
+          "name": "CJB (Controlled Jacket Bond) ECCS Tape",
+          "description": "Low carbon electrolytically chrome coated steel tape tempered to T3, for telecommunication cables. Provides controlled jacket bond to LDPE, MDPE and HDPE.",
+          "key_specs": [
+            "Tempered to T3",
+            "Suitable for telecom cables",
+            "Bonds to LDPE, MDPE, HDPE",
+            "Available in JUMBO version",
+            "Custom widths available"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/images-8-1-500x400.jpg"
+        },
+        {
+          "id": "pbt-compounds",
+          "name": "PBT Compounds for Loose Tube",
+          "description": "Most popular extrudable polymer compound for loose tubes in fiber-optic cables. Allows 2-24 optical fibers to move freely inside the loose tube with petroleum jelly.",
+          "key_specs": [
+            "Supports 2-24 fibers per tube",
+            "Excellent high-speed extrusion",
+            "Meets stringent Bending Test",
+            "Available in multiple colours",
+            "Suitable Master Batch available"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/images-11-1-500x400.jpg"
+        },
+        {
+          "id": "lszh-compounds-ofc",
+          "name": "LSZH Compounds (OFC)",
+          "description": "Polyolefin based Insulation & Sheathing Compounds with LSZH, HFFR, ZHFR properties. For Fiber-optic, LAN, Solar, Automobile, Railway, and Elevator cables.",
+          "key_specs": [
+            "LSZH / HFFR / ZHFR options",
+            "UL1581 certified",
+            "TUV certified",
+            "IEC60332 compliant",
+            "ISO/TS16919 compliant"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/500X500-12-500x400.jpg"
+        }
+      ]
+    },
+    {
+      "id": "power-cable",
+      "name": "Power Cable",
+      "description": "Raw materials for manufacturing power cables",
+      "products": [
+        {
+          "id": "xlpe-compound",
+          "name": "XLPE Compound",
+          "description": "Cross-linked polyethylene insulation for all types of power and special cables. Available in Peroxide-type for HV & EHV cables and Silane-type for special cables.",
+          "key_specs": [
+            "Peroxide-type for HV & EHV",
+            "Silane-type moisture-cured",
+            "For Sioplas lines",
+            "All types of power cables"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/XLPE-cable-500x400.jpg"
+        },
+        {
+          "id": "semiconductive-compound",
+          "name": "Semiconductive Compound",
+          "description": "Cross-linkable black polyethylene compound for semiconductive conductor shields or bonded/strippable insulation shields of power cables.",
+          "key_specs": [
+            "Cross-linkable",
+            "Internal & external layers",
+            "Protects XLPE and EPR insulation",
+            "Conductor shields",
+            "Strippable insulation shields"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/Semiconductor-Shielding-Compound-500x400.jpg"
+        },
+        {
+          "id": "lszh-compound-power",
+          "name": "LSZH Compound (Power Cable)",
+          "description": "Cable sheathing material for power cables. Meets safety, flame retardant, mechanical strength, and reliability requirements.",
+          "key_specs": [
+            "Flame retardant",
+            "Low smoke zero halogen",
+            "High mechanical strength",
+            "Reliable performance"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/LSZH-compound-500x400.jpg"
+        },
+        {
+          "id": "pe-compound",
+          "name": "PE Compound",
+          "description": "Used for sheathing and insulation of power cables and special cables. Full range: HDPE, MDPE, LDPE & FR-HDPE.",
+          "key_specs": [
+            "HDPE",
+            "MDPE",
+            "LDPE",
+            "FR-HDPE",
+            "All types of cables"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/PE-compound-500x400.jpg"
+        },
+        {
+          "id": "mica-tape",
+          "name": "Mica Tape",
+          "description": "Insulation material for fire-resistant cables. Made of phlogopite mica paper, synthetic mica paper, and calcined muscovite mica tape with silicon resin.",
+          "key_specs": [
+            "Fire resistant",
+            "High voltage resistant",
+            "High temperature resistant",
+            "Silicon resin impregnated",
+            "Reinforced backing"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/images-10-2-500x400.jpg"
+        },
+        {
+          "id": "pvc-compound",
+          "name": "PVC Compound",
+          "description": "For low-voltage cables, telecommunication lines, and electrical wiring. Leading supplier meeting all international standards.",
+          "key_specs": [
+            "Sheathing grade",
+            "Insulation grade",
+            "All international standards",
+            "Low-voltage cables",
+            "Telecom lines"
+          ],
+          "image": "https://www.navank.in/wp-content/uploads/2022/11/PVC-compound-500x400.jpg"
+        }
+      ]
+    },
+    {
+      "id": "data-cable",
+      "name": "Data Cable",
+      "description": "Raw materials for manufacturing data cables including CAT-5/6/7 LAN cables",
+      "products": []
+    },
+    {
+      "id": "freight-forwarding",
+      "name": "Freight Forwarding & Warehousing",
+      "description": "End-to-end logistics from manufacturer to customer. Warehousing in India & USA. Handles $10M in shipments annually.",
+      "products": []
+    }
+  ],
+  "partners": [
+    "Zhejiang Wanma Co. Ltd. (China) — largest cable compound manufacturer in Asia, OEM partner since 2015",
+    "Unitape (UK) — ECCS tape with CJB innovation",
+    "Nantong Siber — water-blocking tapes & yarns, partner since 2013",
+    "Chhaperia International Company (India) — Mica tapes, partner since Q2 FY22"
+  ],
+  "certifications_standards": [
+    "UL1581", "TUV", "IEC60332", "ISO/TS16919",
+    "IEC60092", "DIN72551", "SAEJ1128"
+  ]
+}
