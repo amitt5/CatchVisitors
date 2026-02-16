@@ -84,17 +84,6 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Slideshow effect for media
-  useEffect(() => {
-    if (!currentMedia || currentMedia.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentMediaIndex((prev) => (prev + 1) % currentMedia.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [currentMedia]);
-
   // Keyboard shortcuts for demo control
   useEffect(() => {
     if (!isOpen) return;
@@ -117,6 +106,18 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
         case '3':
           setCurrentMedia(MEDIA_SETS.amenities);
           setCurrentMediaIndex(0);
+          break;
+        case 'ArrowLeft':
+          // Navigate to previous image
+          if (currentMedia && currentMedia.length > 0) {
+            setCurrentMediaIndex((prev) => (prev - 1 + currentMedia.length) % currentMedia.length);
+          }
+          break;
+        case 'ArrowRight':
+          // Navigate to next image
+          if (currentMedia && currentMedia.length > 0) {
+            setCurrentMediaIndex((prev) => (prev + 1) % currentMedia.length);
+          }
           break;
         case 'c':
         case 'C':
@@ -146,7 +147,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isOpen]);
+  }, [isOpen, currentMedia]);
 
   // Initialize Vapi
   useEffect(() => {
@@ -448,7 +449,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                     </Button>
                   </div>
                   <div className="text-center text-xs text-gray-400 mt-3">
-                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, C=Calendar, H=Hide</p>
+                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
                   </div>
                 </div>
               </div>
@@ -526,7 +527,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                     {isCallActive ? 'End Voice Call' : 'Start Voice Call'}
                   </p>
                   <div className="text-center text-xs text-gray-400 mt-4">
-                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, C=Calendar, H=Hide</p>
+                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
                   </div>
                 </div>
               </div>
@@ -580,7 +581,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                     </Button>
                   </div>
                   <div className="text-center text-xs text-gray-400 mt-3">
-                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, C=Calendar, H=Hide</p>
+                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
                   </div>
                 </div>
               </div>
