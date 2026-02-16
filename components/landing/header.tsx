@@ -22,7 +22,7 @@ export function Header() {
     { href: "#how-it-works", label: "How It Works" },
     { href: "#features", label: "Features" },
     { href: "#pricing", label: "Pricing" },
-    { href: "#testimonials", label: "Testimonials" },
+    // { href: "#testimonials", label: "Testimonials" },
   ];
 
   const authNavLinks = [
