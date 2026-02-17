@@ -252,11 +252,16 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
     });
 
     vapi.on('message', (message: any) => {
-      console.log('Vapi message received:', { type: message.type, message });
+      console.log('\n🔵 ===== VAPI MESSAGE RECEIVED =====');
+      console.log('⏰ Timestamp:', new Date().toISOString());
+      console.log('📋 Message Type:', message.type);
+      console.log('📦 Full Message:', JSON.stringify(message, null, 2));
 
       // Handle tool calls to show product images
       // Check multiple possible formats that Vapi might send
       if (message.type === 'tool-calls' && message.toolCalls) {
+        console.log('🎯 TOOL CALLS DETECTED (format 1)');
+        console.log('Tool calls array:', message.toolCalls);
         message.toolCalls.forEach((toolCall: any) => {
           if (toolCall.function?.name === 'show_product_image') {
             const params = toolCall.function.arguments;
@@ -275,15 +280,18 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
               productId = params.product_id;
             }
 
-            console.log('Tool call to show product:', productId);
+            console.log('🔍 Tool call to show product:', productId);
 
             // Find and display the product image
             const productImage = PRODUCT_IMAGE_MAP[productId];
             if (productImage) {
+              console.log('✅ Product image found! Displaying:', productImage);
               setCurrentMedia([productImage]);
               setCurrentMediaIndex(0);
+              console.log('🖼️  Image display state updated');
             } else {
-              console.warn('Product ID not found:', productId);
+              console.warn('⚠️  Product ID not found in PRODUCT_IMAGE_MAP:', productId);
+              console.log('Available product IDs:', Object.keys(PRODUCT_IMAGE_MAP));
             }
           }
         });
@@ -291,15 +299,21 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
 
       // Alternative format: Check if message contains toolCallList
       if (message.toolCallList && Array.isArray(message.toolCallList)) {
+        console.log('🎯 TOOL CALLS DETECTED (format 2 - toolCallList)');
+        console.log('Tool calls array:', message.toolCallList);
         message.toolCallList.forEach((toolCall: any) => {
           if (toolCall.function?.name === 'show_product_image') {
             const productId = toolCall.function.arguments?.product_id;
-            console.log('Tool call (toolCallList) to show product:', productId);
+            console.log('🔍 Tool call (toolCallList) to show product:', productId);
 
             const productImage = PRODUCT_IMAGE_MAP[productId];
             if (productImage) {
+              console.log('✅ Product image found! Displaying:', productImage);
               setCurrentMedia([productImage]);
               setCurrentMediaIndex(0);
+              console.log('🖼️  Image display state updated');
+            } else {
+              console.warn('⚠️  Product ID not found:', productId);
             }
           }
         });
@@ -307,17 +321,25 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
 
       // Alternative format: Direct function call
       if (message.type === 'function-call' && message.functionCall) {
+        console.log('🎯 FUNCTION CALL DETECTED (format 3)');
+        console.log('Function call:', message.functionCall);
         if (message.functionCall.name === 'show_product_image') {
           const productId = message.functionCall.parameters?.product_id;
-          console.log('Function call to show product:', productId);
+          console.log('🔍 Function call to show product:', productId);
 
           const productImage = PRODUCT_IMAGE_MAP[productId];
           if (productImage) {
+            console.log('✅ Product image found! Displaying:', productImage);
             setCurrentMedia([productImage]);
             setCurrentMediaIndex(0);
+            console.log('🖼️  Image display state updated');
+          } else {
+            console.warn('⚠️  Product ID not found:', productId);
           }
         }
       }
+
+      console.log('===== END VAPI MESSAGE =====\n');
 
       if (message.type === 'transcript' && message.transcript) {
         const role = message.role === 'assistant' ? 'assistant' : 'user';
