@@ -322,7 +322,54 @@ export default function NavankPage() {
       <section id="products" className="container mx-auto px-4 py-24">
         <h2 className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight">Our Products</h2>
 
-        {/* Optical Fiber Cable Category */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+          {/* Optical Fiber Cable Category */}
+          <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300 cursor-pointer group">
+            <h3 className="font-[family-name:var(--font-display)] text-3xl mb-3 tracking-tight group-hover:text-[#4a6fa5] transition-colors">
+              Optical Fiber Cable
+            </h3>
+            <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 mb-6 leading-relaxed">
+              Raw materials for manufacturing optical fiber cables
+            </p>
+            <div className="font-[family-name:var(--font-mono)] text-xs text-[#4a6fa5] tracking-wider uppercase">
+              6 Products
+            </div>
+          </div>
+
+          {/* Power Cable Category */}
+          <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300 cursor-pointer group">
+            <h3 className="font-[family-name:var(--font-display)] text-3xl mb-3 tracking-tight group-hover:text-[#4a6fa5] transition-colors">
+              Power Cable
+            </h3>
+            <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 mb-6 leading-relaxed">
+              Raw materials for manufacturing power cables
+            </p>
+            <div className="font-[family-name:var(--font-mono)] text-xs text-[#4a6fa5] tracking-wider uppercase">
+              6 Products
+            </div>
+          </div>
+
+          {/* Data Cable Category */}
+          <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300 cursor-pointer group">
+            <h3 className="font-[family-name:var(--font-display)] text-3xl mb-3 tracking-tight group-hover:text-[#4a6fa5] transition-colors">
+              Data Cable
+            </h3>
+            <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 mb-6 leading-relaxed">
+              LSZH compounds for CAT-5/6/7 LAN cables
+            </p>
+            <div className="font-[family-name:var(--font-mono)] text-xs text-[#4a6fa5] tracking-wider uppercase">
+              Specialty Materials
+            </div>
+          </div>
+        </div>
+
+        <p className="font-[family-name:var(--font-body)] text-center text-sm text-gray-500 max-w-md mx-auto">
+          Talk to our AI to explore products in detail
+        </p>
+      </section>
+
+      {/* OLD PRODUCTS SECTION - KEEPING FOR REFERENCE BUT HIDDEN */}
+      <section className="hidden">
         <div className="mb-24">
           <h3 className="font-[family-name:var(--font-display)] text-4xl mb-4 tracking-tight">Optical Fiber Cable</h3>
           <p className="font-[family-name:var(--font-body)] text-lg mb-12 text-gray-400">Raw materials for manufacturing optical fiber cables</p>
@@ -516,7 +563,7 @@ export default function NavankPage() {
           </div>
         </div>
 
-        {/* Data Cable Category */}
+        {/* OLD Data Cable Category - keeping for reference */}
         <div className="mb-16">
           <h3 className="font-[family-name:var(--font-display)] text-4xl mb-4 tracking-tight">Data Cable & Freight Forwarding</h3>
           <p className="font-[family-name:var(--font-body)] text-lg mb-12 text-gray-400">LSZH compounds for CAT-5/6/7 LAN cables and comprehensive logistics services from manufacturer to customer</p>
@@ -537,7 +584,7 @@ export default function NavankPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section>{/* End hidden old products section */}
 
       {/* Team Section */}
       <section id="team" className="container mx-auto px-4 py-24">
