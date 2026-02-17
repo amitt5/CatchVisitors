@@ -4,6 +4,8 @@ import { Space_Mono, DM_Sans, Syne } from 'next/font/google';
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { NavankVoiceBotModal } from '@/components/navank/navank-voice-bot-modal';
+import { Mic } from 'lucide-react';
 
 const spaceMono = Space_Mono({
   weight: ['400', '700'],
@@ -50,6 +52,7 @@ function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: strin
 
 export default function NavankPage() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVoiceBotOpen, setIsVoiceBotOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -140,6 +143,21 @@ export default function NavankPage() {
             >
               One of India&apos;s largest raw material suppliers for optical fiber, data and power cable industries. Trusted by manufacturers across Asia, Europe and the US.
             </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              <button
+                onClick={() => setIsVoiceBotOpen(true)}
+                className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#4a6fa5] to-[#3a5585] rounded-lg hover:from-[#3a5585] hover:to-[#2a4565] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <Mic className="w-5 h-5 text-white" />
+                <span className="font-[family-name:var(--font-body)] text-lg font-medium text-white">
+                  Talk to Our AI Product Expert
+                </span>
+              </button>
+            </motion.div>
           </div>
 
           <div className="relative h-full min-h-[600px] hidden md:flex items-center justify-center p-10 overflow-hidden">
@@ -428,15 +446,23 @@ export default function NavankPage() {
           ))}
         </div>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="font-[family-name:var(--font-body)] text-center text-sm text-gray-500 max-w-md mx-auto"
+          className="text-center"
         >
-          Talk to our AI to explore products in detail
-        </motion.p>
+          <button
+            onClick={() => setIsVoiceBotOpen(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#4a6fa5] hover:bg-[#3a5585] text-white rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+          >
+            <Mic className="w-4 h-4" />
+            <span className="font-[family-name:var(--font-body)] text-sm font-medium">
+              Talk to our AI to explore products in detail
+            </span>
+          </button>
+        </motion.div>
       </motion.section>
 
       {/* OLD PRODUCTS SECTION - KEEPING FOR REFERENCE BUT HIDDEN */}
@@ -848,6 +874,12 @@ export default function NavankPage() {
           </motion.div>
         </div>
       </motion.section>
+
+      {/* Voice Bot Modal */}
+      <NavankVoiceBotModal
+        isOpen={isVoiceBotOpen}
+        onClose={() => setIsVoiceBotOpen(false)}
+      />
     </div>
   );
 }
