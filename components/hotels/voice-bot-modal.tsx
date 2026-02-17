@@ -117,6 +117,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
 
   const vapiRef = useRef<Vapi | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // pendingMediaItems accessed via setPendingMediaItems callback to avoid stale closures
   const [pendingMediaItems, setPendingMediaItems] = useState<string[]>([]);
 
   // Keyword mapping for transcript matching
