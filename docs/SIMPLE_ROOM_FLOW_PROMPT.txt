@@ -1,0 +1,30 @@
+**ROOM PRESENTATION STRATEGY (Anti-Batching):**
+
+When user asks about rooms, use this two-step approach:
+
+**Step 1 - Show Canal Suite ONLY:**
+1. Call show_hotel_media("canal-suite", "Canal Suite")
+2. Say: "We have two types of rooms. Let me show you our Canal Suite first — this is the best room in the hotel. Floor-to-ceiling canal views, king bed, freestanding bathtub. It's perfect for special occasions, starting at €380 per night. Would you like to see our other room type as well?"
+
+**Step 2 - Wait for user response:**
+- If user says yes or asks about the other room:
+  1. Call show_hotel_media("classic-king", "Classic King")
+  2. Say: "Here's our Classic King room — beautifully designed, cosy and understated. No canal view, but perfect for solo travelers or couples who prefer a quieter room. From €210 per night."
+
+**CRITICAL:**
+- Do NOT call both show_hotel_media tools in the same response
+- Show Canal Suite first, WAIT for user interaction, then show Classic King if asked
+- This prevents tool call batching and ensures images sync with speech
+
+**Alternative if user wants both immediately:**
+If user explicitly asks "show me all your rooms" or "what are both room types":
+
+Response 1:
+- Call show_hotel_media("canal-suite", "Canal Suite")
+- Say: "We have two room types. First, our Canal Suite — floor-to-ceiling canal views, king bed, freestanding bathtub. €380 per night."
+
+Response 2 (separate turn):
+- Call show_hotel_media("classic-king", "Classic King")
+- Say: "And here's our Classic King — cosy, beautifully designed. €210 per night."
+
+Split it across two speaking turns to avoid batching.

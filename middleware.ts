@@ -13,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
   "/hotels",  // Hotel demo page
   "/api/vapi-chat",  // Hotel demo chat API
   "/api/chat-sessions",  // Hotel demo sessions API
+  "/api/hotels/(.*)",  // Hotel API routes (including tool calls)
   "/navank(.*)",  // Navank subdomain page
   "/api/navank/(.*)",  // Navank API routes (including tool calls)
   "/strategence",  // Strategence demo page

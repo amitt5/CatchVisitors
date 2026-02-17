@@ -18,7 +18,7 @@ interface VoiceBotModalProps {
   onClose: () => void;
 }
 
-// Media sets that can be triggered via keyboard
+// Media sets that can be triggered via keyboard (for manual demo control)
 const MEDIA_SETS = {
   attractions: [
     {
@@ -60,6 +60,45 @@ const MEDIA_SETS = {
   ]
 };
 
+// Individual media items mapped by ID for Vapi tool calls
+const MEDIA_MAP: Record<string, { url: string; caption: string }> = {
+  // Attractions
+  "rembrandt-square": {
+    url: "/videos/hotel-room/Rembrandt_Square.jpeg",
+    caption: "Rembrandt Square — 7 min walk"
+  },
+  "anne-frank-house": {
+    url: "/videos/hotel-room/anne_frank.avif",
+    caption: "Anne Frank House — 12 min walk"
+  },
+  "rijksmuseum": {
+    url: "/videos/hotel-room/rijks.jpg",
+    caption: "Rijksmuseum — 15 min walk"
+  },
+  // Rooms
+  "canal-suite": {
+    url: "/videos/hotel-room/canal_suite.png",
+    caption: "Canal Suite — Floor-to-ceiling canal views, freestanding bathtub"
+  },
+  "classic-king": {
+    url: "/videos/hotel-room/Classic_King.png",
+    caption: "Classic King — Cosy, beautifully designed"
+  },
+  // Amenities
+  "rooftop": {
+    url: "/videos/hotel-room/rooftop_restaurant.png",
+    caption: "Rooftop terrace restaurant — Canal views, breakfast & evening drinks"
+  },
+  "spa": {
+    url: "/videos/hotel-room/sauna.jpg",
+    caption: "Spa — Heated pool, sauna, steam room"
+  },
+  "gym": {
+    url: "/videos/hotel-room/hotel_gym.jpg",
+    caption: "Gym — Stay fit during your stay"
+  }
+};
+
 export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [mode, setMode] = useState<'initial' | 'voice' | 'text'>('initial');
@@ -78,6 +117,70 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
 
   const vapiRef = useRef<Vapi | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [pendingMediaItems, setPendingMediaItems] = useState<string[]>([]);
+
+  // Keyword mapping for transcript matching
+  const MEDIA_KEYWORDS: Record<string, string[]> = {
+    // Rooms - multiple keywords to catch variations
+    "canal-suite": ["canal suite", "canal view", "best room", "premium room", "canal-view"],
+    "classic-king": ["classic king", "king room", "cosy room", "cozy room"],
+
+    // Attractions
+    "rembrandt-square": ["rembrandt", "rembrandt square"],
+    "anne-frank-house": ["anne frank", "frank house"],
+    "rijksmuseum": ["rijksmuseum", "rijks museum", "museum"],
+
+    // Amenities
+    "rooftop": ["rooftop", "terrace", "roof top"],
+    "spa": ["spa", "pool", "sauna", "steam room"],
+    "gym": ["gym", "fitness"],
+
+    // Booking
+    "calendar": ["book", "reservation", "reserve", "dates", "check-in"]
+  };
+
+  // Check if transcript mentions a specific media item
+  const findMatchingMediaItem = (transcript: string, pendingItems: string[]): string | null => {
+    const lowerTranscript = transcript.toLowerCase();
+
+    for (const mediaId of pendingItems) {
+      const keywords = MEDIA_KEYWORDS[mediaId] || [];
+      const isMatch = keywords.some(keyword => lowerTranscript.includes(keyword));
+
+      if (isMatch) {
+        console.log(`✅ Transcript match found: "${mediaId}" (keyword detected in: "${transcript}")`);
+        return mediaId;
+      }
+    }
+
+    return null;
+  };
+
+  // Show a specific media item
+  const showMediaItem = (mediaId: string) => {
+    console.log('🖼️  Showing media item:', mediaId);
+
+    // Special case: calendar
+    if (mediaId === 'calendar') {
+      console.log('✅ Displaying booking calendar');
+      setShowCalendar(true);
+      setCurrentMedia(null);
+      setBookingStep('calendar');
+    } else {
+      // Check if it's an individual media item
+      const mediaItem = MEDIA_MAP[mediaId];
+      if (mediaItem) {
+        console.log('✅ Media item found! Displaying:', mediaItem);
+        setCurrentMedia([mediaItem]);
+        setCurrentMediaIndex(0);
+        setShowCalendar(false);
+        console.log('🖼️  Image display state updated');
+      } else {
+        console.warn('⚠️  Media ID not found in MEDIA_MAP:', mediaId);
+        console.log('Available media IDs:', Object.keys(MEDIA_MAP));
+      }
+    }
+  };
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -182,10 +285,176 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     });
 
     vapi.on('message', (message: any) => {
-      console.log('Message received:', message);
+      console.log('\n🏨 ===== VAPI MESSAGE RECEIVED =====');
+      console.log('⏰ Timestamp:', new Date().toISOString());
+      console.log('📋 Message Type:', message.type);
+      console.log('📋 Message Role:', message.role);
+      console.log('📦 Full Message:', JSON.stringify(message, null, 2));
+
+      // STEP 1: Capture tool calls and store pending media items
+      // Check multiple possible formats that Vapi might send
+
+      // Format 1: Direct tool_calls in message
+      if ((message.type === 'tool-calls' || message.role === 'tool_calls') && message.toolCalls) {
+        console.log('🎯 TOOL CALLS DETECTED (format 1: direct toolCalls)');
+        console.log('Tool calls array:', message.toolCalls);
+
+        const mediaIds: string[] = [];
+        message.toolCalls.forEach((toolCall: any) => {
+          if (toolCall.function?.name === 'show_hotel_media') {
+            const params = toolCall.function.arguments;
+            let mediaId: string;
+
+            // Handle both string and parsed object arguments
+            if (typeof params === 'string') {
+              try {
+                const parsed = JSON.parse(params);
+                mediaId = parsed.media_id;
+              } catch (e) {
+                console.error('Failed to parse tool arguments:', e);
+                return;
+              }
+            } else {
+              mediaId = params.media_id;
+            }
+
+            if (mediaId) {
+              mediaIds.push(mediaId);
+              console.log('📋 Adding to pending media items:', mediaId);
+            }
+          }
+        });
+
+        if (mediaIds.length > 0) {
+          setPendingMediaItems(prev => {
+            const newItems = [...prev, ...mediaIds];
+            console.log('📦 Updated pending media items:', newItems);
+            return newItems;
+          });
+        }
+      }
+
+      // Alternative format: Check if message contains toolCallList
+      if (message.toolCallList && Array.isArray(message.toolCallList)) {
+        console.log('🎯 TOOL CALLS DETECTED (format 2 - toolCallList)');
+        console.log('Tool calls array:', message.toolCallList);
+
+        const mediaIds: string[] = [];
+        message.toolCallList.forEach((toolCall: any) => {
+          if (toolCall.function?.name === 'show_hotel_media') {
+            const mediaId = toolCall.function.arguments?.media_id;
+            if (mediaId) {
+              mediaIds.push(mediaId);
+              console.log('📋 Adding to pending media items:', mediaId);
+            }
+          }
+        });
+
+        if (mediaIds.length > 0) {
+          setPendingMediaItems(prev => {
+            const newItems = [...prev, ...mediaIds];
+            console.log('📦 Updated pending media items:', newItems);
+            return newItems;
+          });
+        }
+      }
+
+      // Alternative format: Direct function call
+      if (message.type === 'function-call' && message.functionCall) {
+        console.log('🎯 FUNCTION CALL DETECTED (format 3)');
+        console.log('Function call:', message.functionCall);
+        if (message.functionCall.name === 'show_hotel_media') {
+          const mediaId = message.functionCall.parameters?.media_id;
+          if (mediaId) {
+            console.log('📋 Adding to pending media items:', mediaId);
+            setPendingMediaItems(prev => {
+              const newItems = [...prev, mediaId];
+              console.log('📦 Updated pending media items:', newItems);
+              return newItems;
+            });
+          }
+        }
+      }
+
+      // Format 4: conversation-update with tool_calls in conversation array
+      if (message.type === 'conversation-update' && message.conversation) {
+        console.log('🔍 Checking conversation-update for tool calls...');
+        const mediaIds: string[] = [];
+
+        message.conversation.forEach((item: any) => {
+          if (item.tool_calls && Array.isArray(item.tool_calls)) {
+            console.log('🎯 TOOL CALLS DETECTED (format 4: conversation-update)');
+            item.tool_calls.forEach((toolCall: any) => {
+              if (toolCall.function?.name === 'show_hotel_media') {
+                const params = toolCall.function.arguments;
+                let mediaId: string;
+
+                if (typeof params === 'string') {
+                  try {
+                    const parsed = JSON.parse(params);
+                    mediaId = parsed.media_id;
+                  } catch (e) {
+                    console.error('Failed to parse tool arguments:', e);
+                    return;
+                  }
+                } else {
+                  mediaId = params.media_id;
+                }
+
+                if (mediaId) {
+                  mediaIds.push(mediaId);
+                  console.log('📋 Found media ID in tool call:', mediaId);
+                }
+              }
+            });
+          }
+        });
+
+        if (mediaIds.length > 0) {
+          setPendingMediaItems(prev => {
+            // Deduplicate - only add items that aren't already in the list
+            const newItems = mediaIds.filter(id => !prev.includes(id));
+            if (newItems.length > 0) {
+              const updated = [...prev, ...newItems];
+              console.log('📦 Updated pending media items:', updated);
+              return updated;
+            }
+            console.log('📦 No new items to add (already in pending list)');
+            return prev;
+          });
+        }
+      }
+
+      console.log('===== END VAPI MESSAGE =====\n');
+
+      // STEP 2: Check transcripts for keyword matches with pending items
       if (message.type === 'transcript' && message.transcript) {
         const role = message.role === 'assistant' ? 'assistant' : 'user';
         const newTranscript = message.transcript.trim();
+
+        // If this is an assistant transcript, check for media keyword matches
+        if (role === 'assistant') {
+          // Use a callback to get current pending items
+          setPendingMediaItems(currentPending => {
+            if (currentPending.length > 0) {
+              console.log('🔍 Checking transcript for keyword matches...');
+              console.log('📝 Transcript:', newTranscript);
+              console.log('📋 Pending items:', currentPending);
+
+              const matchedItem = findMatchingMediaItem(newTranscript, currentPending);
+              if (matchedItem) {
+                console.log('🎯 MATCH FOUND! Showing:', matchedItem);
+                showMediaItem(matchedItem);
+
+                // Remove matched item and return updated list
+                const updated = currentPending.filter(item => item !== matchedItem);
+                console.log('📦 Remaining pending items:', updated);
+                return updated;
+              }
+            }
+            return currentPending; // No changes
+          });
+        }
 
         setMessages(prev => {
           const lastMessage = prev[prev.length - 1];
