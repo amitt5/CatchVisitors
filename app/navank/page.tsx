@@ -1,8 +1,9 @@
 'use client';
 
 import { Space_Mono, DM_Sans, Syne } from 'next/font/google';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 const spaceMono = Space_Mono({
   weight: ['400', '700'],
@@ -21,6 +22,31 @@ const syne = Syne({
   subsets: ['latin'],
   variable: '--font-display'
 });
+
+// Counter animation component
+function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: string }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const motionValue = useMotionValue(0);
+  const springValue = useSpring(motionValue, { duration: 1500 });
+  const [displayValue, setDisplayValue] = useState('0');
+
+  useEffect(() => {
+    if (isInView) {
+      const numericValue = parseFloat(value.replace(/[^0-9.]/g, ''));
+      motionValue.set(numericValue);
+    }
+  }, [isInView, value, motionValue]);
+
+  useEffect(() => {
+    const unsubscribe = springValue.on('change', (latest) => {
+      setDisplayValue(Math.round(latest).toString());
+    });
+    return unsubscribe;
+  }, [springValue]);
+
+  return <span ref={ref}>{isInView ? displayValue + suffix : '0' + suffix}</span>;
+}
 
 export default function NavankPage() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -93,12 +119,27 @@ export default function NavankPage() {
       <section className="container mx-auto px-4 py-24 pt-40">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h1 className="font-[family-name:var(--font-display)] text-7xl md:text-8xl mb-8 tracking-tight leading-none">
-              Passion For Cables
+            <h1 className="font-[family-name:var(--font-display)] text-7xl md:text-8xl mb-8 tracking-tight leading-none overflow-hidden">
+              {['Passion', 'For', 'Cables'].map((word, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="inline-block mr-6"
+                >
+                  {word}
+                </motion.span>
+              ))}
             </h1>
-            <p className="font-[family-name:var(--font-body)] text-xl md:text-2xl mb-8 text-gray-300 leading-relaxed">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="font-[family-name:var(--font-body)] text-xl md:text-2xl mb-8 text-gray-300 leading-relaxed"
+            >
               One of India&apos;s largest raw material suppliers for optical fiber, data and power cable industries. Trusted by manufacturers across Asia, Europe and the US.
-            </p>
+            </motion.p>
           </div>
 
           <div className="relative h-full min-h-[600px] hidden md:flex items-center justify-center p-10 overflow-hidden">
@@ -286,9 +327,21 @@ export default function NavankPage() {
       </section>
 
       {/* About & Stats Section */}
-      <section id="about" className="container mx-auto px-4 py-24">
+      <motion.section
+        id="about"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-24"
+      >
         <div className="grid md:grid-cols-2 gap-12">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
             <h2 className="font-[family-name:var(--font-display)] text-5xl mb-6 tracking-tight">About Us</h2>
             <p className="font-[family-name:var(--font-body)] text-lg mb-6 text-gray-300 leading-relaxed">
               NAVANK was founded in 1998 by Mr Navin Singhal (now Chief Mentor of the company). In 2009, Naval Singhal joined the company as Chief Business Officer and filled up the massive gap in the quality and competitive raw material to produce Optical Fiber Cable in India and hence expanded the wings with the vision of making India most competitive in the World.
@@ -296,77 +349,95 @@ export default function NavankPage() {
             <p className="font-[family-name:var(--font-body)] text-lg text-gray-300 leading-relaxed">
               Over 25 years down the road, NAVANK has become an integral part of Optical fiber, Data cable and Power cable market. Today, NAVANK is one of the largest raw material Supplier for OFC, Data and power cable industries in India and slowly expanding into US and Europe markets.
             </p>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
-              <div className="font-[family-name:var(--font-display)] text-4xl mb-3 text-[#4a6fa5]">$17M</div>
-              <div className="font-[family-name:var(--font-mono)] text-xs tracking-wider uppercase text-gray-400">Revenue 2024</div>
-            </div>
-            <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
-              <div className="font-[family-name:var(--font-display)] text-4xl mb-3 text-[#4a6fa5]">22%</div>
-              <div className="font-[family-name:var(--font-mono)] text-xs tracking-wider uppercase text-gray-400">YoY Growth</div>
-            </div>
-            <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
-              <div className="font-[family-name:var(--font-display)] text-4xl mb-3 text-[#4a6fa5]">25+</div>
-              <div className="font-[family-name:var(--font-mono)] text-xs tracking-wider uppercase text-gray-400">Years Experience</div>
-            </div>
-            <div className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
-              <div className="font-[family-name:var(--font-display)] text-4xl mb-3 text-[#4a6fa5]">2</div>
-              <div className="font-[family-name:var(--font-mono)] text-xs tracking-wider uppercase text-gray-400">Global Offices</div>
-            </div>
-          </div>
+          </motion.div>
+          <motion.div
+            className="grid grid-cols-2 gap-4"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            {[
+              { value: '17', suffix: 'M', label: 'Revenue 2024', prefix: '$' },
+              { value: '22', suffix: '%', label: 'YoY Growth' },
+              { value: '25', suffix: '+', label: 'Years Experience' },
+              { value: '2', suffix: '', label: 'Global Offices' },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.3, delay: 0.3 + i * 0.1 }}
+                className="p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg"
+              >
+                <div className="font-[family-name:var(--font-display)] text-4xl mb-3 text-[#4a6fa5]">
+                  {stat.prefix || ''}<AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                </div>
+                <div className="font-[family-name:var(--font-mono)] text-xs tracking-wider uppercase text-gray-400">{stat.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Products Section */}
-      <section id="products" className="container mx-auto px-4 py-24">
-        <h2 className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight">Our Products</h2>
+      <motion.section
+        id="products"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-24"
+      >
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight"
+        >
+          Our Products
+        </motion.h2>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
-          {/* Optical Fiber Cable Category */}
-          <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300 cursor-pointer group">
-            <h3 className="font-[family-name:var(--font-display)] text-3xl mb-3 tracking-tight group-hover:text-[#4a6fa5] transition-colors">
-              Optical Fiber Cable
-            </h3>
-            <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 mb-6 leading-relaxed">
-              Raw materials for manufacturing optical fiber cables
-            </p>
-            <div className="font-[family-name:var(--font-mono)] text-xs text-[#4a6fa5] tracking-wider uppercase">
-              6 Products
-            </div>
-          </div>
-
-          {/* Power Cable Category */}
-          <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300 cursor-pointer group">
-            <h3 className="font-[family-name:var(--font-display)] text-3xl mb-3 tracking-tight group-hover:text-[#4a6fa5] transition-colors">
-              Power Cable
-            </h3>
-            <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 mb-6 leading-relaxed">
-              Raw materials for manufacturing power cables
-            </p>
-            <div className="font-[family-name:var(--font-mono)] text-xs text-[#4a6fa5] tracking-wider uppercase">
-              6 Products
-            </div>
-          </div>
-
-          {/* Data Cable Category */}
-          <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300 cursor-pointer group">
-            <h3 className="font-[family-name:var(--font-display)] text-3xl mb-3 tracking-tight group-hover:text-[#4a6fa5] transition-colors">
-              Data Cable
-            </h3>
-            <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 mb-6 leading-relaxed">
-              LSZH compounds for CAT-5/6/7 LAN cables
-            </p>
-            <div className="font-[family-name:var(--font-mono)] text-xs text-[#4a6fa5] tracking-wider uppercase">
-              Specialty Materials
-            </div>
-          </div>
+          {[
+            { title: 'Optical Fiber Cable', desc: 'Raw materials for manufacturing optical fiber cables', count: '6 Products' },
+            { title: 'Power Cable', desc: 'Raw materials for manufacturing power cables', count: '6 Products' },
+            { title: 'Data Cable', desc: 'LSZH compounds for CAT-5/6/7 LAN cables', count: 'Specialty Materials' },
+          ].map((category, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.05 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.3, delay: i * 0.1 }}
+              className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 cursor-pointer group"
+            >
+              <h3 className="font-[family-name:var(--font-display)] text-3xl mb-3 tracking-tight group-hover:text-[#4a6fa5] transition-colors">
+                {category.title}
+              </h3>
+              <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 mb-6 leading-relaxed">
+                {category.desc}
+              </p>
+              <div className="font-[family-name:var(--font-mono)] text-xs text-[#4a6fa5] tracking-wider uppercase">
+                {category.count}
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        <p className="font-[family-name:var(--font-body)] text-center text-sm text-gray-500 max-w-md mx-auto">
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="font-[family-name:var(--font-body)] text-center text-sm text-gray-500 max-w-md mx-auto"
+        >
           Talk to our AI to explore products in detail
-        </p>
-      </section>
+        </motion.p>
+      </motion.section>
 
       {/* OLD PRODUCTS SECTION - KEEPING FOR REFERENCE BUT HIDDEN */}
       <section className="hidden">
@@ -587,176 +658,167 @@ export default function NavankPage() {
       </section>{/* End hidden old products section */}
 
       {/* Team Section */}
-      <section id="team" className="container mx-auto px-4 py-24">
-        <h2 className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight">Our Team</h2>
+      <motion.section
+        id="team"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-24"
+      >
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight"
+        >
+          Our Team
+        </motion.h2>
         <div className="grid md:grid-cols-3 gap-12">
-          <div className="flex flex-col items-center">
-            <div className="w-48 h-48 mb-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/Mr.-Navin-Kumar-Singhal.jpg" alt="Navin Kumar Singhal" fill className="object-cover" />
-            </div>
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-2 font-bold">Navin Kumar Singhal</h3>
-            <div className="font-[family-name:var(--font-mono)] text-xs mb-4 text-[#4a6fa5] tracking-wider uppercase">Chief Mentor / Founder</div>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              M.Tech. IIT Delhi, 35+ years in factory management and production. Expertise in Fiber Optic and Nanotechnology.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-48 h-48 mb-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/Wire-magazine-pic-NAVANK.jpg" alt="Naval Singhal" fill className="object-cover" />
-            </div>
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-2 font-bold">Naval Singhal</h3>
-            <div className="font-[family-name:var(--font-mono)] text-xs mb-4 text-[#4a6fa5] tracking-wider uppercase">Chief Business Officer</div>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              MBA IIT Delhi, 15+ years experience. Previously IBM and Accenture. Vision: $100M company by 2030.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-48 h-48 mb-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/Anil-Pic.jpg" alt="Anil Bagade" fill className="object-cover" />
-            </div>
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-2 font-bold">Anil Bagade</h3>
-            <div className="font-[family-name:var(--font-mono)] text-xs mb-4 text-[#4a6fa5] tracking-wider uppercase">Technical Expert</div>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              14+ years in cable & compound industry. Expertise in LV, HV, EHV cables with XLPE, PE, PVC compounds.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-48 h-48 mb-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/Abhinav-Pic-for-website.jpg" alt="Abhinav Goyal" fill className="object-cover" />
-            </div>
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-2 font-bold">Abhinav Goyal</h3>
-            <div className="font-[family-name:var(--font-mono)] text-xs mb-4 text-[#4a6fa5] tracking-wider uppercase">Deputy Manager, Sales</div>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              B.Tech Kurukshetra University. With NAVANK since 2016. Multi-fold business growth through Sales and Marketing.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <div className="w-48 h-48 mb-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/Garima-Profile-pic.jpg" alt="Garima Singhal" fill className="object-cover" />
-            </div>
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-2 font-bold">Garima Singhal</h3>
-            <div className="font-[family-name:var(--font-mono)] text-xs mb-4 text-[#4a6fa5] tracking-wider uppercase">Logistics Executive</div>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              10+ years managing logistics and shipments. Handles $10M in shipments annually with timely customer updates.
-            </p>
-          </div>
+          {[
+            { name: 'Navin Kumar Singhal', title: 'Chief Mentor / Founder', bio: 'M.Tech. IIT Delhi, 35+ years in factory management and production. Expertise in Fiber Optic and Nanotechnology.', img: 'https://www.navank.in/wp-content/uploads/2022/11/Mr.-Navin-Kumar-Singhal.jpg' },
+            { name: 'Naval Singhal', title: 'Chief Business Officer', bio: 'MBA IIT Delhi, 15+ years experience. Previously IBM and Accenture. Vision: $100M company by 2030.', img: 'https://www.navank.in/wp-content/uploads/2022/11/Wire-magazine-pic-NAVANK.jpg' },
+            { name: 'Anil Bagade', title: 'Technical Expert', bio: '14+ years in cable & compound industry. Expertise in LV, HV, EHV cables with XLPE, PE, PVC compounds.', img: 'https://www.navank.in/wp-content/uploads/2022/11/Anil-Pic.jpg' },
+            { name: 'Abhinav Goyal', title: 'Deputy Manager, Sales', bio: 'B.Tech Kurukshetra University. With NAVANK since 2016. Multi-fold business growth through Sales and Marketing.', img: 'https://www.navank.in/wp-content/uploads/2022/11/Abhinav-Pic-for-website.jpg' },
+            { name: 'Garima Singhal', title: 'Logistics Executive', bio: '10+ years managing logistics and shipments. Handles $10M in shipments annually with timely customer updates.', img: 'https://www.navank.in/wp-content/uploads/2022/11/Garima-Profile-pic.jpg' },
+          ].map((member, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="flex flex-col items-center"
+            >
+              <div className="w-48 h-48 mb-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden relative">
+                <Image src={member.img} alt={member.name} fill className="object-cover" />
+              </div>
+              <h3 className="font-[family-name:var(--font-body)] text-xl mb-2 font-bold">{member.name}</h3>
+              <div className="font-[family-name:var(--font-mono)] text-xs mb-4 text-[#4a6fa5] tracking-wider uppercase">{member.title}</div>
+              <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
+                {member.bio}
+              </p>
+            </motion.div>
+          ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Partners Section */}
-      <section className="container mx-auto px-4 py-24">
-        <h2 className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight">Our Partners</h2>
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-24"
+      >
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight"
+        >
+          Our Partners
+        </motion.h2>
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="flex flex-col items-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-3 font-bold text-center">Zhejiang Wanma Co. Ltd.</h3>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              China — Largest cable compound manufacturer in Asia. OEM partner since 2015.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-3 font-bold text-center">Unitape</h3>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              UK — ECCS tape with CJB (Controlled Jacket Bond) innovation for telecommunication cables.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-3 font-bold text-center">Nantong Siber</h3>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              China — Water-blocking tapes & yarns. Trusted partner since 2013.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <h3 className="font-[family-name:var(--font-body)] text-xl mb-3 font-bold text-center">Chhaperia International</h3>
-            <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
-              India — Mica tapes for fire-resistant cables. Partner since Q2 FY22.
-            </p>
-          </div>
+          {[
+            { name: 'Zhejiang Wanma Co. Ltd.', desc: 'China — Largest cable compound manufacturer in Asia. OEM partner since 2015.' },
+            { name: 'Unitape', desc: 'UK — ECCS tape with CJB (Controlled Jacket Bond) innovation for telecommunication cables.' },
+            { name: 'Nantong Siber', desc: 'China — Water-blocking tapes & yarns. Trusted partner since 2013.' },
+            { name: 'Chhaperia International', desc: 'India — Mica tapes for fire-resistant cables. Partner since Q2 FY22.' },
+          ].map((partner, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="flex flex-col items-center p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300"
+            >
+              <h3 className="font-[family-name:var(--font-body)] text-xl mb-3 font-bold text-center">{partner.name}</h3>
+              <p className="font-[family-name:var(--font-body)] text-sm text-center text-gray-400 leading-relaxed">
+                {partner.desc}
+              </p>
+            </motion.div>
+          ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* News & Events Section */}
-      <section className="container mx-auto px-4 py-24">
-        <h2 className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight">News & Events</h2>
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-24"
+      >
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight"
+        >
+          News & Events
+        </motion.h2>
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="flex gap-6 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <div className="w-48 h-32 flex-shrink-0 bg-black/30 rounded overflow-hidden border border-white/5 relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2023/05/WhatsApp-Image-2023-05-30-at-9.51.47-AM.jpeg" alt="Backend Tech Integration" fill className="object-cover" />
-            </div>
-            <div className="flex-1">
-              <div className="font-[family-name:var(--font-mono)] text-xs mb-3 text-[#4a6fa5] tracking-wider uppercase">May 2023</div>
-              <h3 className="font-[family-name:var(--font-body)] text-lg mb-3 font-bold">Backend Tech Integration & Two Warehouses in India</h3>
-              <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 leading-relaxed">
-                NAVANK expands logistics infrastructure with two new warehouses in India enabling JIT deliveries and backend tech integration.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-6 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <div className="w-48 h-32 flex-shrink-0 bg-black/30 rounded overflow-hidden border border-white/5 relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/PFA-images-of-Wire-Dusseldorf-Germany-June-2022-for-event-section-7.jpg" alt="Wire Dusseldorf" fill className="object-cover" />
-            </div>
-            <div className="flex-1">
-              <div className="font-[family-name:var(--font-mono)] text-xs mb-3 text-[#4a6fa5] tracking-wider uppercase">November 2022</div>
-              <h3 className="font-[family-name:var(--font-body)] text-lg mb-3 font-bold">Creating Long-Standing Partnerships Through Innovation</h3>
-              <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 leading-relaxed">
-                NAVANK works synergistically with OEM partners for designing and development of cutting-edge cable materials.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-6 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <div className="w-48 h-32 flex-shrink-0 bg-black/30 rounded overflow-hidden border border-white/5 relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/PFA-images-of-Wire-Dusseldorf-Germany-June-2022-for-event-section-5.jpg" alt="Growth Rate" fill className="object-cover" />
-            </div>
-            <div className="flex-1">
-              <div className="font-[family-name:var(--font-mono)] text-xs mb-3 text-[#4a6fa5] tracking-wider uppercase">November 2022</div>
-              <h3 className="font-[family-name:var(--font-body)] text-lg mb-3 font-bold">Growing at 100 Percent YoY for Last 5 Years</h3>
-              <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 leading-relaxed">
-                Our sales forecast for 2025 is around USD 30 million. Sustained high growth driven by global expansion.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-6 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <div className="w-48 h-32 flex-shrink-0 bg-black/30 rounded overflow-hidden border border-white/5 relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/PFA-images-of-Cable-Wire-Fair-for-event-section1.jpg" alt="Wire Dusseldorf Germany" fill className="object-cover" />
-            </div>
-            <div className="flex-1">
-              <div className="font-[family-name:var(--font-mono)] text-xs mb-3 text-[#4a6fa5] tracking-wider uppercase">June 2022</div>
-              <h3 className="font-[family-name:var(--font-body)] text-lg mb-3 font-bold">Wire Dusseldorf, Germany</h3>
-              <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 leading-relaxed">
-                NAVANK participated in Wire Dusseldorf Germany, showcasing latest innovations in cable materials to European market.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-6 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300">
-            <div className="w-48 h-32 flex-shrink-0 bg-black/30 rounded overflow-hidden border border-white/5 relative">
-              <Image src="https://www.navank.in/wp-content/uploads/2022/11/PFA-images-of-Cable-Wire-Fair-for-event-section..jpg" alt="Cable Fair Delhi" fill className="object-cover" />
-            </div>
-            <div className="flex-1">
-              <div className="font-[family-name:var(--font-mono)] text-xs mb-3 text-[#4a6fa5] tracking-wider uppercase">March 2022</div>
-              <h3 className="font-[family-name:var(--font-body)] text-lg mb-3 font-bold">Cable & Wire Fair, Pragati Maidan, New Delhi</h3>
-              <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 leading-relaxed">
-                NAVANK participated in the 4th international Exhibition & conference on Cable & Wire industry in New Delhi.
-              </p>
-            </div>
-          </div>
+          {[
+            { date: 'May 2023', title: 'Backend Tech Integration & Two Warehouses in India', desc: 'NAVANK expands logistics infrastructure with two new warehouses in India enabling JIT deliveries and backend tech integration.', img: 'https://www.navank.in/wp-content/uploads/2023/05/WhatsApp-Image-2023-05-30-at-9.51.47-AM.jpeg' },
+            { date: 'November 2022', title: 'Creating Long-Standing Partnerships Through Innovation', desc: 'NAVANK works synergistically with OEM partners for designing and development of cutting-edge cable materials.', img: 'https://www.navank.in/wp-content/uploads/2022/11/PFA-images-of-Wire-Dusseldorf-Germany-June-2022-for-event-section-7.jpg' },
+            { date: 'November 2022', title: 'Growing at 100 Percent YoY for Last 5 Years', desc: 'Our sales forecast for 2025 is around USD 30 million. Sustained high growth driven by global expansion.', img: 'https://www.navank.in/wp-content/uploads/2022/11/PFA-images-of-Wire-Dusseldorf-Germany-June-2022-for-event-section-5.jpg' },
+            { date: 'June 2022', title: 'Wire Dusseldorf, Germany', desc: 'NAVANK participated in Wire Dusseldorf Germany, showcasing latest innovations in cable materials to European market.', img: 'https://www.navank.in/wp-content/uploads/2022/11/PFA-images-of-Cable-Wire-Fair-for-event-section1.jpg' },
+            { date: 'March 2022', title: 'Cable & Wire Fair, Pragati Maidan, New Delhi', desc: 'NAVANK participated in the 4th international Exhibition & conference on Cable & Wire industry in New Delhi.', img: 'https://www.navank.in/wp-content/uploads/2022/11/PFA-images-of-Cable-Wire-Fair-for-event-section..jpg' },
+          ].map((news, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="flex gap-6 p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg hover:bg-white/10 transition-all duration-300"
+            >
+              <div className="w-48 h-32 flex-shrink-0 bg-black/30 rounded overflow-hidden border border-white/5 relative">
+                <Image src={news.img} alt={news.title} fill className="object-cover" />
+              </div>
+              <div className="flex-1">
+                <div className="font-[family-name:var(--font-mono)] text-xs mb-3 text-[#4a6fa5] tracking-wider uppercase">{news.date}</div>
+                <h3 className="font-[family-name:var(--font-body)] text-lg mb-3 font-bold">{news.title}</h3>
+                <p className="font-[family-name:var(--font-body)] text-sm text-gray-400 leading-relaxed">
+                  {news.desc}
+                </p>
+              </div>
+            </motion.div>
+          ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Contact Section */}
-      <section id="contact" className="container mx-auto px-4 py-24 pb-32">
-        <h2 className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight">Contact Us</h2>
+      <motion.section
+        id="contact"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-24 pb-32"
+      >
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="font-[family-name:var(--font-display)] text-6xl mb-20 text-center tracking-tight"
+        >
+          Contact Us
+        </motion.h2>
         <div className="grid md:grid-cols-2 gap-12">
-          <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5 }}
+            className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg"
+          >
             <h3 className="font-[family-name:var(--font-display)] text-3xl mb-6 tracking-tight">India Office</h3>
             <div className="space-y-3 font-[family-name:var(--font-body)] text-gray-300">
               <p className="font-bold">NAVANK Consultants</p>
@@ -766,8 +828,14 @@ export default function NavankPage() {
               <p className="pt-4 font-[family-name:var(--font-mono)] text-sm text-[#4a6fa5]">Phone: +91 8860364748</p>
               <p className="font-[family-name:var(--font-mono)] text-sm text-[#4a6fa5]">Email: abhinav@navank.onmicrosoft.com</p>
             </div>
-          </div>
-          <div className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5 }}
+            className="p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg"
+          >
             <h3 className="font-[family-name:var(--font-display)] text-3xl mb-6 tracking-tight">Netherlands Office</h3>
             <div className="space-y-3 font-[family-name:var(--font-body)] text-gray-300">
               <p className="font-bold">NAVANK Cable B.V.</p>
@@ -777,9 +845,9 @@ export default function NavankPage() {
               <p className="pt-4 font-[family-name:var(--font-mono)] text-sm text-[#4a6fa5]">Phone: +31 619253386</p>
               <p className="font-[family-name:var(--font-mono)] text-sm text-[#4a6fa5]">Email: naval@navank.nl</p>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }
