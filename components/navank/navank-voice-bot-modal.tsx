@@ -99,6 +99,58 @@ const MEDIA_SETS = {
   ]
 };
 
+// Product ID to image mapping for tool calls
+const PRODUCT_IMAGE_MAP: Record<string, { url: string; caption: string }> = {
+  "water-blocking-tape": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/Water-Blocking-Tape-500x400.jpg",
+    caption: "Water Blocking Tape — Non-conductive, Semi-conductive & PET laminated versions"
+  },
+  "water-swellable-yarn": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/images-1-1-500x400.jpg",
+    caption: "Water Swellable Yarn — Quick absorption, high tensile strength"
+  },
+  "eccs-tape": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/images-6-1-500x400.jpg",
+    caption: "ECCS Tape — Copolymer coated steel for rodent protection"
+  },
+  "cjb-eccs-tape": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/images-8-1-500x400.jpg",
+    caption: "CJB ECCS Tape — Controlled Jacket Bond for telecom cables"
+  },
+  "pbt-compounds": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/images-11-1-500x400.jpg",
+    caption: "PBT Compounds — Loose tube material for 2-24 fibers"
+  },
+  "lszh-compounds-ofc": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/500X500-12-500x400.jpg",
+    caption: "LSZH Compounds — Low smoke zero halogen for FOC & LAN cables"
+  },
+  "xlpe-compound": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/XLPE-cable-500x400.jpg",
+    caption: "XLPE Compound — Cross-linked polyethylene for HV & EHV cables"
+  },
+  "semiconductive-compound": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/Semiconductor-Shielding-Compound-500x400.jpg",
+    caption: "Semiconductive Compound — Conductor & insulation shields"
+  },
+  "lszh-compound-power": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/LSZH-compound-500x400.jpg",
+    caption: "LSZH Compound — Flame retardant power cable sheathing"
+  },
+  "pe-compound": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/PE-compound-500x400.jpg",
+    caption: "PE Compound — HDPE, MDPE, LDPE & FR-HDPE for all cable types"
+  },
+  "mica-tape": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/images-10-2-500x400.jpg",
+    caption: "Mica Tape — Fire-resistant insulation for high-temp cables"
+  },
+  "pvc-compound": {
+    url: "https://www.navank.in/wp-content/uploads/2022/11/PVC-compound-500x400.jpg",
+    caption: "PVC Compound — For low-voltage & telecom applications"
+  }
+};
+
 export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [mode, setMode] = useState<'initial' | 'voice' | 'text'>('initial');
@@ -200,7 +252,73 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
     });
 
     vapi.on('message', (message: any) => {
-      console.log('Message received:', message);
+      console.log('Vapi message received:', { type: message.type, message });
+
+      // Handle tool calls to show product images
+      // Check multiple possible formats that Vapi might send
+      if (message.type === 'tool-calls' && message.toolCalls) {
+        message.toolCalls.forEach((toolCall: any) => {
+          if (toolCall.function?.name === 'show_product_image') {
+            const params = toolCall.function.arguments;
+            let productId: string;
+
+            // Handle both string and parsed object arguments
+            if (typeof params === 'string') {
+              try {
+                const parsed = JSON.parse(params);
+                productId = parsed.product_id;
+              } catch (e) {
+                console.error('Failed to parse tool arguments:', e);
+                return;
+              }
+            } else {
+              productId = params.product_id;
+            }
+
+            console.log('Tool call to show product:', productId);
+
+            // Find and display the product image
+            const productImage = PRODUCT_IMAGE_MAP[productId];
+            if (productImage) {
+              setCurrentMedia([productImage]);
+              setCurrentMediaIndex(0);
+            } else {
+              console.warn('Product ID not found:', productId);
+            }
+          }
+        });
+      }
+
+      // Alternative format: Check if message contains toolCallList
+      if (message.toolCallList && Array.isArray(message.toolCallList)) {
+        message.toolCallList.forEach((toolCall: any) => {
+          if (toolCall.function?.name === 'show_product_image') {
+            const productId = toolCall.function.arguments?.product_id;
+            console.log('Tool call (toolCallList) to show product:', productId);
+
+            const productImage = PRODUCT_IMAGE_MAP[productId];
+            if (productImage) {
+              setCurrentMedia([productImage]);
+              setCurrentMediaIndex(0);
+            }
+          }
+        });
+      }
+
+      // Alternative format: Direct function call
+      if (message.type === 'function-call' && message.functionCall) {
+        if (message.functionCall.name === 'show_product_image') {
+          const productId = message.functionCall.parameters?.product_id;
+          console.log('Function call to show product:', productId);
+
+          const productImage = PRODUCT_IMAGE_MAP[productId];
+          if (productImage) {
+            setCurrentMedia([productImage]);
+            setCurrentMediaIndex(0);
+          }
+        }
+      }
+
       if (message.type === 'transcript' && message.transcript) {
         const role = message.role === 'assistant' ? 'assistant' : 'user';
         const newTranscript = message.transcript.trim();
