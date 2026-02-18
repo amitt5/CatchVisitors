@@ -2,6 +2,7 @@
 
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { useState } from 'react';
+import { ChiroVoiceBot } from '@/components/chiro/chiro-voice-bot';
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -361,6 +362,7 @@ function BookingWidget() {
 // ─── Main page ────────────────────────────────────────────────────────────────
 export default function ChiroPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showVoiceBot, setShowVoiceBot] = useState(false);
 
   return (
     <div className={`${plusJakarta.variable} font-[family-name:var(--font-jakarta)] text-[#191919] bg-white`}>
@@ -442,6 +444,15 @@ export default function ChiroPage() {
               >
                 Call 020-673 1800
               </a>
+              <button
+                onClick={() => setShowVoiceBot(true)}
+                className="flex items-center gap-2 bg-[#c9a96e] text-[#191919] font-semibold px-6 py-3.5 rounded-full hover:bg-[#d9bc88] transition-colors"
+              >
+                <svg viewBox="0 0 24 24" className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Talk to Our AI
+              </button>
             </div>
 
             <div className="mt-12 flex gap-10">
@@ -668,6 +679,23 @@ export default function ChiroPage() {
           <BookingWidget />
         </div>
       </section>
+
+      {/* ── FLOATING VOICE BUTTON ────────────────────────────────────────── */}
+      <button
+        onClick={() => setShowVoiceBot(true)}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 bg-[#45321A] text-white font-semibold pl-4 pr-5 py-3.5 rounded-full shadow-xl hover:bg-[#5a4228] transition-all hover:scale-105 active:scale-95"
+      >
+        <span className="relative flex-shrink-0">
+          <span className="absolute inset-0 rounded-full bg-white/30 animate-ping" />
+          <svg viewBox="0 0 24 24" className="relative w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+        <span className="text-sm">Talk to Our AI</span>
+      </button>
+
+      {/* ── VOICE BOT MODAL ───────────────────────────────────────────────── */}
+      <ChiroVoiceBot isOpen={showVoiceBot} onClose={() => setShowVoiceBot(false)} />
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer className="bg-[#191919] text-white py-14">
