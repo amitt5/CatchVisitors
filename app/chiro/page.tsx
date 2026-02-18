@@ -399,18 +399,34 @@ export default function ChiroPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative bg-[#F6F6F6] overflow-hidden">
-        <div className="max-w-6xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-block bg-[#45321A]/10 text-[#45321A] text-xs font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5">
+      <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+        {/* Background video */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/chiro-hero.mov" type="video/quicktime" />
+          <source src="/videos/chiro-hero.mov" type="video/mp4" />
+        </video>
+
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/30" />
+
+        {/* Content */}
+        <div className="relative z-10 max-w-6xl mx-auto px-6 py-28 w-full">
+          <div className="max-w-xl">
+            <span className="inline-block bg-white/15 backdrop-blur-sm text-white text-xs font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-6 border border-white/20">
               Amsterdam Zuid · Since 2010
             </span>
-            <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight text-[#191919] mb-6">
+            <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight text-white mb-6">
               Stop Pain.<br />
-              Restore <span className="text-[#45321A]">Mobility.</span><br />
+              Restore <span className="text-[#c9a96e]">Mobility.</span><br />
               Reclaim Life.
             </h1>
-            <p className="text-[#403F3F] text-lg leading-relaxed mb-8 max-w-md">
+            <p className="text-white/80 text-lg leading-relaxed mb-8">
               Amsterdam&apos;s chiropractic specialist and pain management clinic. If you have back pain, neck pain or headaches — call or text us today and stop pain immediately.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -422,7 +438,7 @@ export default function ChiroPage() {
               </a>
               <a
                 href="tel:0206731800"
-                className="border-2 border-[#45321A] text-[#45321A] font-semibold px-7 py-3.5 rounded-full hover:bg-[#45321A]/5 transition-colors"
+                className="border-2 border-white text-white font-semibold px-7 py-3.5 rounded-full hover:bg-white/10 transition-colors"
               >
                 Call 020-673 1800
               </a>
@@ -431,27 +447,10 @@ export default function ChiroPage() {
             <div className="mt-12 flex gap-10">
               {[['15+', 'Years in Amsterdam'], ['5', 'Treatments Offered'], ['100%', 'Personalised Care']].map(([num, label]) => (
                 <div key={label}>
-                  <div className="text-2xl font-extrabold text-[#45321A]">{num}</div>
-                  <div className="text-xs text-[#403F3F] font-medium mt-0.5">{label}</div>
+                  <div className="text-2xl font-extrabold text-[#c9a96e]">{num}</div>
+                  <div className="text-xs text-white/70 font-medium mt-0.5">{label}</div>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="aspect-[4/5] rounded-3xl overflow-hidden bg-[#45321A]/10 shadow-xl">
-              <img
-                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=700&q=80"
-                alt="Chiropractor treating patient"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="absolute -bottom-5 -left-5 bg-white rounded-2xl shadow-lg px-5 py-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-lg">✓</div>
-              <div>
-                <div className="font-bold text-sm text-[#191919]">WhatsApp Available</div>
-                <div className="text-xs text-[#403F3F]">06-1882-0000</div>
-              </div>
             </div>
           </div>
         </div>
