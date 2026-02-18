@@ -12,8 +12,8 @@ export function FloatingVoiceWidget() {
   const [error, setError] = useState<string | null>(null);
   const vapiRef = useRef<Vapi | null>(null);
 
-  // Don't show on hotels or strategence pages
-  if (pathname === '/hotels' || pathname === '/strategence') {
+  // Don't show on hotels, strategence, or chiro pages
+  if (pathname === '/hotels' || pathname === '/strategence' || pathname.startsWith('/chiro')) {
     return null;
   }
 

@@ -17,6 +17,7 @@ const isPublicRoute = createRouteMatcher([
   "/navank(.*)",  // Navank subdomain page
   "/api/navank/(.*)",  // Navank API routes (including tool calls)
   "/strategence",  // Strategence demo page
+  "/chiro(.*)",  // Chiro demo page
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
