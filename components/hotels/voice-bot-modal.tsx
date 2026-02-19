@@ -771,8 +771,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                     animation: pulseRed 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
                   }
                 `}</style>
-                {/* Messages/Transcription */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
+                {/* COMMENTED OUT: Messages/Transcription - Will be brought back later */}
+                {/* <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
                   {messages.map((msg, idx) => (
                     <div
                       key={idx}
@@ -805,30 +805,31 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                     </div>
                   )}
                   <div ref={messagesEndRef} />
-                </div>
+                </div> */}
 
-                {/* Voice Controls Only */}
-                <div className="px-6 py-8 border-t bg-gray-50 flex-shrink-0 flex flex-col items-center">
+                {/* Voice Controls Only - Centered */}
+                <div className="flex-1 flex flex-col items-center justify-center p-6">
                   <button
                     onClick={toggleCall}
-                    className={`w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-lg ${
+                    className={`w-32 h-32 rounded-full flex items-center justify-center transition-all shadow-lg ${
                       isCallActive
                         ? 'pulse-red'
                         : 'bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
                     }`}
                   >
                     {isCallActive ? (
-                      <MicOff className="w-12 h-12 text-white" />
+                      <MicOff className="w-16 h-16 text-white" />
                     ) : (
-                      <Mic className="w-12 h-12 text-white" />
+                      <Mic className="w-16 h-16 text-white" />
                     )}
                   </button>
-                  <p className="text-base font-medium text-gray-700 mt-4">
+                  <p className="text-lg font-medium text-gray-700 mt-6">
                     {isCallActive ? 'End Voice Call' : 'Start Voice Call'}
                   </p>
-                  <div className="text-center text-xs text-gray-400 mt-4">
+                  {/* COMMENTED OUT: Demo controls hint - Will be brought back later */}
+                  {/* <div className="text-center text-xs text-gray-400 mt-4">
                     <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ) : (
