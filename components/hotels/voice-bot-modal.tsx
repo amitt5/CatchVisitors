@@ -120,6 +120,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pendingMediaItems, setPendingMediaItems] = useState<string[]>([]);
   const [isInBookingMode, setIsInBookingMode] = useState(false);
+  const isInBookingModeRef = useRef(false); // Immediate tracking, no async delay
 
   // Keyword mapping for transcript matching
   const MEDIA_KEYWORDS: Record<string, string[]> = {
@@ -161,6 +162,11 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   // Show a specific media item
   const showMediaItem = (mediaId: string) => {
     console.log('🖼️  Showing media item:', mediaId);
+    console.log('📊 Current booking mode status:', {
+      state: isInBookingMode,
+      ref: isInBookingModeRef.current,
+      showCalendar
+    });
 
     // Special case: calendar
     if (mediaId === 'calendar') {
@@ -169,11 +175,14 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
       setCurrentMedia(null);
       setBookingStep('calendar');
       setIsInBookingMode(true);
+      isInBookingModeRef.current = true; // Set ref immediately (no async delay)
       console.log('🔒 Booking mode activated - other media will be blocked');
     } else {
       // If in booking mode, ignore all other media requests to keep calendar visible
-      if (isInBookingMode) {
+      // Check ref first (immediate), then state (for safety)
+      if (isInBookingModeRef.current || isInBookingMode) {
         console.log('🔒 BLOCKING media request:', mediaId, '- in booking mode, calendar must stay visible');
+        console.log('   Booking mode ref:', isInBookingModeRef.current, '| state:', isInBookingMode);
         return;
       }
 
@@ -196,6 +205,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   useEffect(() => {
     if (isOpen) {
       setIsInBookingMode(false);
+      isInBookingModeRef.current = false; // Reset ref too
       console.log('🔓 Booking mode reset - modal opened');
     }
   }, [isOpen]);
@@ -542,6 +552,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     }
     // Reset booking mode when closing
     setIsInBookingMode(false);
+    isInBookingModeRef.current = false;
     onClose();
   };
 
