@@ -86,10 +86,82 @@ const services = [
 ];
 
 const specialties = [
-  'Lower Back Pain', 'Neck Pain', 'Headaches & Migraines', 'Whiplash',
-  'Hernias & Disc Problems', 'Upper Back & Shoulder Pain', 'Sciatica', 'Sports Injuries',
-  'Pregnancy-Related Pain', 'Infant & Children\'s Care', 'Arthritis & Wear-and-Tear', 'Tension Headaches',
+  { en: 'Lower Back Pain', nl: 'Lage Rugpijn', slug: 'lage-rugpijn' },
+  { en: 'Neck Pain', nl: 'Nekpijn', slug: 'nek' },
+  { en: 'Headaches & Migraines', nl: 'Hoofdpijn en Migraine', slug: 'hoofdpijn-migraine' },
+  { en: 'Whiplash', nl: 'Whiplash', slug: 'whiplash' },
+  { en: 'Hernias & Disc Problems', nl: 'Hernia / Discushernia', slug: 'hernia' },
+  { en: 'Upper Back & Shoulder Pain', nl: 'Bovenrug & Schouder', slug: 'bovenrug-schouder' },
+  { en: 'Sciatica', nl: 'Ischias', slug: 'ischias' },
+  { en: 'Sports Injuries', nl: 'Sportblessures', slug: 'sportblessures' },
+  { en: 'Pregnancy-Related Pain', nl: 'Zwangerschap', slug: 'zwangerschap' },
+  { en: 'Infant & Children\'s Care', nl: 'Kinderen & Baby\'s', slug: 'kinderen' },
+  { en: 'Arthritis & Wear-and-Tear', nl: 'Artrose / Slijtage', slug: 'artrose-slijtage' },
+  { en: 'Tension Headaches', nl: 'Spanningshoofdpijn', slug: 'spanningshoofdpijn' },
 ];
+
+const conditionDetails = {
+  'lage-rugpijn': {
+    title: 'Lage Rugpijn',
+    what: 'Lage rugpijn is één van de meest voorkomende klachten in Nederland. Het kan variëren van een doffe pijn tot scherpe, uitstralende pijn naar de benen. Oorzaken zijn onder meer verkeerde houding, spierspanning, discusproblemen, of wervelgewricht-dysfunctie.',
+    how: 'Chiropractie behandelt lage rugpijn door wervelkolom-correcties (adjustments) toe te passen die de mobiliteit herstellen, zenuwdruk verminderen, en het natuurlijke genezingsproces van het lichaam activeren. Veel patiënten ervaren al na enkele behandelingen significante verlichting.',
+  },
+  'nek': {
+    title: 'Nekpijn',
+    what: 'Nekpijn kan ontstaan door langdurig beeldschermwerk, slechte slaaphouding, stress, of een whiplash-trauma. Symptomen variëren van stijfheid en spanning tot hoofdpijn en uitstralende pijn naar schouders of armen.',
+    how: 'Door gerichte chiropractische correcties van de nekwervels wordt de mobiliteit hersteld en zenuwfunctie genormaliseerd. Combinatie met medische acupunctuur en massage versnelt het herstel en vermindert spierspanning effectief.',
+  },
+  'hernia': {
+    title: 'Hernia / Discushernia',
+    what: 'Een hernia ontstaat wanneer de kern van een tussenwervelschijf door de buitenste ring heen drukt. Dit kan druk geven op zenuwen en leiden tot pijn, tintelingen, of krachtsverlies in benen of armen.',
+    how: 'Chiropractie kan bij veel hernia-gevallen de druk op de aangedane zenuw verminderen door de wervelkolom te ontlasten en correcte uitlijning te bevorderen. Behandeling richt zich op symptoomverlichting en het voorkomen van verdere schade. In ernstige gevallen verwijzen we door.',
+  },
+  'whiplash': {
+    title: 'Whiplash',
+    what: 'Whiplash is een nek-letsel veroorzaakt door plotselinge versnelling of vertraging (bijvoorbeeld bij een auto-ongeluk). Symptomen kunnen direct of vertraagd optreden: nekpijn, hoofdpijn, duizeligheid, concentratieproblemen.',
+    how: 'Chiropractische behandeling helpt whiplash-klachten door de beschadigde wervels en gewrichten voorzichtig te mobiliseren, littekweefsel te verminderen, en het herstel van normale beweging te bevorderen. Vroege behandeling voorkomt chronische klachten.',
+  },
+  'bovenrug-schouder': {
+    title: 'Bovenrug & Schouder',
+    what: 'Pijn in de bovenrug en schouders komt vaak voor bij kantoorwerk, stress, of slechte houding. Klachten kunnen uitstralen naar nek of armen en leiden tot hoofdpijn en vermoeidheid.',
+    how: 'Chiropractie behandelt bovenrug- en schouderpijn door wervelkolom-correcties, mobilisatie van de schoudergewrichten, en het verminderen van spierspanning. Vaak gecombineerd met therapeutische massage voor optimaal resultaat.',
+  },
+  'hoofdpijn-migraine': {
+    title: 'Hoofdpijn en Migraine',
+    what: 'Veel hoofdpijn en migraine heeft een cervicogene oorsprong: veroorzaakt door problemen in de nek en bovenrug. Symptomen variëren van doffe druk tot intense, bonzende pijn met misselijkheid en lichtgevoeligheid.',
+    how: 'Chiropractie vermindert hoofdpijn door nekwervels te corrigeren, spierspanning te verlagen, en zenuwprikkeling te normaliseren. Studies tonen aan dat chiropractie effectief is bij chronische hoofdpijn en migraine.',
+  },
+  'spanningshoofdpijn': {
+    title: 'Spanningshoofdpijn',
+    what: 'Spanningshoofdpijn voelt aan als een strakke band rond het hoofd en wordt vaak veroorzaakt door langdurige spierspanning in nek en schouders, stress, of verkeerde houding.',
+    how: 'Door chiropractische correcties van de nekwervels en bovenrug, gecombineerd met massage en ontspanningstechnieken, wordt de onderliggende spierspanning effectief verminderd en de frequentie van hoofdpijn drastisch verlaagd.',
+  },
+  'zwangerschap': {
+    title: 'Zwangerschap',
+    what: 'Tijdens de zwangerschap ondergaat het lichaam grote veranderingen. Lage rugpijn, bekkenpijn, en ischias komen vaak voor door toegenomen gewicht, hormonale veranderingen, en verschuivingen in houding.',
+    how: 'Chiropractie tijdens zwangerschap is veilig en effectief. Zachte correcties helpen het bekken in balans te houden, pijn te verminderen, en de bevalling te vergemakkelijken. Speciale behandeltafels en technieken worden gebruikt voor comfort en veiligheid.',
+  },
+  'sportblessures': {
+    title: 'Sportblessures',
+    what: 'Sportblessures variëren van acute verwondingen (verstuikingen, scheuren) tot overbelasting-klachten (tennisarm, loperSknie). Ze kunnen leiden tot pijn, bewegingsbeperking, en verminderde prestaties.',
+    how: 'Chiropractie behandelt sportblessures door gewrichten te mobiliseren, ontstekingen te verminderen, en het herstel van weefsels te versnellen. Combinatie met revalidatie-oefeningen en adviezen voorkomt herhaling en verbetert prestaties.',
+  },
+  'kinderen': {
+    title: 'Kinderen & Baby\'s',
+    what: 'Kinderen en baby\'s kunnen baat hebben bij chiropractie voor klachten zoals koliek, slaapproblemen, asymmetrische hoofdvorm, groei-pijnen, houdingsproblemen, en sportblessures.',
+    how: 'Pediatrische chiropractie gebruikt zeer zachte, lage-kracht technieken die speciaal zijn aangepast voor jonge patiënten. Behandeling is veilig, effectief, en kan de ontwikkeling en gezondheid van kinderen aanzienlijk verbeteren.',
+  },
+  'artrose-slijtage': {
+    title: 'Artrose / Slijtage',
+    what: 'Artrose is slijtage van gewrichtskraakbeen, vaak voorkomend in nek, rug, heupen en knieën. Symptomen zijn stijfheid, pijn, en verminderde mobiliteit, vooral \'s ochtends of na inactiviteit.',
+    how: 'Hoewel kraakbeen niet kan worden hersteld, helpt chiropractie de mobiliteit te behouden, pijn te verminderen, en verdere slijtage te vertragen door correcte gewrichtsuitlijning en beweging te bevorderen.',
+  },
+  'ischias': {
+    title: 'Ischias',
+    what: 'Ischias is pijn die uitstraalt van de onderrug via de bil naar het been, veroorzaakt door irritatie of druk op de ischiaszenuw. Oorzaken kunnen zijn: hernia, bekken-dysfunctie, of spierverkorting.',
+    how: 'Chiropractie behandelt ischias door de oorzaak aan te pakken: wervelkolom-correcties om zenuwdruk te verminderen, bekken-stabilisatie, en mobilisatie van gewrichten. Veel patiënten ervaren snelle verlichting.',
+  },
+};
 
 const carePhases = [
   { step: '01', title: 'Relief Care', desc: 'We focus on reducing your pain as quickly as possible so you can function and sleep normally again.' },
@@ -104,12 +176,12 @@ const testimonials = [
 ];
 
 const faqs = [
-  { q: 'Does chiropractic treatment hurt?', a: 'Most patients experience little to no discomfort. You may hear a gentle "pop" during a spinal adjustment — that is simply gas releasing from the joint and is completely normal.' },
-  { q: 'How many sessions will I need?', a: 'It depends on your condition. Acute pain typically improves within a few sessions; chronic issues may require a longer corrective phase. Dr. Jahani will outline a clear, personalised plan at your first visit.' },
-  { q: 'Do I need a referral from my GP?', a: 'No referral is required. You can call or text us directly to book. If your doctor has imaging (X-rays, MRI) we encourage you to bring it along.' },
-  { q: 'What is the difference between neuro-based chiropractic and regular chiropractic?', a: 'Neuro-based spinal correction focuses on the neurological component of spinal dysfunction, not just the mechanical. This approach often produces faster, more lasting results for pain and mobility issues.' },
-  { q: 'Do you treat children and infants?', a: 'Yes. Dr. Jahani has experience treating children and infants for a range of conditions. Paediatric adjustments use very gentle, low-force techniques appropriate for young patients.' },
-  { q: 'Is chiropractic covered by Dutch health insurance?', a: 'Chiropractic is often covered by supplemental (aanvullende) insurance policies. We recommend checking with your insurer. We provide detailed receipts for reimbursement.' },
+  { q: 'Does chiropractic treatment hurt?', a: 'Most patients experience little to no discomfort during an adjustment. You may hear a popping sound — this is simply gas releasing from the joint, similar to cracking your knuckles. Some mild soreness after the first few sessions is normal and typically passes within 24 hours.' },
+  { q: 'How many sessions will I need?', a: 'This depends on your condition. After the first visit, Dr. Jahani will give you a clear treatment plan with an estimated number of sessions. Most acute conditions improve significantly within 4–8 sessions.' },
+  { q: 'Do I need a referral from my GP?', a: 'No. You can book directly without a GP referral.' },
+  { q: 'What is the difference between neuro-based chiropractic and regular chiropractic?', a: 'Neuro-based chiropractic focuses on the relationship between spinal alignment and the nervous system. Rather than just treating symptoms, it targets the root neurological cause of pain and dysfunction for more lasting results.' },
+  { q: 'Do you treat children and infants?', a: 'Yes. Dr. Jahani has experience treating infants and children. The first consultation for children under 12 is €110. Techniques used for younger patients are gentle and specifically adapted.' },
+  { q: 'Is chiropractic covered by Dutch health insurance?', a: 'Almost all Dutch supplemental health insurance plans (aanvullende verzekering) cover chiropractic. Health4Life is registered with the NCA and SCN, which are required by most insurers. Check your policy or visit chiropractievergoeding.nl.' },
 ];
 
 // ─── Booking widget ───────────────────────────────────────────────────────────
@@ -363,6 +435,8 @@ function BookingWidget() {
 export default function ChiroPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showVoiceBot, setShowVoiceBot] = useState(false);
+  const [language, setLanguage] = useState<'en' | 'nl'>('en');
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
 
   return (
     <div className={`${plusJakarta.variable} font-[family-name:var(--font-jakarta)] text-[#191919] bg-white`}>
@@ -385,18 +459,37 @@ export default function ChiroPage() {
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-[#403F3F]">
             <a href="#services" className="hover:text-[#45321A] transition-colors">Services</a>
             <a href="#approach" className="hover:text-[#45321A] transition-colors">Approach</a>
+            <a href="#pricing" className="hover:text-[#45321A] transition-colors">Pricing</a>
             <a href="#about" className="hover:text-[#45321A] transition-colors">About</a>
             <a href="#testimonials" className="hover:text-[#45321A] transition-colors">Reviews</a>
             <a href="#faq" className="hover:text-[#45321A] transition-colors">FAQ</a>
             <a href="#booking" className="hover:text-[#45321A] transition-colors">Book</a>
           </div>
 
-          <a
-            href="#booking"
-            className="bg-[#45321A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#5a4228] transition-colors"
-          >
-            Book Appointment
-          </a>
+          <div className="flex items-center gap-3">
+            {/* Language toggle */}
+            <div className="flex items-center bg-[#F6F6F6] rounded-full p-1">
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${language === 'en' ? 'bg-[#45321A] text-white' : 'text-[#403F3F] hover:text-[#45321A]'}`}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setLanguage('nl')}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${language === 'nl' ? 'bg-[#45321A] text-white' : 'text-[#403F3F] hover:text-[#45321A]'}`}
+              >
+                NL
+              </button>
+            </div>
+
+            <a
+              href="#booking"
+              className="bg-[#45321A] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#5a4228] transition-colors"
+            >
+              Book Appointment
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -501,18 +594,41 @@ export default function ChiroPage() {
       <section className="py-20 bg-[#F6F6F6]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14">
-            <span className="text-[#45321A] text-sm font-semibold uppercase tracking-widest">Conditions Treated</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-[#191919]">We Specialise in Treating</h2>
+            <span className="text-[#45321A] text-sm font-semibold uppercase tracking-widest">
+              {language === 'nl' ? 'Behandelde Klachten' : 'Conditions Treated'}
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-[#191919]">
+              {language === 'nl' ? 'Wij Zijn Gespecialiseerd in' : 'We Specialise in Treating'}
+            </h2>
             <p className="text-[#403F3F] mt-3 max-w-xl mx-auto">
-              From sudden injuries to long-standing chronic pain, Dr. Jahani has the expertise and experience to help you recover fully.
+              {language === 'nl'
+                ? 'Van acute blessures tot chronische pijn — Dr. Jahani heeft de expertise en ervaring om u volledig te laten herstellen.'
+                : 'From sudden injuries to long-standing chronic pain, Dr. Jahani has the expertise and experience to help you recover fully.'}
             </p>
+            {language === 'nl' && (
+              <p className="text-[#45321A] text-sm font-semibold mt-3">
+                ↓ Klik op een klacht voor meer informatie
+              </p>
+            )}
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {specialties.map((s) => (
-              <div key={s} className="bg-white border border-[#45321A]/10 rounded-xl px-5 py-4 flex items-center gap-3 hover:border-[#45321A]/40 hover:shadow-sm transition-all">
+              <button
+                key={s.slug}
+                onClick={() => language === 'nl' && setSelectedCondition(s.slug)}
+                className={`bg-white border border-[#45321A]/10 rounded-xl px-5 py-4 flex items-center gap-3 hover:border-[#45321A]/40 hover:shadow-sm transition-all text-left ${language === 'nl' ? 'cursor-pointer hover:scale-[1.02]' : 'cursor-default'}`}
+                disabled={language === 'en'}
+              >
                 <div className="w-2 h-2 rounded-full bg-[#45321A] flex-shrink-0" />
-                <span className="text-sm font-medium text-[#403F3F]">{s}</span>
-              </div>
+                <span className="text-sm font-medium text-[#403F3F]">
+                  {language === 'nl' ? s.nl : s.en}
+                </span>
+                {language === 'nl' && (
+                  <svg viewBox="0 0 20 20" className="w-4 h-4 flex-shrink-0 ml-auto fill-[#45321A]">
+                    <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
+                  </svg>
+                )}
+              </button>
             ))}
           </div>
         </div>
@@ -537,6 +653,119 @@ export default function ChiroPage() {
                 <p className="text-[#403F3F] text-sm leading-relaxed">{phase.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── YOUR FIRST VISIT ─────────────────────────────────────────────── */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <span className="text-[#45321A] text-sm font-semibold uppercase tracking-widest">New Patient Info</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-[#191919]">Your First Visit</h2>
+            <p className="text-[#403F3F] mt-3 max-w-2xl mx-auto">
+              We understand visiting a chiropractor for the first time can raise questions. Here&apos;s exactly what happens during your first appointment.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { step: '1', title: 'Patient Forms', desc: 'Complete health history and condition intake forms upon arrival.' },
+              { step: '2', title: 'Consultation', desc: 'Discuss health problems, concerns, and treatment goals with Dr. Jahani. The first visit is about understanding your condition and what you want to achieve.' },
+              { step: '3', title: 'Examination', desc: 'Full chiropractic exam including reflex and flexibility testing, plus neurological, orthopedic, postural, and physical assessments. Nothing is done without your consent.' },
+              { step: '4', title: 'X-Ray Studies', desc: 'If needed based on your condition, X-rays are taken to develop the most effective treatment plan and check for serious spinal conditions.' },
+              { step: '5', title: 'Report of Findings', desc: 'Dr. Jahani provides a full report covering: How can he help you? How often will you need to come in? What will the cost be?' },
+              { step: '6', title: 'Treatment', desc: 'At the end of the first visit, you can choose to start your first treatment: spinal adjustment, physical therapy, and/or soft tissue massage.' },
+              { step: '7', title: 'Wellness Program', desc: 'Before leaving, Dr. Jahani will suggest a home wellness program which may include: ice/heat instructions, activities to avoid, and home exercises or stretches.' },
+            ].map((item) => (
+              <div key={item.step} className="bg-[#F6F6F6] rounded-2xl p-6 relative overflow-hidden">
+                <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-[#45321A]/5 flex items-center justify-center">
+                  <span className="text-xl font-extrabold text-[#45321A]">{item.step}</span>
+                </div>
+                <h3 className="font-bold text-[#191919] text-lg mb-2 pr-14">{item.title}</h3>
+                <p className="text-[#403F3F] text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING & INSURANCE ──────────────────────────────────────────── */}
+      <section id="pricing" className="py-20 bg-[#F6F6F6]">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <span className="text-[#45321A] text-sm font-semibold uppercase tracking-widest">Tarieven / Vergoedingen</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold mt-2 text-[#191919]">Transparent Pricing</h2>
+            <p className="text-[#403F3F] mt-3 max-w-2xl mx-auto">
+              Clear, upfront pricing for all services. Payment is due after each visit (cash or card). We provide receipts for insurance reimbursement.
+            </p>
+          </div>
+
+          {/* Pricing table */}
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-8">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-[#45321A] text-white">
+                  <tr>
+                    <th className="text-left px-6 py-4 font-bold text-sm uppercase tracking-wide">Treatment</th>
+                    <th className="text-right px-6 py-4 font-bold text-sm uppercase tracking-wide">Price</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#45321A]/10">
+                  {[
+                    ['Eerste Consult Volwassen (incl. medische acupunctuur + eerste wervelkolom correctie)', '€ 160'],
+                    ['Eerste Consult Kinderen tot 12 jaar', '€ 110'],
+                    ['Vervolg Consult Chiropractie', '€ 80'],
+                    ['Uitgebreid Consult Chiropractie + Medische Acupunctuur', '€ 130'],
+                    ['Diep Tissue Therapie / Massage 30 min', '€ 70'],
+                    ['Diep Tissue Therapie / Massage 60 min', '€ 120'],
+                    ['Orthopedische Inlegzolen (Custom Orthotics)', '€ 480'],
+                    ['Orthopedische Back Vitalizer', '€ 120'],
+                    ['Orthopedische Waterkern Kussen', '€ 150'],
+                    ['Orthopedische Luchtkussen (Neck/Rug)', '€ 150'],
+                    ['High-tech Voet Scan incl. advies', '€ 120'],
+                    ['Behandelplan Opzeggingskosten', '€ 150'],
+                  ].map(([treatment, price]) => (
+                    <tr key={treatment} className="hover:bg-[#45321A]/5 transition-colors">
+                      <td className="px-6 py-4 text-[#403F3F] text-sm">{treatment}</td>
+                      <td className="px-6 py-4 text-right text-[#191919] font-bold text-sm">{price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Payment note */}
+          <div className="bg-[#45321A]/5 border border-[#45321A]/20 rounded-xl px-6 py-5 mb-8">
+            <p className="text-[#403F3F] text-sm leading-relaxed">
+              <strong className="text-[#191919]">Payment:</strong> Het verschuldigde bedrag wordt na afloop van elk bezoek vereffend. Betaling mogelijk met contant of pinpas. De kwitantie kunt u indienen bij uw verzekeringsmaatschappij.
+            </p>
+          </div>
+
+          {/* Insurance information */}
+          <div className="bg-white rounded-2xl p-8 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#45321A] flex-shrink-0 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="white" strokeWidth="2">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-[#191919] text-xl mb-3">Vergoedingen / Insurance Coverage</h3>
+                <p className="text-[#403F3F] text-sm leading-relaxed mb-4">
+                  Vrijwel alle ziektekostenverzekeraars hebben chiropractie in hun aanvullende pakket opgenomen. Voorwaarde is dat de chiropractor aangesloten is bij een beroepsvereniging (NCA) en ingeschreven staat bij de Stichting Chiropractie Nederland (SCN). Bij de meeste verzekeraars valt chiropractie onder &quot;alternatieve geneeswijzen&quot; of &quot;beweegzorg&quot;.
+                </p>
+                <p className="text-[#403F3F] text-sm leading-relaxed mb-4">
+                  <strong className="text-[#191919]">Health4Life is fully registered with NCA and SCN</strong>, meeting all insurer requirements.
+                </p>
+                <p className="text-sm">
+                  <span className="text-[#403F3F]">For a complete list of insurers: </span>
+                  <a href="https://www.chiropractievergoeding.nl" target="_blank" rel="noopener noreferrer" className="text-[#45321A] font-semibold underline hover:text-[#5a4228] transition-colors">
+                    www.chiropractievergoeding.nl
+                  </a>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -697,6 +926,89 @@ export default function ChiroPage() {
       {/* ── VOICE BOT MODAL ───────────────────────────────────────────────── */}
       <ChiroVoiceBot isOpen={showVoiceBot} onClose={() => setShowVoiceBot(false)} />
 
+      {/* ── CONDITION DETAILS MODAL ──────────────────────────────────────── */}
+      {selectedCondition && conditionDetails[selectedCondition as keyof typeof conditionDetails] && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={() => setSelectedCondition(null)}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="sticky top-0 bg-[#45321A] text-white px-8 py-6 rounded-t-2xl flex items-center justify-between">
+              <h2 className="text-2xl font-extrabold">
+                {conditionDetails[selectedCondition as keyof typeof conditionDetails].title}
+              </h2>
+              <button
+                onClick={() => setSelectedCondition(null)}
+                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+              >
+                <svg viewBox="0 0 20 20" className="w-5 h-5 fill-white">
+                  <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="px-8 py-8 space-y-6">
+              {/* What is it */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-full bg-[#45321A]/10 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="#45321A" strokeWidth="2">
+                      <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-bold text-[#191919] text-lg">Wat is het?</h3>
+                </div>
+                <p className="text-[#403F3F] leading-relaxed text-sm">
+                  {conditionDetails[selectedCondition as keyof typeof conditionDetails].what}
+                </p>
+              </div>
+
+              {/* How does chiro help */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-full bg-[#45321A]/10 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="#45321A" strokeWidth="2">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <h3 className="font-bold text-[#191919] text-lg">Hoe helpt chiropractie?</h3>
+                </div>
+                <p className="text-[#403F3F] leading-relaxed text-sm">
+                  {conditionDetails[selectedCondition as keyof typeof conditionDetails].how}
+                </p>
+              </div>
+
+              {/* CTA */}
+              <div className="bg-[#F6F6F6] rounded-xl px-6 py-6 mt-6">
+                <p className="text-[#403F3F] text-sm mb-4 text-center">
+                  Heeft u last van <strong className="text-[#191919]">{conditionDetails[selectedCondition as keyof typeof conditionDetails].title.toLowerCase()}</strong>?
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <a
+                    href="#booking"
+                    onClick={() => setSelectedCondition(null)}
+                    className="bg-[#45321A] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#5a4228] transition-colors text-center text-sm"
+                  >
+                    Maak een afspraak
+                  </a>
+                  <a
+                    href="tel:0206731800"
+                    className="border-2 border-[#45321A] text-[#45321A] font-semibold px-6 py-3 rounded-full hover:bg-[#45321A]/5 transition-colors text-center text-sm"
+                  >
+                    Bel 020-673 1800
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer className="bg-[#191919] text-white py-14">
         <div className="max-w-6xl mx-auto px-6 grid sm:grid-cols-2 md:grid-cols-4 gap-10">
@@ -719,9 +1031,10 @@ export default function ChiroPage() {
           <div>
             <div className="font-semibold text-sm mb-4 text-white/80 uppercase tracking-wide">Quick Links</div>
             <ul className="space-y-2.5 text-sm text-white/60">
-              {[['services', 'Services'], ['approach', 'Our Approach'], ['about', 'About Dr. Jahani'], ['testimonials', 'Reviews'], ['faq', 'FAQ'], ['booking', 'Book Appointment']].map(([href, label]) => (
+              {[['services', 'Services'], ['approach', 'Our Approach'], ['pricing', 'Pricing'], ['about', 'About Dr. Jahani'], ['testimonials', 'Reviews'], ['faq', 'FAQ'], ['booking', 'Book Appointment']].map(([href, label]) => (
                 <li key={href}><a href={`#${href}`} className="hover:text-white transition-colors">{label}</a></li>
               ))}
+              <li><a href="/chiro/vacatures" className="hover:text-white transition-colors">Vacatures</a></li>
             </ul>
           </div>
           <div>
