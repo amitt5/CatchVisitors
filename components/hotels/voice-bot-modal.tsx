@@ -119,6 +119,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pendingMediaItems, setPendingMediaItems] = useState<string[]>([]);
+  const [isInBookingMode, setIsInBookingMode] = useState(false);
 
   // Keyword mapping for transcript matching
   const MEDIA_KEYWORDS: Record<string, string[]> = {
@@ -163,11 +164,19 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
 
     // Special case: calendar
     if (mediaId === 'calendar') {
-      console.log('✅ Displaying booking calendar');
+      console.log('✅ Displaying booking calendar - entering booking mode');
       setShowCalendar(true);
       setCurrentMedia(null);
       setBookingStep('calendar');
+      setIsInBookingMode(true);
+      console.log('🔒 Booking mode activated - other media will be blocked');
     } else {
+      // If in booking mode, ignore all other media requests to keep calendar visible
+      if (isInBookingMode) {
+        console.log('🔒 BLOCKING media request:', mediaId, '- in booking mode, calendar must stay visible');
+        return;
+      }
+
       // Check if it's an individual media item
       const mediaItem = MEDIA_MAP[mediaId];
       if (mediaItem) {
@@ -182,6 +191,14 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
       }
     }
   };
+
+  // Reset booking mode when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsInBookingMode(false);
+      console.log('🔓 Booking mode reset - modal opened');
+    }
+  }, [isOpen]);
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -523,6 +540,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     if (vapiRef.current && isCallActive) {
       vapiRef.current.stop().catch(console.error);
     }
+    // Reset booking mode when closing
+    setIsInBookingMode(false);
     onClose();
   };
 
