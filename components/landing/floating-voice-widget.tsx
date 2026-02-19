@@ -13,7 +13,7 @@ export function FloatingVoiceWidget() {
   const vapiRef = useRef<Vapi | null>(null);
 
   // Don't show on hotels, strategence, or chiro pages
-  if (pathname === '/hotels' || pathname === '/strategence' || pathname.startsWith('/chiro')) {
+  if (pathname === '/hotels' || pathname === '/strategence' || pathname === '/steel' || pathname.startsWith('/chiro')) {
     return null;
   }
 
