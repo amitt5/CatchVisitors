@@ -16,6 +16,7 @@ const NAV_COLS = [
     heading: 'Services',
     links: [
       'Freight Forwarding',
+      'Warehousing (India & NL)',
       'JIT Warehouse Delivery',
       'Quality Certification',
       'Supply Chain Consulting',
@@ -108,7 +109,11 @@ export function Footer() {
                 >
                   276, Niligiri Apartment
                   <br />
-                  Alaknanda, New Delhi — 110019
+                  Alaknanda, New Delhi 110019
+                  <br />
+                  <a href="tel:+918860364748" style={{ color: 'rgba(250,248,245,0.3)' }}>+91 88603 64748</a>
+                  <br />
+                  <a href="mailto:abhinav@navank.onmicrosoft.com" style={{ color: 'rgba(250,248,245,0.3)' }}>abhinav@navank.onmicrosoft.com</a>
                 </address>
               </div>
 
@@ -123,9 +128,13 @@ export function Footer() {
                   className="not-italic text-xs leading-[1.8]"
                   style={{ fontFamily: 'var(--font-inter)', color: 'rgba(250,248,245,0.3)' }}
                 >
-                  Pelikaanhof 134
+                  NAVANK Cable B.V.
                   <br />
-                  2493 VH Leidschendam
+                  Pelikaanhof 134, 2264 JL Leidschendam
+                  <br />
+                  <a href="tel:+31619253386" style={{ color: 'rgba(250,248,245,0.3)' }}>+31 619253386</a>
+                  <br />
+                  <a href="mailto:naval@navank.nl" style={{ color: 'rgba(250,248,245,0.3)' }}>naval@navank.nl</a>
                 </address>
               </div>
             </div>

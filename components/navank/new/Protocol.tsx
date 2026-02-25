@@ -12,7 +12,7 @@ const STEPS = [
     headline: 'Global OEM Partnerships',
     body: 'We partner directly with world-class manufacturers across Asia and Europe — sourcing optical fiber components, cable compounds, and specialty materials at the raw material level, not through intermediaries.',
     detail:
-      'Direct partnerships in China, Taiwan, South Korea, Germany, Italy, and the Netherlands. ISO-certified, audited suppliers exclusively.',
+      'Direct partnerships with Zhejiang Wanma Co. (China), Unitape (UK), Nantong Siber, and Chhaperia International. ISO-certified, audited suppliers — no intermediaries.',
     bg: '#0D0D12',
     motif: 'geometric',
   },
@@ -22,7 +22,7 @@ const STEPS = [
     headline: 'Quality Assurance & Compliance',
     body: 'Every material batch undergoes rigorous technical validation. We verify mechanical properties, thermal ratings, chemical composition, and compliance with IEC, RoHS, and REACH before shipment.',
     detail:
-      'Third-party lab testing, COA verification, MSDS documentation, and full batch traceability for every consignment we move.',
+      'UL1581, TUV, IEC60332, ISO/TS16919, IEC60092 certified. Third-party lab testing, COA verification, MSDS documentation, and full batch traceability.',
     bg: '#0E0E14',
     motif: 'grid',
   },
@@ -32,7 +32,7 @@ const STEPS = [
     headline: 'Freight & JIT Warehouse Dispatch',
     body: 'In-house freight forwarding and just-in-time warehouse logistics ensure your materials arrive exactly when your production line needs them. No excess inventory. No delays.',
     detail:
-      'FCL/LCL sea freight, air cargo, and customs clearance handled in-house. Warehouse hubs in New Delhi and the Netherlands.',
+      'Warehouse hubs in New Delhi and the Netherlands. FCL/LCL sea freight, air cargo, customs clearance handled in-house. $10M in shipments managed annually.',
     bg: '#0F0F17',
     motif: 'waveform',
   },

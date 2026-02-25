@@ -9,52 +9,52 @@ const ease = [0.25, 0.46, 0.45, 0.94] as const
 /* ── Shuffler data ── */
 const MATERIALS = [
   {
-    label: 'Optical Fiber Components',
-    detail: 'Water-blocking tapes, PBT compounds, ECCS & CJB-ECCS tapes for OFC manufacturing',
-    code: 'OFC',
+    label: 'Water Blocking Tapes & Yarns',
+    detail: 'Non-conductive, semi-conductive and PET laminated versions for longitudinal water protection in FOC & telecom cables.',
+    code: 'WBT',
   },
   {
-    label: 'Cable Compounds',
-    detail: 'XLPE, LSZH, LSZH-OFC, PE, PVC, semiconductive — sourced from world-class OEM partners',
-    code: 'CMP',
+    label: 'ECCS & CJB-ECCS Tapes',
+    detail: 'Copolymer coated cold-rolled steel tape for cable armouring against rodents and external forces.',
+    code: 'ECT',
   },
   {
-    label: 'PE & XLPE Materials',
-    detail: 'Cross-linked polyethylene and polyethylene for MV/HV power cable insulation',
+    label: 'PBT Compounds for Loose Tube',
+    detail: 'Extrudable polymer for 2–24 fiber loose tubes in OFC. Excellent high-speed extrusion, meets stringent bending test.',
+    code: 'PBT',
+  },
+  {
+    label: 'XLPE & PE Compounds',
+    detail: 'Peroxide and silane-type XLPE for HV/EHV cables. Full range: HDPE, MDPE, LDPE, FR-HDPE.',
     code: 'PWR',
   },
   {
-    label: 'LSZH Compounds',
-    detail: 'Low smoke zero halogen formulations for safety-critical building and rail cable applications',
+    label: 'LSZH & Sheathing Compounds',
+    detail: 'UL1581, TUV, IEC60332 certified. For FOC, LAN, Solar, Automobile, Railway and Elevator cables.',
     code: 'LSZ',
-  },
-  {
-    label: 'Water Blocking Tapes',
-    detail: 'Swellable yarn, ECC tape, and CJB-ECCS configurations for moisture-resistant cable cores',
-    code: 'WBT',
   },
 ]
 
 /* ── Live feed data ── */
 const LIVE_FEED = [
-  'Shipment #NVK-2847 dispatched — Guangzhou port',
-  'JIT delivery confirmed — Mumbai cable facility',
+  'Water Blocking Tape consignment #NVK-2847 dispatched — Guangzhou port',
+  'PBT Compounds JIT delivery confirmed — Mumbai OFC facility',
   'XLPE compound batch #4291 cleared Amsterdam customs',
-  'Water-blocking tape QC approved — 40MT consignment',
-  'Freight booking confirmed — New Delhi distribution hub',
+  'ECCS Tape QC approved — 40MT consignment ready for dispatch',
+  'Freight booking confirmed — Nantong Siber to New Delhi hub',
   'LSZH compound en route to Rotterdam warehouse',
-  'COA verification complete — ECCS tape batch #1872',
-  'Air cargo dispatched — Seoul to Schiphol',
+  'COA verification complete — Wanma XLPE batch #1872',
+  'Air cargo dispatched — Seoul to Schiphol for Unitape order',
 ]
 
 /* ── Stats data ── */
 const STATS = [
   { value: '25+', label: 'Years Experience' },
-  { value: '$14M', label: 'Annual Revenue' },
+  { value: '$14M', label: 'Revenue (2022)' },
   { value: '22%', label: 'YoY Growth' },
   { value: '40+', label: 'OEM Partners' },
-  { value: '12', label: 'Countries' },
-  { value: '200+', label: 'Active SKUs' },
+  { value: '4', label: 'Direct Partnerships' },
+  { value: '$10M', label: 'Annual Logistics' },
 ]
 
 /* ─────────────────────────────────────────────

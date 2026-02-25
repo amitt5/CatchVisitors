@@ -106,26 +106,48 @@ export function GetStarted() {
           </CTAButton>
 
           {/* Secondary */}
-          <a
-            href="mailto:info@navank.in"
-            className="flex items-center gap-2 text-sm transition-all duration-200"
-            style={{
-              fontFamily: 'var(--font-inter)',
-              color: 'rgba(250,248,245,0.4)',
-              letterSpacing: '0.04em',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'rgba(250,248,245,0.8)'
-              e.currentTarget.style.transform = 'translateY(-1px)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'rgba(250,248,245,0.4)'
-              e.currentTarget.style.transform = 'translateY(0)'
-            }}
-          >
-            <Mail size={14} />
-            info@navank.in
-          </a>
+          <div className="flex flex-col gap-2 text-left">
+            <a
+              href="mailto:naval@navank.nl"
+              className="flex items-center gap-2 text-sm transition-all duration-200"
+              style={{
+                fontFamily: 'var(--font-inter)',
+                color: 'rgba(250,248,245,0.4)',
+                letterSpacing: '0.04em',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'rgba(250,248,245,0.8)'
+                e.currentTarget.style.transform = 'translateY(-1px)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'rgba(250,248,245,0.4)'
+                e.currentTarget.style.transform = 'translateY(0)'
+              }}
+            >
+              <Mail size={14} />
+              naval@navank.nl · Netherlands
+            </a>
+            <a
+              href="mailto:abhinav@navank.onmicrosoft.com"
+              className="flex items-center gap-2 text-sm transition-all duration-200"
+              style={{
+                fontFamily: 'var(--font-inter)',
+                color: 'rgba(250,248,245,0.4)',
+                letterSpacing: '0.04em',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'rgba(250,248,245,0.8)'
+                e.currentTarget.style.transform = 'translateY(-1px)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'rgba(250,248,245,0.4)'
+                e.currentTarget.style.transform = 'translateY(0)'
+              }}
+            >
+              <Mail size={14} />
+              abhinav@navank.onmicrosoft.com · India
+            </a>
+          </div>
         </motion.div>
 
         {/* Trust badges */}
@@ -135,7 +157,7 @@ export function GetStarted() {
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.5 }}
         >
-          {['25+ Years Experience', 'ISO-Certified Partners', 'In-House Logistics', 'Global Coverage'].map(
+          {['25+ Years', 'ISO-Certified Supply Chain', 'In-House Freight Forwarding', '$10M Annual Logistics'].map(
             (badge) => (
               <div key={badge} className="flex items-center gap-2">
                 <div

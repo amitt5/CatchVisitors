@@ -4,8 +4,11 @@ import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google'
 import { Navbar } from '@/components/navank/new/Navbar'
 import { Hero } from '@/components/navank/new/Hero'
 import { Features } from '@/components/navank/new/Features'
+import { Products } from '@/components/navank/new/Products'
 import { Philosophy } from '@/components/navank/new/Philosophy'
 import { Protocol } from '@/components/navank/new/Protocol'
+import { Team } from '@/components/navank/new/Team'
+import { Partners } from '@/components/navank/new/Partners'
 import { GetStarted } from '@/components/navank/new/GetStarted'
 import { Footer } from '@/components/navank/new/Footer'
 
@@ -53,8 +56,11 @@ export default function NavankNewPage() {
       <Navbar />
       <Hero />
       <Features />
+      <Products />
       <Philosophy />
       <Protocol />
+      <Team />
+      <Partners />
       <GetStarted />
       <Footer />
     </div>

@@ -75,7 +75,7 @@ export function Hero() {
             fontSize: 'clamp(3.2rem, 8vw, 7.5rem)',
           }}
         >
-          Global supply meets
+          Passion for
         </motion.h1>
 
         {/* Headline line 2 — Playfair italic drama */}
@@ -90,7 +90,7 @@ export function Hero() {
             color: '#C9A84C',
           }}
         >
-          Precision.
+          Cables.
         </motion.h1>
 
         {/* Sub-copy */}
@@ -104,9 +104,9 @@ export function Hero() {
             color: 'rgba(250,248,245,0.55)',
           }}
         >
-          Premium raw materials for OFC, power, and data cable manufacturers —
-          compounds, fiber components, and specialty materials delivered with
-          25-year supply chain expertise.
+          NAVANK has been India's leading raw material supplier for OFC, Data and Power
+          cable industries since 1998 — compounds, fiber components, and specialty
+          materials delivered through direct OEM partnerships.
         </motion.p>
 
         {/* CTAs */}
@@ -178,7 +178,7 @@ export function Hero() {
       >
         {[
           { v: '25+', l: 'Years' },
-          { v: '$14M', l: 'Revenue' },
+          { v: '$14M', l: 'Revenue 2022' },
           { v: '22%', l: 'YoY Growth' },
         ].map((s) => (
           <div key={s.l} className="text-right">
