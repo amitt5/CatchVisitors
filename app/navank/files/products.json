@@ -194,7 +194,79 @@
       "id": "data-cable",
       "name": "Data Cable",
       "description": "Raw materials for manufacturing data cables including CAT-5/6/7 LAN cables",
-      "products": []
+      "products": [
+  {
+    "id": "lszh",
+    "name": "LSZH",
+    "description": "Halogen Free Flame Retardant/Zero Halogen Flame Retardant Polyolefin Based Sheathing Compounds for Data cables.",
+    "key_specs": [
+      "Halogen free",
+      "Flame retardant",
+      "Zero halogen",
+      "Polyolefin based",
+      "For data cables"
+    ],
+    "image": "https://www.navank.in/wp-content/uploads/2022/11/LSZH-compound-500x400.jpg"
+  },
+  {
+    "id": "pvc-cmr",
+    "name": "PVC CMR",
+    "description": "Lead free 80°C Rated, Sunlight resistant, Highly Flame-Retardant jacket compound with good low temperature & excellent electrical properties.",
+    "key_specs": [
+      "Lead free",
+      "80°C rated",
+      "Sunlight resistant",
+      "Highly flame-retardant",
+      "Excellent electrical properties"
+    ],
+    "image": "https://www.navank.in/wp-content/uploads/2022/11/PVC-compound-500x400.jpg"
+  },
+  {
+    "id": "aluminium-pet-lamination-foils",
+    "name": "Aluminium-PET Lamination Foils",
+    "description": "Aluminum foil applied to the shielding layer of communication cables, which can effectively reduce interference.",
+    "key_specs": [
+      "Aluminum-PET laminated",
+      "Shielding layer application",
+      "Reduces interference",
+      "For communication cables"
+    ],
+    "image": "https://www.navank.in/wp-content/uploads/2022/11/500X500-11-500x400.jpg"
+  },
+  {
+    "id": "pe-compound",
+    "name": "PE Compound",
+    "description": "Discontinuous tape polyethylene compound for data cable applications.",
+    "key_specs": [
+      "Discontinuous tape",
+      "Polyethylene based",
+      "Data cable applications"
+    ],
+    "image": "https://www.navank.in/wp-content/uploads/2022/11/PVC-compound-500x400.jpg"
+  },
+  {
+    "id": "tapes",
+    "name": "Tapes",
+    "description": "PE compound-based tapes for data cable construction.",
+    "key_specs": [
+      "PE compound based",
+      "Data cable construction"
+    ],
+    "image": "https://www.navank.in/wp-content/uploads/2022/11/500X500-9-500x400.jpg"
+  },
+  {
+    "id": "pvc-compound",
+    "name": "PVC Compound",
+    "description": "Cross-linkable polyethylene compound available in Peroxide-XLPE, Silane-XLPE, and TR-XLPE variants for data cables.",
+    "key_specs": [
+      "Peroxide-XLPE",
+      "Silane-XLPE",
+      "TR-XLPE",
+      "Cross-linkable"
+    ],
+    "image": "https://www.navank.in/wp-content/uploads/2022/11/PVC-compound-500x400.jpg"
+  }
+]
     },
     {
       "id": "freight-forwarding",

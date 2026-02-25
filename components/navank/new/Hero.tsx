@@ -18,14 +18,17 @@ const stagger = (i: number) => ({
 export function Hero() {
   return (
     <section className="relative w-full overflow-hidden" style={{ height: '100dvh', minHeight: '100vh' }}>
-      {/* Background — dark marble */}
+      {/* Background — video */}
       <div className="absolute inset-0">
-        <img
-          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80"
-          alt=""
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
           className="w-full h-full object-cover"
-          loading="eager"
-        />
+        >
+          <source src="/videos/navank-hero.mp4" type="video/mp4" />
+        </video>
       </div>
 
       {/* Layered gradient overlay */}
