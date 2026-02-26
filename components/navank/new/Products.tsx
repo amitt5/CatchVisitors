@@ -95,6 +95,51 @@ const POWER_PRODUCTS = [
   },
 ]
 
+const DATA_PRODUCTS = [
+  {
+    id: 'lszh',
+    name: 'LSZH',
+    description: 'Halogen Free Flame Retardant / Zero Halogen Flame Retardant Polyolefin Based Sheathing Compounds for Data cables.',
+    specs: ['Halogen free', 'Flame retardant', 'Zero halogen', 'Polyolefin based'],
+    image: 'https://www.navank.in/wp-content/uploads/2022/11/LSZH-compound-500x400.jpg',
+  },
+  {
+    id: 'pvc-cmr',
+    name: 'PVC CMR',
+    description: 'Lead free 80°C rated, sunlight resistant, highly flame-retardant jacket compound with good low temperature & excellent electrical properties.',
+    specs: ['Lead free', '80°C rated', 'Sunlight resistant', 'Flame-retardant'],
+    image: 'https://www.navank.in/wp-content/uploads/2022/11/PVC-compound-500x400.jpg',
+  },
+  {
+    id: 'aluminium-pet-lamination-foils',
+    name: 'Aluminium-PET Lamination Foils',
+    description: 'Aluminum foil applied to the shielding layer of communication cables, effectively reducing interference.',
+    specs: ['Al-PET laminated', 'Shielding layer', 'Reduces interference', 'Telecom cables'],
+    image: 'https://www.navank.in/wp-content/uploads/2022/11/500X500-11-500x400.jpg',
+  },
+  {
+    id: 'pe-compound-data',
+    name: 'PE Compound',
+    description: 'Discontinuous tape polyethylene compound for data cable applications.',
+    specs: ['Discontinuous tape', 'Polyethylene based', 'Data cable use'],
+    image: 'https://www.navank.in/wp-content/uploads/2022/11/PE-compound-500x400.jpg',
+  },
+  {
+    id: 'tapes',
+    name: 'Tapes',
+    description: 'PE compound-based tapes for data cable construction.',
+    specs: ['PE compound based', 'Data cable construction'],
+    image: 'https://www.navank.in/wp-content/uploads/2022/11/500X500-9-500x400.jpg',
+  },
+  {
+    id: 'pvc-compound-data',
+    name: 'PVC Compound',
+    description: 'Cross-linkable polyethylene compound in Peroxide-XLPE, Silane-XLPE, and TR-XLPE variants for data cables.',
+    specs: ['Peroxide-XLPE', 'Silane-XLPE', 'TR-XLPE', 'Cross-linkable'],
+    image: 'https://www.navank.in/wp-content/uploads/2022/11/PVC-compound-500x400.jpg',
+  },
+]
+
 function ProductCard({ product, index }: { product: typeof OFC_PRODUCTS[0]; index: number }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-60px' })
@@ -268,7 +313,7 @@ export function Products() {
         </div>
 
         {/* Power Cable Section */}
-        <div>
+        <div style={{ marginBottom: '4rem' }}>
           <div
             style={{
               display: 'flex',
@@ -298,6 +343,42 @@ export function Products() {
             }}
           >
             {POWER_PRODUCTS.map((p, i) => (
+              <ProductCard key={p.id} product={p} index={i} />
+            ))}
+          </div>
+        </div>
+
+        {/* Data Cable Section */}
+        <div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+              marginBottom: '2rem',
+            }}
+          >
+            <div style={{ width: '2rem', height: '1px', background: '#C9A84C' }} />
+            <span
+              style={{
+                fontFamily: 'var(--font-jetbrains)',
+                fontSize: '0.625rem',
+                letterSpacing: '0.4em',
+                textTransform: 'uppercase',
+                color: 'rgba(201,168,76,0.6)',
+              }}
+            >
+              Data Cable
+            </span>
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+              gap: '1.25rem',
+            }}
+          >
+            {DATA_PRODUCTS.map((p, i) => (
               <ProductCard key={p.id} product={p} index={i} />
             ))}
           </div>
