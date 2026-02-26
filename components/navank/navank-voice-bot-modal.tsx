@@ -617,8 +617,8 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
                     animation: pulseRed 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
                   }
                 `}</style>
-                {/* Messages/Transcription */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
+                {/* Messages/Transcription — commented out, mic-only mode */}
+                {/* <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
                   {messages.map((msg, idx) => (
                     <div
                       key={idx}
@@ -651,10 +651,10 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
                     </div>
                   )}
                   <div ref={messagesEndRef} />
-                </div>
+                </div> */}
 
-                {/* Voice Controls Only */}
-                <div className="px-6 py-8 border-t border-white/10 bg-[#0a0a0f] flex-shrink-0 flex flex-col items-center">
+                {/* Voice Controls — centered full height */}
+                <div className="flex-1 flex flex-col items-center justify-center bg-[#0a0a0f]">
                   <button
                     onClick={toggleCall}
                     className={`w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-lg ${
