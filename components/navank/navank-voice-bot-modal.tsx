@@ -99,6 +99,12 @@ const MEDIA_SETS = {
   ]
 };
 
+// Product ID to tech spec image (only for products that have specs)
+const PRODUCT_SPEC_MAP: Record<string, string> = {
+  "water-blocking-tape": "/images/navank/specs/water-blocking-tape.png",
+  "water-swellable-yarn": "/images/navank/specs/water-swellable-yarn.png",
+};
+
 // Product ID to image mapping for tool calls
 const PRODUCT_IMAGE_MAP: Record<string, { url: string; caption: string }> = {
   "water-blocking-tape": {
@@ -157,6 +163,7 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
   const [isCallActive, setIsCallActive] = useState(false);
   const [currentMedia, setCurrentMedia] = useState<typeof MEDIA_SETS.opticalFiber | null>(null);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [currentSpec, setCurrentSpec] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [textInput, setTextInput] = useState("");
   const [chatId, setChatId] = useState<string | null>(null);
@@ -208,9 +215,11 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
         case 'h':
         case 'H':
           setCurrentMedia(null);
+          setCurrentSpec(null);
           break;
         case 'Escape':
           setCurrentMedia(null);
+          setCurrentSpec(null);
           break;
       }
     };
@@ -288,6 +297,7 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
               console.log('✅ Product image found! Displaying:', productImage);
               setCurrentMedia([productImage]);
               setCurrentMediaIndex(0);
+              setCurrentSpec(PRODUCT_SPEC_MAP[productId] ?? null);
               console.log('🖼️  Image display state updated');
             } else {
               console.warn('⚠️  Product ID not found in PRODUCT_IMAGE_MAP:', productId);
@@ -311,6 +321,7 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
               console.log('✅ Product image found! Displaying:', productImage);
               setCurrentMedia([productImage]);
               setCurrentMediaIndex(0);
+              setCurrentSpec(PRODUCT_SPEC_MAP[productId] ?? null);
               console.log('🖼️  Image display state updated');
             } else {
               console.warn('⚠️  Product ID not found:', productId);
@@ -332,6 +343,7 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
             console.log('✅ Product image found! Displaying:', productImage);
             setCurrentMedia([productImage]);
             setCurrentMediaIndex(0);
+            setCurrentSpec(PRODUCT_SPEC_MAP[productId] ?? null);
             console.log('🖼️  Image display state updated');
           } else {
             console.warn('⚠️  Product ID not found:', productId);
@@ -594,9 +606,9 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
                       )}
                     </Button>
                   </div>
-                  <div className="text-center text-xs text-gray-500 mt-3">
+                  {/* <div className="text-center text-xs text-gray-500 mt-3">
                     <p>Demo controls: 1=Optical Fiber, 2=Power Cable, 3=All Products, ←/→=Navigate, H=Hide</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             ) : mode === 'voice' ? (
@@ -653,27 +665,38 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
                   <div ref={messagesEndRef} />
                 </div> */}
 
-                {/* Voice Controls — centered full height */}
-                <div className="flex-1 flex flex-col items-center justify-center bg-[#0a0a0f]">
-                  <button
-                    onClick={toggleCall}
-                    className={`w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-lg ${
-                      isCallActive
-                        ? 'pulse-red'
-                        : 'bg-gradient-to-br from-[#4a6fa5] to-[#3a5585] hover:from-[#3a5585] hover:to-[#2a4565]'
-                    }`}
-                  >
-                    {isCallActive ? (
-                      <MicOff className="w-12 h-12 text-white" />
-                    ) : (
-                      <Mic className="w-12 h-12 text-white" />
-                    )}
-                  </button>
-                  <p className="text-base font-medium text-gray-300 mt-4">
-                    {isCallActive ? 'End Voice Call' : 'Start Voice Call'}
-                  </p>
-                  <div className="text-center text-xs text-gray-500 mt-4">
-                    <p>Demo controls: 1=Optical Fiber, 2=Power Cable, 3=All Products, ←/→=Navigate, H=Hide</p>
+                {/* Voice Controls — spec image (if available) + mic centered */}
+                <div className="flex-1 flex flex-col items-center justify-center bg-[#0a0a0f] p-6 gap-6">
+                  {currentSpec && (
+                    <div className="w-full flex-1 min-h-0 flex items-center justify-center">
+                      <img
+                        src={currentSpec}
+                        alt="Technical Specifications"
+                        className="max-w-full max-h-full object-contain rounded-lg"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-col items-center flex-shrink-0">
+                    <button
+                      onClick={toggleCall}
+                      className={`w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-lg ${
+                        isCallActive
+                          ? 'pulse-red'
+                          : 'bg-gradient-to-br from-[#4a6fa5] to-[#3a5585] hover:from-[#3a5585] hover:to-[#2a4565]'
+                      }`}
+                    >
+                      {isCallActive ? (
+                        <MicOff className="w-12 h-12 text-white" />
+                      ) : (
+                        <Mic className="w-12 h-12 text-white" />
+                      )}
+                    </button>
+                    <p className="text-base font-medium text-gray-300 mt-4">
+                      {isCallActive ? 'End Voice Call' : 'Start Voice Call'}
+                    </p>
+                    {/* <div className="text-center text-xs text-gray-500 mt-4">
+                      <p>Demo controls: 1=Optical Fiber, 2=Power Cable, 3=All Products, ←/→=Navigate, H=Hide</p>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -726,9 +749,9 @@ export function NavankVoiceBotModal({ isOpen, onClose }: NavankVoiceBotModalProp
                       )}
                     </Button>
                   </div>
-                  <div className="text-center text-xs text-gray-500 mt-3">
+                  {/* <div className="text-center text-xs text-gray-500 mt-3">
                     <p>Demo controls: 1=Optical Fiber, 2=Power Cable, 3=All Products, ←/→=Navigate, H=Hide</p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             )}
