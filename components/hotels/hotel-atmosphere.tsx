@@ -9,7 +9,7 @@ export function HotelAtmosphere() {
       <div className="absolute inset-0 bg-black/50" />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
         {/* Play button */}
-        <div className="w-16 h-16 rounded-full border-2 border-white flex items-center justify-center mb-6 hover:bg-white/20 transition-colors cursor-pointer">
+        {/* <div className="w-16 h-16 rounded-full border-2 border-white flex items-center justify-center mb-6 hover:bg-white/20 transition-colors cursor-pointer">
           <svg
             className="w-6 h-6 text-white ml-1"
             fill="currentColor"
@@ -17,7 +17,7 @@ export function HotelAtmosphere() {
           >
             <path d="M8 5v14l11-7z" />
           </svg>
-        </div>
+        </div> */}
         <p className="text-sm font-semibold tracking-[0.2em] uppercase text-[#C8A96E] mb-3">
           Experience Amsterdam&apos;s Finest
         </p>
