@@ -1,0 +1,96 @@
+[
+  {
+    "id": "02SUP",
+    "name": "Superior Room",
+    "guests": 1,
+    "size_sqm": 35,
+    "size_sqft": 376,
+    "view": "Courtyard view",
+    "images": [
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/6ckH5Wiz5wqQeCs0IoO88O/331c95383eb3b849277fb57478153c7e/room-02SUP-image-ncawvj-Le_Bristol_Paris-Chambre_Sup_rieure-523-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/35IFscnoGarloieS9cpx9X/4c498d54a066baecc3963213120a3af4/room-02SUP-image-LBP-superieure-bathroom_R.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/6h2PbtZhI86FFdv2q4ZWvu/a1af0131eb548394082d884a3d61f829/Le_Bristol_Paris-Chambre_SupÃ_rieure-223-HD-4.jpg?w=1070&h=808&fm=jpg&fit=fill"
+    ]
+  },
+  {
+    "id": "EXE",
+    "name": "Executive Room",
+    "guests": 2,
+    "size_sqm": 40,
+    "size_sqft": 430,
+    "view": "Courtyard view",
+    "images": [
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/5ByCvLdrYKAvNyW5r3eJut/1b943c74bd8298fe84f93e0d4d97ac90/room-EXE-image-s5iwx0-Le_Bristol_Paris_-_Chambre_612_-___Claire_Cocano_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/mwZHSsfaimwcMietgM6WU/253847b8495e0a2ebf109e838939d8fe/room-EXE-image-x4g0wp-Le_Bristol_Paris_-_Chambre_612_-___Claire_Cocano_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/6QdssAZTQxiW1mRKV5pQm/9eeb00827cdcc3ba610cd44373cfcf87/room-EXE-image-j75493-Le_Bristol_Paris_-_Chambre_Executive_612_-___Claire_Cocan_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/5t9t9EnWIR0csdelbySVnn/0c47aca3859b1cf306a8bf610567635c/room-EXE-image-Le_Bristol_Paris-Chambre_Deluxe-161-HD-5_S.jpg?w=1070&h=808&fm=jpg&fit=fill"
+    ]
+  },
+  {
+    "id": "03DLX",
+    "name": "Deluxe Room",
+    "guests": 2,
+    "size_sqm": 45,
+    "size_sqft": 484,
+    "view": "Courtyard view or city view (rue du Faubourg Saint-Honoré)",
+    "images": [
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/3kEAPllp0GbNdm59DzK8yJ/be39a9c501dc750ea169385d97891440/room-03DLX-image-Le_Bristol_Paris-DLX-135-HD-1_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/4BlT3sTgoL2Zsp44pqKJ1T/3a8eed53f989345159d77392a1404294/room-03DLX-image-Le_Bristol_Paris-Chambre_Deluxe-161-HD-5_S.jpg?w=1070&h=808&fm=jpg&fit=fill"
+    ]
+  },
+  {
+    "id": "03DLXG",
+    "name": "Deluxe Room with Garden View",
+    "guests": 2,
+    "size_sqm": 45,
+    "size_sqft": 484,
+    "view": "Garden view",
+    "images": [
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/5TTLX90ke1oNjcZgHQCb9p/bd42d41a23ae467f860a6d8227ff6b8e/room-03DLXG-image-bfwjp6-Le_Bristol_Paris-DLXG-Chambre_222-HD-4_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/5wudJWzfb5REcWjL8exDeq/a0a7e6d551b92286f52e6c9859c067f4/room-03DLXG-image-n6a5ni-Le_Bristol_Paris-DLXG-Chambre_222-HD-5_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/HLBZs7GBDCTwoGcIkXilA/5a3929e670646e9a63eac761b1791e65/room-03DLXG-image-2jsdqn-Le_Bristol_Paris-DLXG-Chambre_222-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/nIUrZZR0RJ5j1ANGa94nt/0a0649303081f5ff946c141205dc860d/room-03DLXG-image-sxv4tl-Le_Bristol_Paris-DLXG-Chambre_222-HD-1_S.jpg?w=1070&h=808&fm=jpg&fit=fill"
+    ]
+  },
+  {
+    "id": "DLXB",
+    "name": "Deluxe Room with Balcony",
+    "guests": 2,
+    "size_sqm": 45,
+    "size_sqft": 484,
+    "view": "Garden view",
+    "images": [
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/6mfqJ7voUNEhOa7TF4QCO1/9be0cf054fb1aefe1abf330205561d0e/room-DLXB-image-lf3ppz-Le_Bristol_Paris_-_Chambre_Deluxe_Balcon_-_916_-_HD_-_2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/5hcckP0U624pOuhD4wYNUS/22fd2e3e78b2d14cff356a4a86692675/room-DLXB-image-LBP_le_bristol_paris_-_chambre_deluxe_vue_jardin_-_916_-__S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/39VLthagr4VnawXvstjBK7/fe8e550b978585382cd1961310bfe9f3/room-DLXB-image-Le_Bristol_Paris_deluxe_room_with_balcony-room3_R.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/5rb6JXrqjEvpXg78Tqa3HN/7de7eb31f566a21548ac9f299b028574/room-DLXB-image-LBP_deluxe_room_with_balcony-sdb_R.jpg?w=1070&h=808&fm=jpg&fit=fill"
+    ]
+  },
+  {
+    "id": "04PRE",
+    "name": "Prestige Room",
+    "guests": 3,
+    "size_sqm": 50,
+    "size_sqft": 540,
+    "view": "Courtyard view or city view (rue du Faubourg Saint-Honoré)",
+    "images": [
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/7DVPIBIel2ZsaZh4043zAN/f63d257385ad9ce6b90c56314dcb2209/room-04PRE-image-Le_Bristol_Paris-Chambre_Prestige-410-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/6Pe4ZMrdqYklN8Ew8mNbGr/e5e34ef470661f26caca63341b4eb06a/room-04PRE-image-Le_Bristol_Paris-Chambre_Prestige-160-HD-3_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/1NUWRn6A9bwCv3xkKFEwpJ/32a49c3630731b246aac26f2104c23ad/room-04PRE-image-LBP-chambre_prestige-160_S.jpg?w=1070&h=808&fm=jpg&fit=fill"
+    ]
+  },
+  {
+    "id": "PREB",
+    "name": "Prestige Room with Balcony",
+    "guests": 2,
+    "size_sqm": 50,
+    "size_sqft": 540,
+    "view": "Courtyard view or city view (rue du Faubourg Saint-Honoré)",
+    "images": [
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/3lIpWcaTAi0et539woVlh8/c4cac37f62b11166f8a2d081a0dea9ee/room-PREB-image-qq36gd-Le_Bristol_RomainRicard_03-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/3gv383RHFtjjidrNezBiaO/9ba6c771fe7848b095d041c28ff6e877/room-PREB-image-on8gi-Le_Bristol_RomainRicard_02-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/36AhXoGwsKN0Opxy1Bp60p/2013bc0bad1805f6ba42d3a7a7096c17/room-PREB-image-kerbv1-Le_Bristol_RomainRicard_01-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/1sm5ekipLXFE0nuJuUpiqE/75dc3351246b1ada9d5ba2dd6a119176/room-PREB-image-7lxlt8-Le_Bristol_RomainRicard_07-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill"
+    ]
+  }
+]
