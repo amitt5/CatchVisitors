@@ -27,13 +27,13 @@ export function HotelHero({ onOpenVoiceBot }: HotelHeroProps) {
 
       {/* Header */}
       <header className="relative z-10 px-6 py-6 flex justify-between items-center">
-        <div className="text-white">
-          <h1 className="text-2xl font-serif">Hotel Haven Amsterdam</h1>
+        {/* <div className="text-white">
+          <h1 className="text-2xl font-serif">Hotel Haven Amsterdam11</h1>
           <div className="flex items-center gap-2 mt-1 text-sm">
             <MapPin className="w-3 h-3" />
             <span>Singel, Amsterdam</span>
           </div>
-        </div>
+        </div> */}
         {/* <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-1 text-yellow-400">
             {[...Array(5)].map((_, i) => (

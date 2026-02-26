@@ -1,60 +1,67 @@
 const ROOMS = [
   {
-    name: "Canal Suite",
-    price: "€299",
-    image: "/videos/hotel-room/canal_suite.png",
+    name: "Superior Room",
+    price: "€199",
+    image:
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/6ckH5Wiz5wqQeCs0IoO88O/331c95383eb3b849277fb57478153c7e/room-02SUP-image-ncawvj-Le_Bristol_Paris-Chambre_Sup_rieure-523-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+    size: "35",
+    beds: "1",
+    sleeps: "1",
+  },
+  {
+    name: "Executive Room",
+    price: "€279",
+    image:
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/5ByCvLdrYKAvNyW5r3eJut/1b943c74bd8298fe84f93e0d4d97ac90/room-EXE-image-s5iwx0-Le_Bristol_Paris_-_Chambre_612_-___Claire_Cocano_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+    size: "40",
+    beds: "1",
+    sleeps: "2",
+  },
+  {
+    name: "Deluxe Room",
+    price: "€249",
+    image:
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/3kEAPllp0GbNdm59DzK8yJ/be39a9c501dc750ea169385d97891440/room-03DLX-image-Le_Bristol_Paris-DLX-135-HD-1_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
     size: "45",
     beds: "1",
     sleeps: "2",
-  },
-  {
-    name: "Classic King",
-    price: "€199",
-    image: "/videos/hotel-room/Classic_King.png",
-    size: "32",
-    beds: "1",
-    sleeps: "2",
-  },
-  {
-    name: "Executive Suite",
-    price: "€399",
-    image: "/videos/hotel-room/rooftop_restaurant.png",
-    size: "60",
-    beds: "2",
-    sleeps: "4",
   },
 ];
 
 const EXPLORE_ROOMS = [
   {
-    name: "Canal Suite",
-    price: "€299",
-    image: "/videos/hotel-room/canal_suite.png",
+    name: "Deluxe Room with Garden View",
+    price: "€269",
+    image:
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/5TTLX90ke1oNjcZgHQCb9p/bd42d41a23ae467f860a6d8227ff6b8e/room-03DLXG-image-bfwjp6-Le_Bristol_Paris-DLXG-Chambre_222-HD-4_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
     size: "45",
     beds: "1",
     sleeps: "2",
   },
   {
-    name: "Classic King",
-    price: "€199",
-    image: "/videos/hotel-room/Classic_King.png",
-    size: "32",
+    name: "Deluxe Room with Balcony",
+    price: "€289",
+    image:
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/6mfqJ7voUNEhOa7TF4QCO1/9be0cf054fb1aefe1abf330205561d0e/room-DLXB-image-lf3ppz-Le_Bristol_Paris_-_Chambre_Deluxe_Balcon_-_916_-_HD_-_2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+    size: "45",
     beds: "1",
     sleeps: "2",
   },
   {
-    name: "Rooftop Penthouse",
-    price: "€499",
-    image: "/videos/hotel-room/rooftop_restaurant.png",
-    size: "75",
-    beds: "2",
+    name: "Prestige Room",
+    price: "€349",
+    image:
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/7DVPIBIel2ZsaZh4043zAN/f63d257385ad9ce6b90c56314dcb2209/room-04PRE-image-Le_Bristol_Paris-Chambre_Prestige-410-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+    size: "50",
+    beds: "1",
     sleeps: "3",
   },
   {
-    name: "Garden Studio",
-    price: "€159",
-    image: "/videos/hotel-room/hotel_gym.jpg",
-    size: "28",
+    name: "Prestige Room with Balcony",
+    price: "€379",
+    image:
+      "https://images.eu.ctfassets.net/og3b0tarlg4b/3lIpWcaTAi0et539woVlh8/c4cac37f62b11166f8a2d081a0dea9ee/room-PREB-image-qq36gd-Le_Bristol_RomainRicard_03-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+    size: "50",
     beds: "1",
     sleeps: "2",
   },
