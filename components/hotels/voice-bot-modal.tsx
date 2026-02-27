@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
+import type { DateRange } from "react-day-picker";
 import { X, Mic, MicOff, Calendar as CalendarIcon, Send } from "lucide-react";
 import Vapi from "@vapi-ai/web";
 
@@ -121,6 +122,12 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   const [pendingMediaItems, setPendingMediaItems] = useState<string[]>([]);
   const [isInBookingMode, setIsInBookingMode] = useState(false);
   const isInBookingModeRef = useRef(false); // Immediate tracking, no async delay
+
+  const dateRange: DateRange = { from: selectedDate, to: checkoutDate };
+  const handleRangeSelect = (range: DateRange | undefined) => {
+    setSelectedDate(range?.from);
+    setCheckoutDate(range?.to);
+  };
 
   // Keyword mapping for transcript matching
   const MEDIA_KEYWORDS: Record<string, string[]> = {
@@ -925,34 +932,51 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                 {/* Step 1: Calendar */}
                 {bookingStep === 'calendar' && (
                   <div>
-                    <div className="flex items-center gap-2 mb-4">
+                    <div className="flex items-center gap-2 mb-3">
                       <CalendarIcon className="w-5 h-5 text-[#C8A96E]" />
                       <h3 className="font-serif text-lg text-[#1C1A17]">Select Your Dates</h3>
                     </div>
-                    <div className="flex gap-4">
-                      <div>
-                        <p className="text-sm font-medium mb-2 text-center">Check-in</p>
-                        <Calendar
-                          mode="single"
-                          selected={selectedDate}
-                          onSelect={setSelectedDate}
-                          className="rounded-md border"
-                          disabled={(date) => date < new Date()}
-                          defaultMonth={new Date(2026, 3, 1)} // April 2026
-                        />
+
+                    {/* Date summary bar */}
+                    <div className="flex items-center gap-3 mb-4 px-3 py-2 bg-[#F0EDE6] rounded-lg text-sm text-[#1C1A17]">
+                      <div className="flex-1 text-center">
+                        <span className="block text-[10px] uppercase tracking-wider text-[#6B6560] mb-0.5">Check-in</span>
+                        <span className="font-medium">
+                          {selectedDate ? selectedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—'}
+                        </span>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium mb-2 text-center">Check-out</p>
-                        <Calendar
-                          mode="single"
-                          selected={checkoutDate}
-                          onSelect={setCheckoutDate}
-                          className="rounded-md border"
-                          disabled={(date) => !selectedDate || date <= selectedDate}
-                          defaultMonth={new Date(2026, 4, 1)} // May 2026
-                        />
+                      <div className="text-[#C8A96E] font-light">→</div>
+                      <div className="flex-1 text-center">
+                        <span className="block text-[10px] uppercase tracking-wider text-[#6B6560] mb-0.5">Check-out</span>
+                        <span className="font-medium">
+                          {checkoutDate ? checkoutDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '—'}
+                        </span>
                       </div>
+                      {selectedDate && checkoutDate && (
+                        <>
+                          <div className="w-px h-8 bg-[#1C1A17]/10" />
+                          <div className="text-center pr-1">
+                            <span className="block text-[10px] uppercase tracking-wider text-[#6B6560] mb-0.5">Nights</span>
+                            <span className="font-semibold text-[#C8A96E]">
+                              {Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24))}
+                            </span>
+                          </div>
+                        </>
+                      )}
                     </div>
+
+                    {/* Single range calendar — April + May */}
+                    <Calendar
+                      mode="range"
+                      selected={dateRange}
+                      onSelect={handleRangeSelect}
+                      numberOfMonths={2}
+                      defaultMonth={new Date(2026, 3, 1)}
+                      disabled={(date) => date < new Date()}
+                      className="rounded-md border w-full"
+                      classNames={{ root: 'w-full' }}
+                    />
+
                     {selectedDate && checkoutDate && (
                       <div className="mt-4">
                         <Button
