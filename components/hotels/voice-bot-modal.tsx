@@ -674,24 +674,24 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
           {/* Left: Chat Interface */}
           <div className="flex-1 flex flex-col border-r min-h-0 overflow-hidden">
             {/* Header */}
-            <div className="px-6 py-4 border-b bg-gray-50 flex items-center justify-between flex-shrink-0">
+            <div className="px-6 py-4 border-b border-[#C8A96E]/20 bg-[#1C1A17] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white">
-                  <Mic className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-full bg-[#C8A96E]/20 border border-[#C8A96E]/40 flex items-center justify-center">
+                  <Mic className="w-5 h-5 text-[#C8A96E]" />
                 </div>
                 <div>
-                  <h3 className="font-semibold">AI Concierge</h3>
+                  <h3 className="font-serif text-white">AI Concierge</h3>
                   <div className="flex items-center gap-2 text-xs">
-                    <span className={`w-2 h-2 rounded-full ${isCallActive ? 'bg-green-500' : 'bg-gray-300'}`} />
-                    <span className="text-gray-600">
+                    <span className={`w-2 h-2 rounded-full ${isCallActive ? 'bg-green-400' : 'bg-white/30'}`} />
+                    <span className="text-white/50">
                       {isCallActive ? 'Connected' : 'Click microphone to start'}
                     </span>
                   </div>
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleClose}>
+              <button onClick={handleClose} className="text-white/40 hover:text-white transition-colors">
                 <X className="w-5 h-5" />
-              </Button>
+              </button>
             </div>
 
             {/* Main Content Area */}
@@ -699,27 +699,29 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
               /* Initial State - Show Both Options */
               <div className="flex-1 flex flex-col items-center justify-center p-6">
                 <style jsx>{`
-                  @keyframes pulseBlue {
+                  @keyframes pulseGold {
                     0%, 100% {
-                      background: linear-gradient(135deg, rgb(59 130 246) 0%, rgb(37 99 235) 100%);
+                      background: linear-gradient(135deg, rgb(200 169 110) 0%, rgb(168 138 88) 100%);
                       transform: scale(1);
+                      box-shadow: 0 0 0 0 rgba(200,169,110,0.4);
                     }
                     50% {
-                      background: linear-gradient(135deg, rgb(96 165 250) 0%, rgb(59 130 246) 100%);
+                      background: linear-gradient(135deg, rgb(218 190 135) 0%, rgb(200 169 110) 100%);
                       transform: scale(1.05);
+                      box-shadow: 0 0 0 12px rgba(200,169,110,0);
                     }
                   }
-                  .pulse-blue {
-                    animation: pulseBlue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                  .pulse-gold {
+                    animation: pulseGold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
                   }
                 `}</style>
                 <button
                   onClick={toggleCall}
-                  className="w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-lg pulse-blue"
+                  className="w-24 h-24 rounded-full flex items-center justify-center transition-all shadow-lg pulse-gold"
                 >
                   <Mic className="w-12 h-12 text-white" />
                 </button>
-                <p className="text-base font-medium text-gray-700 mt-4">
+                <p className="text-base font-serif text-[#1C1A17] mt-4">
                   Start Voice Conversation
                 </p>
 
@@ -733,13 +735,13 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                       onChange={(e) => setTextInput(e.target.value)}
                       onKeyDown={handleKeyDown}
                       disabled={isSending}
-                      className="flex-1 h-12 bg-white"
+                      className="flex-1 h-12 bg-white border-[#C8A96E]/30 focus-visible:ring-[#C8A96E]/40"
                     />
                     <Button
                       size="lg"
                       onClick={handleSendMessage}
                       disabled={!textInput.trim() || isSending}
-                      className="h-12 px-5 bg-blue-500 hover:bg-blue-600"
+                      className="h-12 px-5 bg-[#C8A96E] hover:bg-[#b8996a] text-white"
                     >
                       {isSending ? (
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -757,18 +759,20 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
               /* Voice Mode - Show Only Voice Controls */
               <div className="flex-1 flex flex-col min-h-0">
                 <style jsx>{`
-                  @keyframes pulseRed {
+                  @keyframes pulseActive {
                     0%, 100% {
-                      background: linear-gradient(135deg, rgb(239 68 68) 0%, rgb(220 38 38) 100%);
+                      background: linear-gradient(135deg, rgb(28 26 23) 0%, rgb(50 46 40) 100%);
                       transform: scale(1);
+                      box-shadow: 0 0 0 0 rgba(200,169,110,0.5);
                     }
                     50% {
-                      background: linear-gradient(135deg, rgb(248 113 113) 0%, rgb(239 68 68) 100%);
+                      background: linear-gradient(135deg, rgb(50 46 40) 0%, rgb(28 26 23) 100%);
                       transform: scale(1.05);
+                      box-shadow: 0 0 0 16px rgba(200,169,110,0);
                     }
                   }
-                  .pulse-red {
-                    animation: pulseRed 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                  .pulse-active {
+                    animation: pulseActive 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
                   }
                 `}</style>
                 {/* COMMENTED OUT: Messages/Transcription - Will be brought back later */}
@@ -781,8 +785,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                       <div
                         className={`max-w-[80%] px-4 py-3 rounded-2xl ${
                           msg.role === 'user'
-                            ? 'bg-blue-500 text-white rounded-br-sm'
-                            : 'bg-gray-100 text-gray-900 rounded-bl-sm'
+                            ? 'bg-[#1C1A17] text-white rounded-br-sm'
+                            : 'bg-[#F0EDE6] text-[#1C1A17] rounded-bl-sm'
                         }`}
                       >
                         <p className="text-sm leading-relaxed">{msg.content}</p>
@@ -811,10 +815,10 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                 <div className="flex-1 flex flex-col items-center justify-center p-6">
                   <button
                     onClick={toggleCall}
-                    className={`w-32 h-32 rounded-full flex items-center justify-center transition-all shadow-lg ${
+                    className={`w-32 h-32 rounded-full flex items-center justify-center transition-all shadow-lg border-2 ${
                       isCallActive
-                        ? 'pulse-red'
-                        : 'bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
+                        ? 'pulse-active border-[#C8A96E]'
+                        : 'bg-[#C8A96E] border-[#C8A96E] hover:bg-[#b8996a]'
                     }`}
                   >
                     {isCallActive ? (
@@ -823,7 +827,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                       <Mic className="w-16 h-16 text-white" />
                     )}
                   </button>
-                  <p className="text-lg font-medium text-gray-700 mt-6">
+                  <p className="text-lg font-serif text-[#1C1A17] mt-6">
                     {isCallActive ? 'End Voice Call' : 'Start Voice Call'}
                   </p>
                   {/* COMMENTED OUT: Demo controls hint - Will be brought back later */}
@@ -845,8 +849,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                       <div
                         className={`max-w-[80%] px-4 py-3 rounded-2xl ${
                           msg.role === 'user'
-                            ? 'bg-blue-500 text-white rounded-br-sm'
-                            : 'bg-gray-100 text-gray-900 rounded-bl-sm'
+                            ? 'bg-[#1C1A17] text-white rounded-br-sm'
+                            : 'bg-[#F0EDE6] text-[#1C1A17] rounded-bl-sm'
                         }`}
                       >
                         <p className="text-sm leading-relaxed">{msg.content}</p>
@@ -857,7 +861,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                 </div>
 
                 {/* Text Input Only - No Voice Button */}
-                <div className="px-6 py-4 border-t bg-gray-50 flex-shrink-0">
+                <div className="px-6 py-4 border-t border-[#C8A96E]/20 bg-[#FAFAF5] flex-shrink-0">
                   <div className="flex items-center gap-3">
                     <Input
                       type="text"
@@ -866,13 +870,13 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                       onChange={(e) => setTextInput(e.target.value)}
                       onKeyDown={handleKeyDown}
                       disabled={isSending}
-                      className="flex-1 h-12 bg-white"
+                      className="flex-1 h-12 bg-white border-[#C8A96E]/30 focus-visible:ring-[#C8A96E]/40"
                     />
                     <Button
                       size="lg"
                       onClick={handleSendMessage}
                       disabled={!textInput.trim() || isSending}
-                      className="h-12 px-6 bg-blue-500 hover:bg-blue-600"
+                      className="h-12 px-6 bg-[#C8A96E] hover:bg-[#b8996a] text-white"
                     >
                       {isSending ? (
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -890,7 +894,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
           </div>
 
           {/* Right: Media Display / Calendar */}
-          <div className="w-[55%] bg-gray-900 flex items-center justify-center p-6">
+          <div className="w-[55%] bg-[#1C1A17] flex items-center justify-center p-6">
             {currentMedia && currentMedia.length > 0 ? (
               <div className="relative w-full h-full">
                 <img
@@ -917,13 +921,13 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                 </div>
               </div>
             ) : showCalendar ? (
-              <div className="bg-white rounded-lg p-6 max-h-full overflow-y-auto">
+              <div className="bg-[#FAFAF5] w-full h-full overflow-y-auto p-8">
                 {/* Step 1: Calendar */}
                 {bookingStep === 'calendar' && (
                   <div>
                     <div className="flex items-center gap-2 mb-4">
-                      <CalendarIcon className="w-5 h-5" />
-                      <h3 className="text-lg font-semibold">Select Your Dates</h3>
+                      <CalendarIcon className="w-5 h-5 text-[#C8A96E]" />
+                      <h3 className="font-serif text-lg text-[#1C1A17]">Select Your Dates</h3>
                     </div>
                     <div className="flex gap-4">
                       <div>
@@ -952,7 +956,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                     {selectedDate && checkoutDate && (
                       <div className="mt-4">
                         <Button
-                          className="w-full"
+                          className="w-full bg-[#1C1A17] hover:bg-[#2a2724] text-white"
                           onClick={() => setBookingStep('room')}
                         >
                           Continue to Room Selection
@@ -965,24 +969,28 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                 {/* Step 2: Room Selection */}
                 {bookingStep === 'room' && (
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Choose Your Room</h3>
-                    <div className="space-y-3">
+                    <h3 className="font-serif text-lg text-[#1C1A17] mb-4">Choose Your Room</h3>
+                    <div className="grid grid-cols-1 gap-3">
                       {[
-                        { name: 'Canal Suite', price: 380, image: '/videos/hotel-room/canal_suite.png' },
-                        { name: 'Classic King', price: 210, image: '/videos/hotel-room/Classic_King.png' },
+                        { name: 'Deluxe Room with Garden View', price: 269, image: 'https://images.eu.ctfassets.net/og3b0tarlg4b/5TTLX90ke1oNjcZgHQCb9p/bd42d41a23ae467f860a6d8227ff6b8e/room-03DLXG-image-bfwjp6-Le_Bristol_Paris-DLXG-Chambre_222-HD-4_S.jpg?w=1070&h=808&fm=jpg&fit=fill' },
+                        { name: 'Deluxe Room with Balcony', price: 289, image: 'https://images.eu.ctfassets.net/og3b0tarlg4b/6mfqJ7voUNEhOa7TF4QCO1/9be0cf054fb1aefe1abf330205561d0e/room-DLXB-image-lf3ppz-Le_Bristol_Paris_-_Chambre_Deluxe_Balcon_-_916_-_HD_-_2_S.jpg?w=1070&h=808&fm=jpg&fit=fill' },
+                        { name: 'Prestige Room', price: 349, image: 'https://images.eu.ctfassets.net/og3b0tarlg4b/7DVPIBIel2ZsaZh4043zAN/f63d257385ad9ce6b90c56314dcb2209/room-04PRE-image-Le_Bristol_Paris-Chambre_Prestige-410-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill' },
+                        { name: 'Prestige Room with Balcony', price: 379, image: 'https://images.eu.ctfassets.net/og3b0tarlg4b/3lIpWcaTAi0et539woVlh8/c4cac37f62b11166f8a2d081a0dea9ee/room-PREB-image-qq36gd-Le_Bristol_RomainRicard_03-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill' },
                       ].map((room) => (
                         <div
                           key={room.name}
-                          className={`border rounded-lg p-3 cursor-pointer transition ${
-                            selectedRoom?.name === room.name ? 'border-blue-500 bg-blue-50' : 'hover:border-gray-400'
+                          className={`border cursor-pointer transition overflow-hidden ${
+                            selectedRoom?.name === room.name
+                              ? 'border-[#C8A96E] bg-[#C8A96E]/10'
+                              : 'border-[#1C1A17]/10 hover:border-[#C8A96E]/50 bg-white'
                           }`}
                           onClick={() => setSelectedRoom(room)}
                         >
-                          <div className="flex gap-3">
-                            <img src={room.image} alt={room.name} className="w-24 h-24 object-cover rounded" />
-                            <div className="flex-1">
-                              <h4 className="font-semibold">{room.name}</h4>
-                              <p className="text-2xl font-bold mt-2">€{room.price}<span className="text-sm font-normal text-gray-500">/night</span></p>
+                          <div className="flex gap-0">
+                            <img src={room.image} alt={room.name} className="w-32 h-24 object-cover flex-shrink-0" />
+                            <div className="flex-1 px-4 py-3 flex items-center justify-between">
+                              <h4 className="font-serif text-[#1C1A17] text-sm leading-snug">{room.name}</h4>
+                              <p className="font-serif text-xl text-[#1C1A17] whitespace-nowrap ml-4">€{room.price}<span className="text-xs font-normal text-[#6B6560]">/night</span></p>
                             </div>
                           </div>
                         </div>
@@ -990,18 +998,18 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                     </div>
                     {selectedRoom && (
                       <div className="mt-4 space-y-2">
-                        <div className="p-3 bg-gray-50 rounded-lg text-sm">
+                        <div className="p-3 bg-[#F0EDE6] rounded-lg text-sm text-[#1C1A17]">
                           <div className="flex justify-between mb-1">
                             <span>€{selectedRoom.price} × {checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1} nights</span>
                             <span>€{selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1)}</span>
                           </div>
-                          <div className="flex justify-between font-semibold pt-2 border-t">
+                          <div className="flex justify-between font-semibold pt-2 border-t border-[#1C1A17]/10">
                             <span>Total</span>
                             <span>€{selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1)}</span>
                           </div>
                         </div>
                         <Button
-                          className="w-full"
+                          className="w-full bg-[#1C1A17] hover:bg-[#2a2724] text-white"
                           onClick={() => setBookingStep('payment')}
                         >
                           Continue to Payment
@@ -1014,34 +1022,34 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                 {/* Step 3: Payment */}
                 {bookingStep === 'payment' && (
                   <div>
-                    <h3 className="text-lg font-semibold mb-4">Payment Details</h3>
+                    <h3 className="font-serif text-lg text-[#1C1A17] mb-4">Payment Details</h3>
                     <div className="space-y-3">
                       <div>
-                        <label className="block text-sm font-medium mb-1">Card Number</label>
-                        <Input placeholder="1234 5678 9012 3456" className="h-10" />
+                        <label className="block text-xs font-medium text-[#6B6560] uppercase tracking-wide mb-1">Card Number</label>
+                        <Input placeholder="1234 5678 9012 3456" className="h-10 border-[#1C1A17]/20" />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-sm font-medium mb-1">Expiry</label>
-                          <Input placeholder="MM/YY" className="h-10" />
+                          <label className="block text-xs font-medium text-[#6B6560] uppercase tracking-wide mb-1">Expiry</label>
+                          <Input placeholder="MM/YY" className="h-10 border-[#1C1A17]/20" />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium mb-1">CVV</label>
-                          <Input placeholder="123" className="h-10" />
+                          <label className="block text-xs font-medium text-[#6B6560] uppercase tracking-wide mb-1">CVV</label>
+                          <Input placeholder="123" className="h-10 border-[#1C1A17]/20" />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Cardholder Name</label>
-                        <Input placeholder="John Doe" className="h-10" />
+                        <label className="block text-xs font-medium text-[#6B6560] uppercase tracking-wide mb-1">Cardholder Name</label>
+                        <Input placeholder="John Doe" className="h-10 border-[#1C1A17]/20" />
                       </div>
-                      <div className="p-3 bg-gray-50 rounded-lg text-sm mt-4">
-                        <div className="flex justify-between font-semibold">
+                      <div className="p-3 bg-[#F0EDE6] rounded-lg text-sm mt-4">
+                        <div className="flex justify-between font-semibold text-[#1C1A17]">
                           <span>Total to pay</span>
                           <span>€{selectedRoom ? selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1) : 0}</span>
                         </div>
                       </div>
                       <Button
-                        className="w-full"
+                        className="w-full bg-[#C8A96E] hover:bg-[#b8996a] text-white"
                         onClick={() => setBookingStep('confirmation')}
                       >
                         Confirm Booking
@@ -1053,39 +1061,40 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                 {/* Step 4: Confirmation */}
                 {bookingStep === 'confirmation' && (
                   <div className="text-center py-6">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-16 h-16 bg-[#C8A96E]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-[#C8A96E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-semibold mb-2">Booking Confirmed!</h3>
-                    <p className="text-gray-600 mb-4">Your reservation has been successfully confirmed.</p>
-                    <div className="bg-gray-50 rounded-lg p-4 text-left space-y-2 text-sm">
+                    <h3 className="font-serif text-xl text-[#1C1A17] mb-2">Booking Confirmed!</h3>
+                    <p className="text-[#6B6560] text-sm mb-4">Your reservation has been successfully confirmed.</p>
+                    <div className="bg-[#F0EDE6] rounded-lg p-4 text-left space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Room:</span>
-                        <span className="font-medium">{selectedRoom?.name}</span>
+                        <span className="text-[#6B6560]">Room:</span>
+                        <span className="font-medium text-[#1C1A17]">{selectedRoom?.name}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Check-in:</span>
-                        <span className="font-medium">{selectedDate?.toLocaleDateString()}</span>
+                        <span className="text-[#6B6560]">Check-in:</span>
+                        <span className="font-medium text-[#1C1A17]">{selectedDate?.toLocaleDateString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Check-out:</span>
-                        <span className="font-medium">{checkoutDate?.toLocaleDateString()}</span>
+                        <span className="text-[#6B6560]">Check-out:</span>
+                        <span className="font-medium text-[#1C1A17]">{checkoutDate?.toLocaleDateString()}</span>
                       </div>
-                      <div className="flex justify-between pt-2 border-t">
-                        <span className="text-gray-600">Total Paid:</span>
-                        <span className="font-semibold">€{selectedRoom ? selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1) : 0}</span>
+                      <div className="flex justify-between pt-2 border-t border-[#1C1A17]/10">
+                        <span className="text-[#6B6560]">Total Paid:</span>
+                        <span className="font-semibold text-[#C8A96E]">€{selectedRoom ? selectedRoom.price * (checkoutDate && selectedDate ? Math.ceil((checkoutDate.getTime() - selectedDate.getTime()) / (1000 * 60 * 60 * 24)) : 1) : 0}</span>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-500 mt-4">A confirmation email has been sent to your inbox.</p>
+                    <p className="text-xs text-[#6B6560] mt-4">A confirmation email has been sent to your inbox.</p>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="text-center text-white/60">
-                <CalendarIcon className="w-16 h-16 mx-auto mb-4 opacity-40" />
-                <p className="text-sm">Media will appear here during conversation</p>
+              <div className="text-center text-white/40">
+                <CalendarIcon className="w-12 h-12 mx-auto mb-4 opacity-30 text-[#C8A96E]" />
+                <p className="font-serif text-lg text-white/30">Hotel Haven Amsterdam</p>
+                <p className="text-xs mt-1 text-white/20">Images will appear here during your conversation</p>
               </div>
             )}
           </div>
