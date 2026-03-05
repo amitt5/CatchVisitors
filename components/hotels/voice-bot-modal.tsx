@@ -37,12 +37,20 @@ const MEDIA_SETS = {
   ],
   rooms: [
     {
-      url: "/videos/hotel-room/canal_suite.png",
-      caption: "Canal Suite"
+      url: "https://images.eu.ctfassets.net/og3b0tarlg4b/5TTLX90ke1oNjcZgHQCb9p/bd42d41a23ae467f860a6d8227ff6b8e/room-03DLXG-image-bfwjp6-Le_Bristol_Paris-DLXG-Chambre_222-HD-4_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      caption: "Deluxe Room with Garden View — €269/night"
     },
     {
-      url: "/videos/hotel-room/Classic_King.png",
-      caption: "Classic King"
+      url: "https://images.eu.ctfassets.net/og3b0tarlg4b/6mfqJ7voUNEhOa7TF4QCO1/9be0cf054fb1aefe1abf330205561d0e/room-DLXB-image-lf3ppz-Le_Bristol_Paris_-_Chambre_Deluxe_Balcon_-_916_-_HD_-_2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      caption: "Deluxe Room with Balcony — €289/night"
+    },
+    {
+      url: "https://images.eu.ctfassets.net/og3b0tarlg4b/7DVPIBIel2ZsaZh4043zAN/f63d257385ad9ce6b90c56314dcb2209/room-04PRE-image-Le_Bristol_Paris-Chambre_Prestige-410-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      caption: "Prestige Room — €349/night"
+    },
+    {
+      url: "https://images.eu.ctfassets.net/og3b0tarlg4b/3lIpWcaTAi0et539woVlh8/c4cac37f62b11166f8a2d081a0dea9ee/room-PREB-image-qq36gd-Le_Bristol_RomainRicard_03-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+      caption: "Prestige Room with Balcony — €379/night"
     }
   ],
   amenities: [
@@ -78,12 +86,12 @@ const MEDIA_MAP: Record<string, { url: string; caption: string }> = {
   },
   // Rooms
   "canal-suite": {
-    url: "/videos/hotel-room/canal_suite.png",
-    caption: "Canal Suite — Floor-to-ceiling canal views, freestanding bathtub"
+    url: "https://images.eu.ctfassets.net/og3b0tarlg4b/3lIpWcaTAi0et539woVlh8/c4cac37f62b11166f8a2d081a0dea9ee/room-PREB-image-qq36gd-Le_Bristol_RomainRicard_03-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+    caption: "Prestige Room with Balcony — Floor-to-ceiling views, €379/night"
   },
   "classic-king": {
-    url: "/videos/hotel-room/Classic_King.png",
-    caption: "Classic King — Cosy, beautifully designed"
+    url: "https://images.eu.ctfassets.net/og3b0tarlg4b/5TTLX90ke1oNjcZgHQCb9p/bd42d41a23ae467f860a6d8227ff6b8e/room-03DLXG-image-bfwjp6-Le_Bristol_Paris-DLXG-Chambre_222-HD-4_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
+    caption: "Deluxe Room with Garden View — Cosy, beautifully designed, €269/night"
   },
   // Amenities
   "rooftop": {
