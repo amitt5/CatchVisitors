@@ -70,42 +70,39 @@ const MEDIA_SETS = {
 };
 
 // Individual media items mapped by ID for Vapi tool calls
-const MEDIA_MAP: Record<string, { url: string; caption: string }> = {
+const MEDIA_MAP: Record<string, { url: string; caption: string }[]> = {
   // Attractions
-  "rembrandt-square": {
-    url: "/videos/hotel-room/Rembrandt_Square.jpeg",
-    caption: "Rembrandt Square — 7 min walk"
-  },
-  "anne-frank-house": {
-    url: "/videos/hotel-room/anne_frank.avif",
-    caption: "Anne Frank House — 12 min walk"
-  },
-  "rijksmuseum": {
-    url: "/videos/hotel-room/rijks.jpg",
-    caption: "Rijksmuseum — 15 min walk"
-  },
-  // Rooms
-  "canal-suite": {
-    url: "https://images.eu.ctfassets.net/og3b0tarlg4b/3lIpWcaTAi0et539woVlh8/c4cac37f62b11166f8a2d081a0dea9ee/room-PREB-image-qq36gd-Le_Bristol_RomainRicard_03-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
-    caption: "Prestige Room with Balcony — Floor-to-ceiling views, €379/night"
-  },
-  "classic-king": {
-    url: "https://images.eu.ctfassets.net/og3b0tarlg4b/5TTLX90ke1oNjcZgHQCb9p/bd42d41a23ae467f860a6d8227ff6b8e/room-03DLXG-image-bfwjp6-Le_Bristol_Paris-DLXG-Chambre_222-HD-4_S.jpg?w=1070&h=808&fm=jpg&fit=fill",
-    caption: "Deluxe Room with Garden View — Cosy, beautifully designed, €269/night"
-  },
+  "rembrandt-square": [{ url: "/videos/hotel-room/Rembrandt_Square.jpeg", caption: "Rembrandt Square — 7 min walk" }],
+  "anne-frank-house": [{ url: "/videos/hotel-room/anne_frank.avif", caption: "Anne Frank House — 12 min walk" }],
+  "rijksmuseum": [{ url: "/videos/hotel-room/rijks.jpg", caption: "Rijksmuseum — 15 min walk" }],
+  // Rooms — multi-image arrays for carousel
+  "deluxe-garden": [
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/5TTLX90ke1oNjcZgHQCb9p/bd42d41a23ae467f860a6d8227ff6b8e/room-03DLXG-image-bfwjp6-Le_Bristol_Paris-DLXG-Chambre_222-HD-4_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Deluxe Room with Garden View — €269/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/5wudJWzfb5REcWjL8exDeq/a0a7e6d551b92286f52e6c9859c067f4/room-03DLXG-image-n6a5ni-Le_Bristol_Paris-DLXG-Chambre_222-HD-5_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Deluxe Room with Garden View — €269/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/HLBZs7GBDCTwoGcIkXilA/5a3929e670646e9a63eac761b1791e65/room-03DLXG-image-2jsdqn-Le_Bristol_Paris-DLXG-Chambre_222-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Deluxe Room with Garden View — €269/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/nIUrZZR0RJ5j1ANGa94nt/0a0649303081f5ff946c141205dc860d/room-03DLXG-image-sxv4tl-Le_Bristol_Paris-DLXG-Chambre_222-HD-1_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Deluxe Room with Garden View — €269/night" }
+  ],
+  "deluxe-balcony": [
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/6mfqJ7voUNEhOa7TF4QCO1/9be0cf054fb1aefe1abf330205561d0e/room-DLXB-image-lf3ppz-Le_Bristol_Paris_-_Chambre_Deluxe_Balcon_-_916_-_HD_-_2_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Deluxe Room with Balcony — €289/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/5hcckP0U624pOuhD4wYNUS/22fd2e3e78b2d14cff356a4a86692675/room-DLXB-image-LBP_le_bristol_paris_-_chambre_deluxe_vue_jardin_-_916_-__S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Deluxe Room with Balcony — €289/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/39VLthagr4VnawXvstjBK7/fe8e550b978585382cd1961310bfe9f3/room-DLXB-image-Le_Bristol_Paris_deluxe_room_with_balcony-room3_R.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Deluxe Room with Balcony — €289/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/5rb6JXrqjEvpXg78Tqa3HN/7de7eb31f566a21548ac9f299b028574/room-DLXB-image-LBP_deluxe_room_with_balcony-sdb_R.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Deluxe Room with Balcony — €289/night" }
+  ],
+  "prestige-room": [
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/7DVPIBIel2ZsaZh4043zAN/f63d257385ad9ce6b90c56314dcb2209/room-04PRE-image-Le_Bristol_Paris-Chambre_Prestige-410-HD-2_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Prestige Room — €349/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/6Pe4ZMrdqYklN8Ew8mNbGr/e5e34ef470661f26caca63341b4eb06a/room-04PRE-image-Le_Bristol_Paris-Chambre_Prestige-160-HD-3_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Prestige Room — €349/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/1NUWRn6A9bwCv3xkKFEwpJ/32a49c3630731b246aac26f2104c23ad/room-04PRE-image-LBP-chambre_prestige-160_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Prestige Room — €349/night" }
+  ],
+  "prestige-balcony": [
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/3lIpWcaTAi0et539woVlh8/c4cac37f62b11166f8a2d081a0dea9ee/room-PREB-image-qq36gd-Le_Bristol_RomainRicard_03-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Prestige Room with Balcony — €379/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/3gv383RHFtjjidrNezBiaO/9ba6c771fe7848b095d041c28ff6e877/room-PREB-image-on8gi-Le_Bristol_RomainRicard_02-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Prestige Room with Balcony — €379/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/36AhXoGwsKN0Opxy1Bp60p/2013bc0bad1805f6ba42d3a7a7096c17/room-PREB-image-kerbv1-Le_Bristol_RomainRicard_01-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Prestige Room with Balcony — €379/night" },
+    { url: "https://images.eu.ctfassets.net/og3b0tarlg4b/1sm5ekipLXFE0nuJuUpiqE/75dc3351246b1ada9d5ba2dd6a119176/room-PREB-image-7lxlt8-Le_Bristol_RomainRicard_07-RSC_S.jpg?w=1070&h=808&fm=jpg&fit=fill", caption: "Prestige Room with Balcony — €379/night" }
+  ],
   // Amenities
-  "rooftop": {
-    url: "/videos/hotel-room/rooftop_restaurant.png",
-    caption: "Rooftop terrace restaurant — Canal views, breakfast & evening drinks"
-  },
-  "spa": {
-    url: "/videos/hotel-room/sauna.jpg",
-    caption: "Spa — Heated pool, sauna, steam room"
-  },
-  "gym": {
-    url: "/videos/hotel-room/hotel_gym.jpg",
-    caption: "Gym — Stay fit during your stay"
-  }
+  "rooftop": [{ url: "/videos/hotel-room/rooftop_restaurant.png", caption: "Rooftop terrace restaurant — Canal views, breakfast & evening drinks" }],
+  "spa": [{ url: "/videos/hotel-room/sauna.jpg", caption: "Spa — Heated pool, sauna, steam room" }],
+  "gym": [{ url: "/videos/hotel-room/hotel_gym.jpg", caption: "Gym — Stay fit during your stay" }]
 };
 
 export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
@@ -140,8 +137,10 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   // Keyword mapping for transcript matching
   const MEDIA_KEYWORDS: Record<string, string[]> = {
     // Rooms - multiple keywords to catch variations
-    "canal-suite": ["canal suite", "canal view", "best room", "premium room", "canal-view"],
-    "classic-king": ["classic king", "king room", "cosy room", "cozy room"],
+    "deluxe-garden": ["deluxe garden", "garden view", "deluxe room", "269"],
+    "deluxe-balcony": ["deluxe balcony", "balcony room", "289"],
+    "prestige-room": ["prestige room", "prestige", "349"],
+    "prestige-balcony": ["prestige balcony", "prestige with balcony", "379"],
 
     // Attractions
     "rembrandt-square": ["rembrandt", "rembrandt square"],
@@ -202,10 +201,10 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
       }
 
       // Check if it's an individual media item
-      const mediaItem = MEDIA_MAP[mediaId];
-      if (mediaItem) {
-        console.log('✅ Media item found! Displaying:', mediaItem);
-        setCurrentMedia([mediaItem]);
+      const mediaItems = MEDIA_MAP[mediaId];
+      if (mediaItems) {
+        console.log('✅ Media item found! Displaying:', mediaItems.length, 'image(s) for', mediaId);
+        setCurrentMedia(mediaItems);
         setCurrentMediaIndex(0);
         setShowCalendar(false);
         console.log('🖼️  Image display state updated');
