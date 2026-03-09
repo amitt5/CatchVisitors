@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import type { DateRange } from "react-day-picker";
-import { X, Mic, MicOff, Calendar as CalendarIcon, Send } from "lucide-react";
+import { X, Mic, MicOff, Calendar as CalendarIcon, Send, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import Vapi from "@vapi-ai/web";
+import { cn } from "@/lib/utils";
 
 interface Message {
   role: "assistant" | "user";
@@ -105,6 +106,48 @@ const MEDIA_MAP: Record<string, { url: string; caption: string }[]> = {
   "gym": [{ url: "/videos/hotel-room/hotel_gym.jpg", caption: "Gym — Stay fit during your stay" }]
 };
 
+const AMENITY_META: Record<string, {
+  name: string; icon: string; tag: string; description: string;
+  hours: Array<[string, string]>; features: string[];
+}> = {
+  rooftop: {
+    name: "Rooftop Pool", icon: "🏊", tag: "Open 7–22h",
+    description: "A heated outdoor pool on the 6th floor with panoramic views over Amsterdam's canal ring.",
+    hours: [["Mon–Fri", "7:00–22:00"], ["Sat–Sun", "8:00–22:00"]],
+    features: ["Heated", "Panoramic view", "Towels provided", "Adults only"],
+  },
+  spa: {
+    name: "Spa & Wellness", icon: "🧖", tag: "By appointment",
+    description: "Full-service spa with sauna, steam room, and treatment suites.",
+    hours: [["Daily", "9:00–21:00"]],
+    features: ["Sauna", "Steam room", "Massages", "Facials"],
+  },
+  gym: {
+    name: "Fitness Center", icon: "💪", tag: "24h access",
+    description: "State-of-the-art gym with Technogym equipment, free weights and cardio machines.",
+    hours: [["Daily", "24h access"]],
+    features: ["Cardio machines", "Free weights", "Towels included"],
+  },
+};
+
+const ATTRACTION_META: Record<string, {
+  name: string; dist: string; walk: string; icon: string; tag: string;
+  entry: string; description: string;
+}> = {
+  "rembrandt-square": {
+    name: "Rembrandt Square", icon: "🎨", tag: "Nightlife", dist: "700m", walk: "9 min walk",
+    entry: "Free", description: "Amsterdam's vibrant cultural square surrounded by cafés, bars, and the iconic Rembrandt statue.",
+  },
+  "anne-frank-house": {
+    name: "Anne Frank House", icon: "🏠", tag: "Historical", dist: "1.2km", walk: "15 min walk",
+    entry: "€16", description: "The historic hiding place of Anne Frank and her family during WWII, now a moving museum.",
+  },
+  "rijksmuseum": {
+    name: "Rijksmuseum", icon: "🏛️", tag: "Museum", dist: "400m", walk: "5 min walk",
+    entry: "€22.50", description: "The Netherlands' national museum of art and history — home to Rembrandt, Vermeer, and the Dutch Golden Age.",
+  },
+};
+
 export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [mode, setMode] = useState<'initial' | 'voice' | 'text'>('initial');
@@ -127,6 +170,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   const [pendingMediaItems, setPendingMediaItems] = useState<string[]>([]);
   const [isInBookingMode, setIsInBookingMode] = useState(false);
   const isInBookingModeRef = useRef(false); // Immediate tracking, no async delay
+  const [currentMediaType, setCurrentMediaType] = useState<'rooms' | 'amenities' | 'attractions' | null>(null);
+  const [expandedItemIndex, setExpandedItemIndex] = useState<number | null>(null);
 
   const dateRange: DateRange = { from: selectedDate, to: checkoutDate };
   const handleRangeSelect = (range: DateRange | undefined) => {
@@ -204,8 +249,15 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
       const mediaItems = MEDIA_MAP[mediaId];
       if (mediaItems) {
         console.log('✅ Media item found! Displaying:', mediaItems.length, 'image(s) for', mediaId);
+        const roomIds = ['deluxe-garden', 'deluxe-balcony', 'prestige-room', 'prestige-balcony'];
+        const amenityIds = ['rooftop', 'spa', 'gym'];
+        const attractionIds = ['rembrandt-square', 'anne-frank-house', 'rijksmuseum'];
+        if (roomIds.includes(mediaId)) setCurrentMediaType('rooms');
+        else if (amenityIds.includes(mediaId)) setCurrentMediaType('amenities');
+        else if (attractionIds.includes(mediaId)) setCurrentMediaType('attractions');
         setCurrentMedia(mediaItems);
         setCurrentMediaIndex(0);
+        setExpandedItemIndex(null);
         setShowCalendar(false);
         console.log('🖼️  Image display state updated');
       } else {
@@ -243,14 +295,20 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
         case '1':
           setCurrentMedia(MEDIA_SETS.attractions);
           setCurrentMediaIndex(0);
+          setCurrentMediaType('attractions');
+          setExpandedItemIndex(null);
           break;
         case '2':
           setCurrentMedia(MEDIA_SETS.rooms);
           setCurrentMediaIndex(0);
+          setCurrentMediaType('rooms');
+          setExpandedItemIndex(null);
           break;
         case '3':
           setCurrentMedia(MEDIA_SETS.amenities);
           setCurrentMediaIndex(0);
+          setCurrentMediaType('amenities');
+          setExpandedItemIndex(null);
           break;
         case 'ArrowLeft':
           // Navigate to previous image
@@ -274,6 +332,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
         case 'H':
           setCurrentMedia(null);
           setShowCalendar(false);
+          setCurrentMediaType(null);
+          setExpandedItemIndex(null);
           break;
         case 'm':
         case 'M':
@@ -286,6 +346,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
         case 'Escape':
           setCurrentMedia(null);
           setShowCalendar(false);
+          setCurrentMediaType(null);
+          setExpandedItemIndex(null);
           break;
       }
     };
@@ -468,6 +530,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
       }
 
       console.log('===== END VAPI MESSAGE =====\n');
+      
 
       // STEP 2: Check transcripts for keyword matches with pending items
       if (message.type === 'transcript' && message.transcript) {
@@ -567,6 +630,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     // Reset booking mode when closing
     setIsInBookingMode(false);
     isInBookingModeRef.current = false;
+    setCurrentMediaType(null);
+    setExpandedItemIndex(null);
     onClose();
   };
 
@@ -680,30 +745,59 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
     }
   };
 
+  const hasContent = !!(currentMedia || showCalendar);
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="!max-w-[90vw] w-[90vw] h-[90vh] p-0 gap-0 overflow-hidden flex flex-col" showCloseButton={false}>
+      <DialogContent
+        overlayClassName="max-md:bg-black/30"
+        className={cn(
+          // Desktop: centered 90vw × 90vh
+          "!max-w-[90vw] w-[90vw] h-[90vh]",
+          // Mobile shared: full width, pinned, no default translate
+          "max-md:!max-w-full max-md:w-full",
+          "max-md:left-0 max-md:right-0 max-md:translate-x-0 max-md:translate-y-0",
+          // Mobile States 1–3 (no content): auto-height, bottom sheet
+          !hasContent && "max-md:top-auto max-md:bottom-0 max-md:max-h-[60svh] max-md:rounded-t-2xl max-md:rounded-b-none",
+          !hasContent && "max-md:data-[state=open]:slide-in-from-bottom max-md:data-[state=closed]:slide-out-to-bottom",
+          // Mobile States 4–5 (content active): full screen
+          hasContent && "max-md:top-0 max-md:bottom-0 max-md:h-full max-md:rounded-none",
+          "p-0 gap-0 overflow-hidden flex flex-col"
+        )}
+        showCloseButton={false}
+      >
         <DialogTitle className="sr-only">Hotel Voice Concierge</DialogTitle>
-        <div className="flex h-full overflow-hidden">
+        {/* Mobile drag handle */}
+        <div className={cn(
+          "md:hidden w-10 h-1 rounded-full mx-auto mt-2 mb-1 flex-shrink-0",
+          mode === 'voice' ? "bg-white/20" : "bg-gray-300"
+        )} />
+        <div className="flex flex-col h-full overflow-hidden md:flex-row">
           {/* Left: Chat Interface */}
-          <div className="flex-1 flex flex-col border-r min-h-0 overflow-hidden">
+          <div className={cn(
+            "flex-1 flex flex-col border-r min-h-0 overflow-hidden",
+            (currentMedia || showCalendar) ? "hidden md:flex" : "flex"
+          )}>
             {/* Header */}
-            <div className="px-6 py-4 border-b border-[#C8A96E]/20 bg-[#1C1A17] flex items-center justify-between flex-shrink-0">
+            <div className={cn(
+              "px-4 md:px-6 py-3 md:py-4 border-b border-[#C8A96E]/20 flex items-center justify-between flex-shrink-0",
+              mode === 'voice' ? "bg-[#1C1A17]" : "bg-white md:bg-[#1C1A17]"
+            )}>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#C8A96E]/20 border border-[#C8A96E]/40 flex items-center justify-center">
                   <Mic className="w-5 h-5 text-[#C8A96E]" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-white">AI Concierge</h3>
+                  <h3 className={cn("font-serif", mode === 'voice' ? "text-white" : "text-[#1C1A17] md:text-white")}>AI Concierge</h3>
                   <div className="flex items-center gap-2 text-xs">
-                    <span className={`w-2 h-2 rounded-full ${isCallActive ? 'bg-green-400' : 'bg-white/30'}`} />
-                    <span className="text-white/50">
+                    <span className={`w-2 h-2 rounded-full ${isCallActive ? 'bg-green-400' : mode === 'voice' ? 'bg-white/30' : 'bg-[#1C1A17]/30 md:bg-white/30'}`} />
+                    <span className={mode === 'voice' ? "text-white/50" : "text-[#6B6560] md:text-white/50"}>
                       {isCallActive ? 'Connected' : 'Click microphone to start'}
                     </span>
                   </div>
                 </div>
               </div>
-              <button onClick={handleClose} className="text-white/40 hover:text-white transition-colors">
+              <button onClick={handleClose} className={cn("transition-colors", mode === 'voice' ? "text-white/40 hover:text-white" : "text-[#6B6560] hover:text-[#1C1A17] md:text-white/40 md:hover:text-white")}>
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -771,7 +865,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
               </div>
             ) : mode === 'voice' ? (
               /* Voice Mode - Show Only Voice Controls */
-              <div className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 flex flex-col min-h-0 max-md:bg-[#1C1A17]">
                 <style jsx>{`
                   @keyframes pulseActive {
                     0%, 100% {
@@ -841,7 +935,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                       <Mic className="w-16 h-16 text-white" />
                     )}
                   </button>
-                  <p className="text-lg font-serif text-[#1C1A17] mt-6">
+                  <p className="text-lg font-serif text-[#1C1A17] max-md:text-white mt-6">
                     {isCallActive ? 'End Voice Call' : 'Start Voice Call'}
                   </p>
                   {/* COMMENTED OUT: Demo controls hint - Will be brought back later */}
@@ -854,7 +948,7 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
               /* Text Mode - Show Only Text Chat */
               <div className="flex-1 flex flex-col min-h-0">
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
+                <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0 max-md:max-h-[35svh]">
                   {messages.map((msg, idx) => (
                     <div
                       key={idx}
@@ -908,34 +1002,281 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
           </div>
 
           {/* Right: Media Display / Calendar */}
-          <div className="w-[55%] bg-[#1C1A17] flex items-center justify-center p-6">
+          <div className={cn(
+            "bg-[#1C1A17] flex-col",
+            "md:w-[55%] md:flex md:items-center md:justify-center md:p-6",
+            (currentMedia || showCalendar) ? "flex flex-1 overflow-hidden" : "hidden md:flex"
+          )}>
+            {/* Mobile mini agent bar — shown when content is active */}
+            {(currentMedia || showCalendar) && (
+              <div className="md:hidden bg-[#1C1A17] px-4 py-2 flex items-center justify-between flex-shrink-0 border-b border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-[#C8A96E]/20 border border-[#C8A96E]/40 flex items-center justify-center">
+                    <Mic className="w-3 h-3 text-[#C8A96E]" />
+                  </div>
+                  <span className="text-xs text-white/70">AI Concierge</span>
+                  <span className={`w-1.5 h-1.5 rounded-full ${isCallActive ? 'bg-green-400' : 'bg-white/30'}`} />
+                </div>
+                <button onClick={handleClose} className="text-white/50 hover:text-white">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
             {currentMedia && currentMedia.length > 0 ? (
-              <div className="relative w-full h-full">
-                <img
-                  src={currentMedia[currentMediaIndex].url}
-                  alt={currentMedia[currentMediaIndex].caption}
-                  className="w-full h-full object-cover rounded-lg"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
-                  <p className="text-white text-lg font-medium">
-                    {currentMedia[currentMediaIndex].caption}
-                  </p>
-                  <div className="flex gap-2 mt-3">
-                    {currentMedia.map((_, idx) => (
-                      <div
-                        key={idx}
-                        className={`h-1 rounded-full transition-all ${
-                          idx === currentMediaIndex
-                            ? 'bg-white w-8'
-                            : 'bg-white/40 w-6'
-                        }`}
-                      />
-                    ))}
+              <>
+                {/* Desktop: fullscreen image + caption + progress dots */}
+                <div className="hidden md:block relative w-full h-full">
+                  <img
+                    src={currentMedia[currentMediaIndex].url}
+                    alt={currentMedia[currentMediaIndex].caption}
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 rounded-b-lg">
+                    <p className="text-white text-lg font-medium">
+                      {currentMedia[currentMediaIndex].caption}
+                    </p>
+                    <div className="flex gap-2 mt-3">
+                      {currentMedia.map((_, idx) => (
+                        <div
+                          key={idx}
+                          className={`h-1 rounded-full transition-all ${
+                            idx === currentMediaIndex ? 'bg-white w-8' : 'bg-white/40 w-6'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+
+                {/* Mobile: Rooms hero carousel */}
+                {currentMediaType === 'rooms' && (
+                  <div className="md:hidden flex-1 overflow-hidden flex flex-col">
+                    <div className="relative flex-1 overflow-hidden">
+                      <img
+                        src={currentMedia[currentMediaIndex].url}
+                        alt={currentMedia[currentMediaIndex].caption}
+                        className="w-full h-full object-cover"
+                      />
+                      {currentMedia.length > 1 && (
+                        <>
+                          <button
+                            onClick={() => setCurrentMediaIndex((prev) => (prev - 1 + currentMedia.length) % currentMedia.length)}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 flex items-center justify-center"
+                          >
+                            <ChevronLeft className="w-5 h-5 text-white" />
+                          </button>
+                          <button
+                            onClick={() => setCurrentMediaIndex((prev) => (prev + 1) % currentMedia.length)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 flex items-center justify-center"
+                          >
+                            <ChevronRight className="w-5 h-5 text-white" />
+                          </button>
+                          <div className="absolute top-3 right-3 bg-black/50 rounded-full px-2 py-1 text-xs text-white">
+                            {currentMediaIndex + 1}/{currentMedia.length}
+                          </div>
+                        </>
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                        <p className="text-white text-sm font-medium">{currentMedia[currentMediaIndex].caption.split('—')[0]?.trim()}</p>
+                        <p className="text-[#C8A96E] text-sm">{currentMedia[currentMediaIndex].caption.split('—')[1]?.trim()}</p>
+                      </div>
+                    </div>
+                    {/* Thumbnail strip */}
+                    <div className="flex gap-2 px-3 py-2 overflow-x-auto flex-shrink-0 bg-[#1C1A17]">
+                      {currentMedia.map((item, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentMediaIndex(idx)}
+                          className={`flex-shrink-0 w-16 h-12 rounded overflow-hidden border-2 transition-all ${
+                            idx === currentMediaIndex ? 'border-[#C8A96E]' : 'border-transparent opacity-60'
+                          }`}
+                        >
+                          <img src={item.url} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                    {/* Book CTA */}
+                    <div className="px-4 pb-4 pt-2 flex-shrink-0 bg-[#1C1A17]">
+                      <button
+                        onClick={() => {
+                          setCurrentMedia(null);
+                          setCurrentMediaType(null);
+                          setShowCalendar(true);
+                          setBookingStep('calendar');
+                          setIsInBookingMode(true);
+                          isInBookingModeRef.current = true;
+                        }}
+                        className="w-full py-3 bg-[#C8A96E] text-white font-medium rounded-lg text-sm"
+                      >
+                        Book This Room →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Mobile: Amenities 2-col grid / expanded detail */}
+                {currentMediaType === 'amenities' && (
+                  <div className="md:hidden flex-1 overflow-y-auto bg-[#FAFAF5]">
+                    {expandedItemIndex === null ? (
+                      <div className="p-4">
+                        <h3 className="font-serif text-lg text-[#1C1A17] mb-4">Our Amenities</h3>
+                        <div className="grid grid-cols-2 gap-3">
+                          {MEDIA_SETS.amenities.map((item, idx) => {
+                            const amenityKeys = ['rooftop', 'spa', 'gym'] as const;
+                            const meta = AMENITY_META[amenityKeys[idx]];
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => setExpandedItemIndex(idx)}
+                                className="rounded-xl overflow-hidden text-left"
+                              >
+                                <img src={item.url} alt={meta.name} className="w-full h-28 object-cover" />
+                                <div className="p-2 bg-white border border-gray-100 rounded-b-xl">
+                                  <p className="text-sm font-medium text-[#1C1A17]">{meta.icon} {meta.name}</p>
+                                  <span className="text-xs text-[#C8A96E]">{meta.tag}</span>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : (() => {
+                      const amenityKeys = ['rooftop', 'spa', 'gym'] as const;
+                      const item = MEDIA_SETS.amenities[expandedItemIndex];
+                      const meta = AMENITY_META[amenityKeys[expandedItemIndex]];
+                      return (
+                        <div>
+                          <div className="relative">
+                            <img src={item.url} alt={meta.name} className="w-full h-52 object-cover" />
+                            <button
+                              onClick={() => setExpandedItemIndex(null)}
+                              className="absolute top-3 left-3 w-9 h-9 rounded-full bg-black/50 flex items-center justify-center"
+                            >
+                              <ArrowLeft className="w-4 h-4 text-white" />
+                            </button>
+                          </div>
+                          <div className="p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-2xl">{meta.icon}</span>
+                              <div>
+                                <h3 className="font-serif text-lg text-[#1C1A17]">{meta.name}</h3>
+                                <span className="text-xs text-[#C8A96E]">{meta.tag}</span>
+                              </div>
+                            </div>
+                            <p className="text-sm text-[#6B6560] mb-4">{meta.description}</p>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {meta.features.map((f) => (
+                                <span key={f} className="text-xs bg-[#F0EDE6] text-[#1C1A17] px-2 py-1 rounded-full">{f}</span>
+                              ))}
+                            </div>
+                            <div className="space-y-1 border-t border-[#1C1A17]/10 pt-3">
+                              {meta.hours.map(([day, time]) => (
+                                <div key={day} className="flex justify-between text-sm">
+                                  <span className="text-[#6B6560]">{day}</span>
+                                  <span className="font-medium text-[#1C1A17]">{time}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
+                {/* Mobile: Attractions list / expanded detail */}
+                {currentMediaType === 'attractions' && (
+                  <div className="md:hidden flex-1 overflow-y-auto bg-[#FAFAF5]">
+                    {expandedItemIndex === null ? (
+                      <div className="p-4">
+                        <h3 className="font-serif text-lg text-[#1C1A17] mb-4">Nearby Attractions</h3>
+                        <div className="space-y-3">
+                          {MEDIA_SETS.attractions.map((item, idx) => {
+                            const attractionKeys = ['rembrandt-square', 'anne-frank-house', 'rijksmuseum'] as const;
+                            const meta = ATTRACTION_META[attractionKeys[idx]];
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => setExpandedItemIndex(idx)}
+                                className="w-full flex items-center gap-3 bg-white rounded-xl p-3 text-left shadow-sm"
+                              >
+                                <img src={item.url} alt={meta.name} className="w-20 h-16 object-cover rounded-lg flex-shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start gap-2 mb-1">
+                                    <p className="font-medium text-sm text-[#1C1A17] leading-tight">{meta.name}</p>
+                                    <span className="text-xs bg-[#F0EDE6] text-[#1C1A17] px-1.5 py-0.5 rounded whitespace-nowrap flex-shrink-0">{meta.tag}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2 text-xs text-[#6B6560]">
+                                    <span>{meta.dist}</span>
+                                    <span>·</span>
+                                    <span>{meta.walk}</span>
+                                  </div>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : (() => {
+                      const attractionKeys = ['rembrandt-square', 'anne-frank-house', 'rijksmuseum'] as const;
+                      const item = MEDIA_SETS.attractions[expandedItemIndex];
+                      const meta = ATTRACTION_META[attractionKeys[expandedItemIndex]];
+                      return (
+                        <div>
+                          <div className="relative">
+                            <img src={item.url} alt={meta.name} className="w-full h-52 object-cover" />
+                            <button
+                              onClick={() => setExpandedItemIndex(null)}
+                              className="absolute top-3 left-3 w-9 h-9 rounded-full bg-black/50 flex items-center justify-center"
+                            >
+                              <ArrowLeft className="w-4 h-4 text-white" />
+                            </button>
+                          </div>
+                          <div className="p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-2xl">{meta.icon}</span>
+                              <div>
+                                <h3 className="font-serif text-lg text-[#1C1A17]">{meta.name}</h3>
+                                <span className="text-xs text-[#C8A96E]">{meta.tag}</span>
+                              </div>
+                            </div>
+                            <p className="text-sm text-[#6B6560] mb-4">{meta.description}</p>
+                            {/* Map stub */}
+                            <div className="rounded-xl overflow-hidden mb-4 h-32 bg-gradient-to-br from-green-50 to-green-100 relative border border-green-200 flex items-center justify-center flex-col gap-1">
+                              <div className="text-3xl">🗺️</div>
+                              <div className="text-xs text-green-700 font-medium px-3 text-center">📍 Hotel Haven → 📍 {meta.name}</div>
+                            </div>
+                            {/* Stats row */}
+                            <div className="grid grid-cols-3 gap-2 mb-4">
+                              <div className="text-center bg-[#F0EDE6] rounded-lg p-2">
+                                <span className="block text-xs text-[#6B6560]">Distance</span>
+                                <span className="font-medium text-sm text-[#1C1A17]">{meta.dist}</span>
+                              </div>
+                              <div className="text-center bg-[#F0EDE6] rounded-lg p-2">
+                                <span className="block text-xs text-[#6B6560]">Walk</span>
+                                <span className="font-medium text-sm text-[#1C1A17]">{meta.walk.replace(' walk', '')}</span>
+                              </div>
+                              <div className="text-center bg-[#F0EDE6] rounded-lg p-2">
+                                <span className="block text-xs text-[#6B6560]">Entry</span>
+                                <span className="font-medium text-sm text-[#1C1A17]">{meta.entry}</span>
+                              </div>
+                            </div>
+                            <button
+                              disabled
+                              className="w-full py-2.5 border border-[#1C1A17]/20 rounded-lg text-sm text-[#6B6560] cursor-not-allowed"
+                            >
+                              View in Maps (demo)
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+              </>
             ) : showCalendar ? (
-              <div className="bg-[#FAFAF5] w-full h-full overflow-y-auto p-8">
+              <div className="bg-[#FAFAF5] w-full flex-1 md:h-full overflow-y-auto p-8 max-md:p-4">
                 {/* Step 1: Calendar */}
                 {bookingStep === 'calendar' && (
                   <div>
