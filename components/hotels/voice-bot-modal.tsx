@@ -106,6 +106,13 @@ const MEDIA_MAP: Record<string, { url: string; caption: string }[]> = {
   "gym": [{ url: "/videos/hotel-room/hotel_gym.jpg", caption: "Gym — Stay fit during your stay" }]
 };
 
+const ROOMS_CONFIG = [
+  { id: 'deluxe-garden',    name: 'Deluxe Garden View',    shortName: 'Garden View', price: 269, features: ['King bed', 'Garden view', 'Ensuite'] },
+  { id: 'deluxe-balcony',   name: 'Deluxe with Balcony',   shortName: 'Balcony',     price: 289, features: ['King bed', 'Balcony', 'Canal view'] },
+  { id: 'prestige-room',    name: 'Prestige Room',          shortName: 'Prestige',    price: 349, features: ['King bed', 'City view', 'Lounge access'] },
+  { id: 'prestige-balcony', name: 'Prestige with Balcony', shortName: 'Prestige+',   price: 379, features: ['King bed', 'Balcony', 'Panoramic view'] },
+] as const;
+
 const AMENITY_META: Record<string, {
   name: string; icon: string; tag: string; description: string;
   hours: Array<[string, string]>; features: string[];
@@ -172,6 +179,8 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
   const isInBookingModeRef = useRef(false); // Immediate tracking, no async delay
   const [currentMediaType, setCurrentMediaType] = useState<'rooms' | 'amenities' | 'attractions' | null>(null);
   const [expandedItemIndex, setExpandedItemIndex] = useState<number | null>(null);
+  const [selectedRoomIndex, setSelectedRoomIndex] = useState(0);
+  const [selectedAmenityIndex, setSelectedAmenityIndex] = useState(0);
 
   const dateRange: DateRange = { from: selectedDate, to: checkoutDate };
   const handleRangeSelect = (range: DateRange | undefined) => {
@@ -252,8 +261,15 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
         const roomIds = ['deluxe-garden', 'deluxe-balcony', 'prestige-room', 'prestige-balcony'];
         const amenityIds = ['rooftop', 'spa', 'gym'];
         const attractionIds = ['rembrandt-square', 'anne-frank-house', 'rijksmuseum'];
-        if (roomIds.includes(mediaId)) setCurrentMediaType('rooms');
-        else if (amenityIds.includes(mediaId)) setCurrentMediaType('amenities');
+        if (roomIds.includes(mediaId)) {
+          setCurrentMediaType('rooms');
+          const roomIdx = ROOMS_CONFIG.findIndex(r => r.id === mediaId);
+          if (roomIdx >= 0) setSelectedRoomIndex(roomIdx);
+        } else if (amenityIds.includes(mediaId)) {
+          setCurrentMediaType('amenities');
+          const amenityIdx = amenityIds.indexOf(mediaId);
+          if (amenityIdx >= 0) setSelectedAmenityIndex(amenityIdx);
+        }
         else if (attractionIds.includes(mediaId)) setCurrentMediaType('attractions');
         setCurrentMedia(mediaItems);
         setCurrentMediaIndex(0);
@@ -299,15 +315,17 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
           setExpandedItemIndex(null);
           break;
         case '2':
-          setCurrentMedia(MEDIA_SETS.rooms);
-          setCurrentMediaIndex(0);
           setCurrentMediaType('rooms');
+          setSelectedRoomIndex(0);
+          setCurrentMedia(MEDIA_MAP['deluxe-garden']);
+          setCurrentMediaIndex(0);
           setExpandedItemIndex(null);
           break;
         case '3':
-          setCurrentMedia(MEDIA_SETS.amenities);
+          setCurrentMedia(MEDIA_MAP['rooftop']);
           setCurrentMediaIndex(0);
           setCurrentMediaType('amenities');
+          setSelectedAmenityIndex(0);
           setExpandedItemIndex(null);
           break;
         case 'ArrowLeft':
@@ -1049,9 +1067,10 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                   </div>
                 </div>
 
-                {/* Mobile: Rooms hero carousel */}
+                {/* Mobile: Rooms — hero carousel + room selector strip */}
                 {currentMediaType === 'rooms' && (
                   <div className="md:hidden flex-1 overflow-hidden flex flex-col">
+                    {/* Hero image carousel */}
                     <div className="relative flex-1 overflow-hidden">
                       <img
                         src={currentMedia[currentMediaIndex].url}
@@ -1077,29 +1096,53 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                           </div>
                         </>
                       )}
+                      {/* Gradient overlay: room name + price */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                        <p className="text-white text-sm font-medium">{currentMedia[currentMediaIndex].caption.split('—')[0]?.trim()}</p>
-                        <p className="text-[#C8A96E] text-sm">{currentMedia[currentMediaIndex].caption.split('—')[1]?.trim()}</p>
+                        <p className="text-white text-sm font-medium">{ROOMS_CONFIG[selectedRoomIndex].name}</p>
+                        <p className="text-[#C8A96E] text-sm">€{ROOMS_CONFIG[selectedRoomIndex].price}/night</p>
                       </div>
                     </div>
-                    {/* Thumbnail strip */}
-                    <div className="flex gap-2 px-3 py-2 overflow-x-auto flex-shrink-0 bg-[#1C1A17]">
-                      {currentMedia.map((item, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setCurrentMediaIndex(idx)}
-                          className={`flex-shrink-0 w-16 h-12 rounded overflow-hidden border-2 transition-all ${
-                            idx === currentMediaIndex ? 'border-[#C8A96E]' : 'border-transparent opacity-60'
-                          }`}
-                        >
-                          <img src={item.url} alt="" className="w-full h-full object-cover" />
-                        </button>
+
+                    {/* Feature chips */}
+                    <div className="flex gap-2 px-3 py-2 overflow-x-auto flex-shrink-0 bg-white border-b border-gray-100">
+                      {ROOMS_CONFIG[selectedRoomIndex].features.map((f) => (
+                        <span key={f} className="flex-shrink-0 text-xs bg-[#F0EDE6] text-[#1C1A17] px-2.5 py-1 rounded-full">{f}</span>
                       ))}
                     </div>
+
+                    {/* Room type selector strip */}
+                    <div className="flex gap-2 px-3 py-2 overflow-x-auto flex-shrink-0 bg-white border-b border-gray-100">
+                      {ROOMS_CONFIG.map((room, idx) => {
+                        const thumbUrl = MEDIA_MAP[room.id]?.[0]?.url ?? '';
+                        const isSelected = idx === selectedRoomIndex;
+                        return (
+                          <button
+                            key={room.id}
+                            onClick={() => {
+                              setSelectedRoomIndex(idx);
+                              setCurrentMedia(MEDIA_MAP[room.id]);
+                              setCurrentMediaIndex(0);
+                            }}
+                            className={`flex-shrink-0 w-20 rounded-lg overflow-hidden border-2 transition-all text-left ${
+                              isSelected ? 'border-[#1C1A17]' : 'border-gray-200 opacity-70'
+                            }`}
+                          >
+                            <img src={thumbUrl} alt={room.name} className="w-full h-14 object-cover" />
+                            <div className="px-1.5 py-1 bg-white">
+                              <p className="text-[10px] font-medium text-[#1C1A17] leading-tight truncate">{room.shortName}</p>
+                              <p className="text-[10px] text-[#C8A96E]">€{room.price}</p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
                     {/* Book CTA */}
-                    <div className="px-4 pb-4 pt-2 flex-shrink-0 bg-[#1C1A17]">
+                    <div className="px-4 pb-4 pt-2 flex-shrink-0 bg-white">
                       <button
                         onClick={() => {
+                          const room = ROOMS_CONFIG[selectedRoomIndex];
+                          setSelectedRoom({ name: room.name, price: room.price, image: MEDIA_MAP[room.id]?.[0]?.url ?? '' });
                           setCurrentMedia(null);
                           setCurrentMediaType(null);
                           setShowCalendar(true);
@@ -1115,75 +1158,64 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                   </div>
                 )}
 
-                {/* Mobile: Amenities 2-col grid / expanded detail */}
-                {currentMediaType === 'amenities' && (
-                  <div className="md:hidden flex-1 overflow-y-auto bg-[#FAFAF5]">
-                    {expandedItemIndex === null ? (
-                      <div className="p-4">
-                        <h3 className="font-serif text-lg text-[#1C1A17] mb-4">Our Amenities</h3>
-                        <div className="grid grid-cols-2 gap-3">
-                          {MEDIA_SETS.amenities.map((item, idx) => {
-                            const amenityKeys = ['rooftop', 'spa', 'gym'] as const;
-                            const meta = AMENITY_META[amenityKeys[idx]];
-                            return (
-                              <button
-                                key={idx}
-                                onClick={() => setExpandedItemIndex(idx)}
-                                className="rounded-xl overflow-hidden text-left"
-                              >
-                                <img src={item.url} alt={meta.name} className="w-full h-28 object-cover" />
-                                <div className="p-2 bg-white border border-gray-100 rounded-b-xl">
-                                  <p className="text-sm font-medium text-[#1C1A17]">{meta.icon} {meta.name}</p>
-                                  <span className="text-xs text-[#C8A96E]">{meta.tag}</span>
-                                </div>
-                              </button>
-                            );
-                          })}
+                {/* Mobile: Amenities — hero layout matching rooms */}
+                {currentMediaType === 'amenities' && (() => {
+                  const amenityKeys = ['rooftop', 'spa', 'gym'] as const;
+                  const amenityKey = amenityKeys[selectedAmenityIndex];
+                  const meta = AMENITY_META[amenityKey];
+                  const heroUrl = MEDIA_MAP[amenityKey]?.[0]?.url ?? MEDIA_SETS.amenities[selectedAmenityIndex].url;
+                  return (
+                    <div className="md:hidden flex-1 overflow-hidden flex flex-col">
+                      {/* Hero image */}
+                      <div className="relative flex-1 overflow-hidden">
+                        <img src={heroUrl} alt={meta.name} className="w-full h-full object-cover" />
+                        {/* Gradient overlay: icon + name + tag */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                          <p className="text-white text-sm font-medium">{meta.icon} {meta.name}</p>
+                          <p className="text-[#C8A96E] text-xs">{meta.tag}</p>
                         </div>
                       </div>
-                    ) : (() => {
-                      const amenityKeys = ['rooftop', 'spa', 'gym'] as const;
-                      const item = MEDIA_SETS.amenities[expandedItemIndex];
-                      const meta = AMENITY_META[amenityKeys[expandedItemIndex]];
-                      return (
-                        <div>
-                          <div className="relative">
-                            <img src={item.url} alt={meta.name} className="w-full h-52 object-cover" />
+
+                      {/* Feature chips + hours */}
+                      <div className="flex gap-2 px-3 py-2 overflow-x-auto flex-shrink-0 bg-white border-b border-gray-100">
+                        {meta.features.map((f) => (
+                          <span key={f} className="flex-shrink-0 text-xs bg-[#F0EDE6] text-[#1C1A17] px-2.5 py-1 rounded-full">{f}</span>
+                        ))}
+                        {meta.hours.map(([day, time]) => (
+                          <span key={day} className="flex-shrink-0 text-xs bg-[#F0EDE6] text-[#6B6560] px-2.5 py-1 rounded-full">{day} {time}</span>
+                        ))}
+                      </div>
+
+                      {/* Amenity selector strip */}
+                      <div className="flex gap-2 px-3 py-2 overflow-x-auto flex-shrink-0 bg-white">
+                        {amenityKeys.map((key, idx) => {
+                          const thumbUrl = MEDIA_MAP[key]?.[0]?.url ?? MEDIA_SETS.amenities[idx].url;
+                          const itemMeta = AMENITY_META[key];
+                          const isSelected = idx === selectedAmenityIndex;
+                          return (
                             <button
-                              onClick={() => setExpandedItemIndex(null)}
-                              className="absolute top-3 left-3 w-9 h-9 rounded-full bg-black/50 flex items-center justify-center"
+                              key={key}
+                              onClick={() => {
+                                setSelectedAmenityIndex(idx);
+                                setCurrentMedia([{ url: thumbUrl, caption: itemMeta.name }]);
+                                setCurrentMediaIndex(0);
+                              }}
+                              className={`flex-shrink-0 w-20 rounded-lg overflow-hidden border-2 transition-all text-left ${
+                                isSelected ? 'border-[#1C1A17]' : 'border-gray-200 opacity-70'
+                              }`}
                             >
-                              <ArrowLeft className="w-4 h-4 text-white" />
-                            </button>
-                          </div>
-                          <div className="p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-2xl">{meta.icon}</span>
-                              <div>
-                                <h3 className="font-serif text-lg text-[#1C1A17]">{meta.name}</h3>
-                                <span className="text-xs text-[#C8A96E]">{meta.tag}</span>
+                              <img src={thumbUrl} alt={itemMeta.name} className="w-full h-14 object-cover" />
+                              <div className="px-1.5 py-1 bg-white">
+                                <p className="text-[10px] font-medium text-[#1C1A17] leading-tight truncate">{itemMeta.name}</p>
+                                <p className="text-[10px] text-[#C8A96E]">{itemMeta.tag}</p>
                               </div>
-                            </div>
-                            <p className="text-sm text-[#6B6560] mb-4">{meta.description}</p>
-                            <div className="flex flex-wrap gap-2 mb-4">
-                              {meta.features.map((f) => (
-                                <span key={f} className="text-xs bg-[#F0EDE6] text-[#1C1A17] px-2 py-1 rounded-full">{f}</span>
-                              ))}
-                            </div>
-                            <div className="space-y-1 border-t border-[#1C1A17]/10 pt-3">
-                              {meta.hours.map(([day, time]) => (
-                                <div key={day} className="flex justify-between text-sm">
-                                  <span className="text-[#6B6560]">{day}</span>
-                                  <span className="font-medium text-[#1C1A17]">{time}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Mobile: Attractions list / expanded detail */}
                 {currentMediaType === 'attractions' && (
