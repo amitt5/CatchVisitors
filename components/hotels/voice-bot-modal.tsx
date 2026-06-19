@@ -876,8 +876,16 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                       )}
                     </Button>
                   </div>
-                  <div className="text-center text-xs text-gray-400 mt-3">
-                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
+                  <div className="mt-3 flex flex-col items-center gap-2">
+                    <div className="hidden text-center text-xs text-gray-400 md:block">
+                      <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
+                    </div>
+                    <div className="md:hidden flex gap-2 flex-wrap justify-center">
+                      <button onClick={() => { setCurrentMedia(MEDIA_SETS.attractions); setCurrentMediaIndex(0); setCurrentMediaType('attractions'); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Attractions</button>
+                      <button onClick={() => { setCurrentMediaType('rooms'); setSelectedRoomIndex(0); setCurrentMedia(MEDIA_MAP['deluxe-garden']); setCurrentMediaIndex(0); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Rooms</button>
+                      <button onClick={() => { setCurrentMedia(MEDIA_MAP['rooftop']); setCurrentMediaIndex(0); setCurrentMediaType('amenities'); setSelectedAmenityIndex(0); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Amenities</button>
+                      <button onClick={() => { setShowCalendar(true); setCurrentMedia(null); setBookingStep('calendar'); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Calendar</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -956,10 +964,16 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                   <p className="text-lg font-serif text-[#1C1A17] max-md:text-white mt-6">
                     {isCallActive ? 'End Voice Call' : 'Start Voice Call'}
                   </p>
-                  {/* COMMENTED OUT: Demo controls hint - Will be brought back later */}
-                  {/* <div className="text-center text-xs text-gray-400 mt-4">
-                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
-                  </div> */}
+                  {/* Mobile demo controls */}
+                  <div className="md:hidden mt-6 flex flex-col items-center gap-3 w-full max-w-xs">
+                    <p className="text-xs text-white/40">Demo controls</p>
+                    <div className="flex gap-2">
+                      <button onClick={() => { setCurrentMedia(MEDIA_SETS.attractions); setCurrentMediaIndex(0); setCurrentMediaType('attractions'); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Attractions</button>
+                      <button onClick={() => { setCurrentMediaType('rooms'); setSelectedRoomIndex(0); setCurrentMedia(MEDIA_MAP['deluxe-garden']); setCurrentMediaIndex(0); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Rooms</button>
+                      <button onClick={() => { setCurrentMedia(MEDIA_MAP['rooftop']); setCurrentMediaIndex(0); setCurrentMediaType('amenities'); setSelectedAmenityIndex(0); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Amenities</button>
+                    </div>
+                    <button onClick={() => { setShowCalendar(true); setCurrentMedia(null); setBookingStep('calendar'); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Calendar</button>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -1011,8 +1025,16 @@ export function VoiceBotModal({ isOpen, onClose }: VoiceBotModalProps) {
                       )}
                     </Button>
                   </div>
-                  <div className="text-center text-xs text-gray-400 mt-3">
-                    <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
+                  <div className="mt-3 flex flex-col items-center gap-2">
+                    <div className="hidden text-center text-xs text-gray-400 md:block">
+                      <p>Demo controls: 1=Attractions, 2=Rooms, 3=Amenities, ←/→=Navigate, C=Calendar, H=Hide</p>
+                    </div>
+                    <div className="md:hidden flex gap-2 flex-wrap justify-center">
+                      <button onClick={() => { setCurrentMedia(MEDIA_SETS.attractions); setCurrentMediaIndex(0); setCurrentMediaType('attractions'); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Attractions</button>
+                      <button onClick={() => { setCurrentMediaType('rooms'); setSelectedRoomIndex(0); setCurrentMedia(MEDIA_MAP['deluxe-garden']); setCurrentMediaIndex(0); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Rooms</button>
+                      <button onClick={() => { setCurrentMedia(MEDIA_MAP['rooftop']); setCurrentMediaIndex(0); setCurrentMediaType('amenities'); setSelectedAmenityIndex(0); setExpandedItemIndex(null); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Amenities</button>
+                      <button onClick={() => { setShowCalendar(true); setCurrentMedia(null); setBookingStep('calendar'); }} className="px-3 py-1.5 text-xs rounded-full border border-[#C8A96E]/40 text-[#C8A96E]">Calendar</button>
+                    </div>
                   </div>
                 </div>
               </div>
