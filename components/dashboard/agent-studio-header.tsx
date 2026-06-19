@@ -14,10 +14,8 @@ export const AGENT_STUDIO_TABS = [
   { id: "profile", label: "Agent profile" },
   { id: "content", label: "Content" },
   { id: "guides", label: "Guides" },
-  { id: "goals", label: "Goals" },
   { id: "scorecard", label: "Scorecard" },
   { id: "inbox", label: "Inbox" },
-  { id: "finance", label: "Finance" },
   { id: "email", label: "Email" },
 ] as const;
 

@@ -36,10 +36,8 @@ import {
 import {
   ContentTab,
   GuidesTab,
-  GoalsTab,
   ScorecardTab,
   InboxTab,
-  FinanceTab,
   EmailTab,
 } from "@/components/dashboard/agent-studio-tabs";
 import { cn } from "@/lib/utils";
@@ -646,14 +644,10 @@ function StudioTabContent({ tab }: { tab: AgentStudioTabId }) {
       return <ContentTab />;
     case "guides":
       return <GuidesTab />;
-    case "goals":
-      return <GoalsTab />;
     case "scorecard":
       return <ScorecardTab />;
     case "inbox":
       return <InboxTab />;
-    case "finance":
-      return <FinanceTab />;
     case "email":
       return <EmailTab />;
     default:

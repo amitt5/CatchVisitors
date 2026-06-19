@@ -6,13 +6,11 @@ import {
   Tag,
   Video,
   MessageSquareText,
-  Target,
   Mail,
   MailOpen,
   MousePointerClick,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { DataTable } from "@/components/dashboard/data-table";
 
 const CONTENT_ITEMS = [
@@ -65,38 +63,6 @@ export function GuidesTab() {
   );
 }
 
-const GOALS = [
-  { name: "Book 50 demos this month", current: 32, target: 50, unit: "demos" },
-  { name: "Keep avg. response time under 10s", current: 7.2, target: 10, unit: "s", lowerIsBetter: true },
-  { name: "Maintain CSAT above 90%", current: 94, target: 90, unit: "%" },
-];
-
-export function GoalsTab() {
-  return (
-    <div className="space-y-4">
-      {GOALS.map((g) => {
-        const pct = g.lowerIsBetter
-          ? Math.min(100, Math.round((g.target / g.current) * 100))
-          : Math.min(100, Math.round((g.current / g.target) * 100));
-        return (
-          <div key={g.name} className="bg-card border border-border rounded-xl p-5">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-indigo-600" />
-                <p className="text-sm font-medium text-foreground">{g.name}</p>
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {g.current}{g.unit} / {g.target}{g.unit}
-              </span>
-            </div>
-            <Progress value={pct} />
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
 const SCORECARD = [
   { metric: "Conversion rate", target: "10%", actual: "12.4%", trend: "up" },
   { metric: "Avg. handle time", target: "3m 00s", actual: "2m 41s", trend: "up" },
@@ -142,38 +108,6 @@ export function InboxTab() {
           <span className="text-xs text-muted-foreground w-20 text-right">{c.time}</span>
         </div>
       ))}
-    </div>
-  );
-}
-
-const FINANCE_STATS = [
-  { label: "Cost this month", value: "€184.20" },
-  { label: "Cost per conversation", value: "€0.38" },
-  { label: "Conversations this month", value: "486" },
-  { label: "Budget remaining", value: "€315.80" },
-];
-
-const RECENT_CHARGES = [
-  { date: "Jun 18, 2026", description: "Voice minutes — 412 min", amount: "€61.80" },
-  { date: "Jun 11, 2026", description: "Voice minutes — 388 min", amount: "€58.20" },
-  { date: "Jun 4, 2026", description: "Chat messages — 2,140 msgs", amount: "€21.40" },
-];
-
-export function FinanceTab() {
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {FINANCE_STATS.map((s) => (
-          <div key={s.label} className="bg-card border border-border rounded-xl p-4">
-            <p className="text-xs text-muted-foreground mb-1">{s.label}</p>
-            <p className="text-lg font-semibold text-foreground">{s.value}</p>
-          </div>
-        ))}
-      </div>
-      <DataTable
-        columns={["Date", "Description", "Amount"]}
-        rows={RECENT_CHARGES.map((c) => [c.date, c.description, c.amount])}
-      />
     </div>
   );
 }
