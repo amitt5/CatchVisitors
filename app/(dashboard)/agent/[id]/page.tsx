@@ -33,6 +33,15 @@ import {
   AGENT_STUDIO_TABS,
   type AgentStudioTabId,
 } from "@/components/dashboard/agent-studio-header";
+import {
+  ContentTab,
+  GuidesTab,
+  GoalsTab,
+  ScorecardTab,
+  InboxTab,
+  FinanceTab,
+  EmailTab,
+} from "@/components/dashboard/agent-studio-tabs";
 import { cn } from "@/lib/utils";
 
 interface Language {
@@ -338,7 +347,7 @@ export default function AgentPage() {
         </Link>
 
         {studioTab !== "profile" ? (
-          <ComingSoonPanel tabId={studioTab} />
+          <StudioTabContent tab={studioTab} />
         ) : (
           <>
             {/* Agent settings panel */}
@@ -631,14 +640,35 @@ export default function AgentPage() {
   );
 }
 
+function StudioTabContent({ tab }: { tab: AgentStudioTabId }) {
+  switch (tab) {
+    case "content":
+      return <ContentTab />;
+    case "guides":
+      return <GuidesTab />;
+    case "goals":
+      return <GoalsTab />;
+    case "scorecard":
+      return <ScorecardTab />;
+    case "inbox":
+      return <InboxTab />;
+    case "finance":
+      return <FinanceTab />;
+    case "email":
+      return <EmailTab />;
+    default:
+      return <ComingSoonPanel tabId={tab} />;
+  }
+}
+
 function ComingSoonPanel({ tabId }: { tabId: AgentStudioTabId }) {
-  const tab = AGENT_STUDIO_TABS.find((t) => t.id === tabId);
+  const tabInfo = AGENT_STUDIO_TABS.find((t) => t.id === tabId);
   return (
     <div className="bg-card border border-border rounded-xl py-16 flex flex-col items-center text-center gap-3">
       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
         <Construction className="w-5 h-5 text-muted-foreground" />
       </div>
-      <p className="text-sm font-medium text-foreground">{tab?.label} is coming soon</p>
+      <p className="text-sm font-medium text-foreground">{tabInfo?.label} is coming soon</p>
       <p className="text-sm text-muted-foreground max-w-sm">
         This part of Agent Studio isn&apos;t wired up yet. Check back soon.
       </p>

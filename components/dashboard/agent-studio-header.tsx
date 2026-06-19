@@ -11,14 +11,14 @@ import {
 import { cn } from "@/lib/utils";
 
 export const AGENT_STUDIO_TABS = [
-  { id: "profile", label: "Agent profile", live: true },
-  { id: "content", label: "Content", live: false },
-  { id: "guides", label: "Guides", live: false },
-  { id: "goals", label: "Goals", live: false },
-  { id: "scorecard", label: "Scorecard", live: false },
-  { id: "inbox", label: "Inbox", live: false },
-  { id: "finance", label: "Finance", live: false },
-  { id: "email", label: "Email", live: false },
+  { id: "profile", label: "Agent profile" },
+  { id: "content", label: "Content" },
+  { id: "guides", label: "Guides" },
+  { id: "goals", label: "Goals" },
+  { id: "scorecard", label: "Scorecard" },
+  { id: "inbox", label: "Inbox" },
+  { id: "finance", label: "Finance" },
+  { id: "email", label: "Email" },
 ] as const;
 
 export type AgentStudioTabId = (typeof AGENT_STUDIO_TABS)[number]["id"];
@@ -70,14 +70,6 @@ export function AgentStudioHeader({
       <div className="flex items-center gap-1 px-6 mt-3 overflow-x-auto">
         {AGENT_STUDIO_TABS.map((tab) => {
           const isActive = tab.id === activeTab;
-          const content = (
-            <span className="inline-flex items-center gap-1.5">
-              {tab.label}
-              {!tab.live && (
-                <span className="text-[9px] uppercase tracking-wide text-muted-foreground/60">soon</span>
-              )}
-            </span>
-          );
           const className = cn(
             "px-2 pb-2.5 text-sm border-b-2 whitespace-nowrap transition-colors",
             isActive
@@ -87,7 +79,7 @@ export function AgentStudioHeader({
 
           return (
             <Link key={tab.id} href={`/agent/${agentId}?tab=${tab.id}`} className={className}>
-              {content}
+              {tab.label}
             </Link>
           );
         })}

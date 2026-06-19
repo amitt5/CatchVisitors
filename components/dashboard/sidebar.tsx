@@ -41,8 +41,6 @@ interface NavItem {
   title: string;
   href: string;
   icon: React.ReactNode;
-  /** Real, wired-up page. Unset items render as visual-only placeholders. */
-  live?: boolean;
 }
 
 interface NavGroup {
@@ -54,63 +52,62 @@ const TOP_ITEM: NavItem = {
   title: "Dashboard",
   href: "/dashboard",
   icon: <LayoutDashboard className="w-4 h-4" />,
-  live: true,
 };
 
 const GROUPS: NavGroup[] = [
   {
     title: "Me",
     items: [
-      { title: "My Profile", href: "#", icon: <User className="w-4 h-4" /> },
-      { title: "Calendar", href: "#", icon: <Calendar className="w-4 h-4" /> },
-      { title: "Notifications", href: "#", icon: <Bell className="w-4 h-4" /> },
-      { title: "Shortcuts", href: "#", icon: <Keyboard className="w-4 h-4" /> },
+      { title: "My Profile", href: "/me/profile", icon: <User className="w-4 h-4" /> },
+      { title: "Calendar", href: "/me/calendar", icon: <Calendar className="w-4 h-4" /> },
+      { title: "Notifications", href: "/me/notifications", icon: <Bell className="w-4 h-4" /> },
+      { title: "Shortcuts", href: "/me/shortcuts", icon: <Keyboard className="w-4 h-4" /> },
     ],
   },
   {
     title: "Organization",
     items: [
-      { title: "Users", href: "#", icon: <Users className="w-4 h-4" /> },
-      { title: "Profiles", href: "#", icon: <Contact className="w-4 h-4" /> },
-      { title: "Groups", href: "#", icon: <UsersRound className="w-4 h-4" /> },
-      { title: "Single Sign-On", href: "#", icon: <KeyRound className="w-4 h-4" /> },
-      { title: "Company Details", href: "#", icon: <Building2 className="w-4 h-4" /> },
-      { title: "Themes", href: "#", icon: <Palette className="w-4 h-4" /> },
+      { title: "Users", href: "/org/users", icon: <Users className="w-4 h-4" /> },
+      { title: "Profiles", href: "/org/profiles", icon: <Contact className="w-4 h-4" /> },
+      { title: "Groups", href: "/org/groups", icon: <UsersRound className="w-4 h-4" /> },
+      { title: "Single Sign-On", href: "/org/sso", icon: <KeyRound className="w-4 h-4" /> },
+      { title: "Company Details", href: "/org/company", icon: <Building2 className="w-4 h-4" /> },
+      { title: "Themes", href: "/org/themes", icon: <Palette className="w-4 h-4" /> },
     ],
   },
   {
     title: "App Settings",
     items: [
-      { title: "Fields", href: "#", icon: <Type className="w-4 h-4" /> },
-      { title: "Segments", href: "#", icon: <PieChart className="w-4 h-4" /> },
-      { title: "Advertising", href: "#", icon: <Megaphone className="w-4 h-4" /> },
-      { title: "Workflows", href: "#", icon: <Workflow className="w-4 h-4" /> },
-      { title: "Setup", href: "/settings", icon: <Wrench className="w-4 h-4" />, live: true },
+      { title: "Fields", href: "/settings/fields", icon: <Type className="w-4 h-4" /> },
+      { title: "Segments", href: "/settings/segments", icon: <PieChart className="w-4 h-4" /> },
+      { title: "Advertising", href: "/settings/advertising", icon: <Megaphone className="w-4 h-4" /> },
+      { title: "Workflows", href: "/settings/workflows", icon: <Workflow className="w-4 h-4" /> },
+      { title: "Setup", href: "/settings", icon: <Wrench className="w-4 h-4" /> },
     ],
   },
   {
     title: "AI",
     items: [
-      { title: "Agent Studio", href: "/agent", icon: <Bot className="w-4 h-4" />, live: true },
-      { title: "Email Campaigns", href: "#", icon: <Mail className="w-4 h-4" /> },
+      { title: "Agent Studio", href: "/agent", icon: <Bot className="w-4 h-4" /> },
+      { title: "Email Campaigns", href: "/agent/email-campaigns", icon: <Mail className="w-4 h-4" /> },
     ],
   },
   {
     title: "Experiences",
     items: [
-      { title: "Automatic", href: "#", icon: <Zap className="w-4 h-4" /> },
-      { title: "Forms", href: "#", icon: <FileText className="w-4 h-4" /> },
-      { title: "Buttons", href: "#", icon: <MousePointerClick className="w-4 h-4" /> },
-      { title: "Manual", href: "#", icon: <BookOpen className="w-4 h-4" /> },
-      { title: "Blocks", href: "#", icon: <Blocks className="w-4 h-4" /> },
+      { title: "Automatic", href: "/experiences/automatic", icon: <Zap className="w-4 h-4" /> },
+      { title: "Forms", href: "/experiences/forms", icon: <FileText className="w-4 h-4" /> },
+      { title: "Buttons", href: "/experiences/buttons", icon: <MousePointerClick className="w-4 h-4" /> },
+      { title: "Manual", href: "/experiences/manual", icon: <BookOpen className="w-4 h-4" /> },
+      { title: "Blocks", href: "/experiences/blocks", icon: <Blocks className="w-4 h-4" /> },
     ],
   },
   {
     title: "Conversations",
     items: [
-      { title: "Calls", href: "/calls", icon: <Phone className="w-4 h-4" />, live: true },
-      { title: "Streams", href: "#", icon: <Rss className="w-4 h-4" /> },
-      { title: "Routing", href: "#", icon: <Route className="w-4 h-4" /> },
+      { title: "Calls", href: "/calls", icon: <Phone className="w-4 h-4" /> },
+      { title: "Streams", href: "/calls/streams", icon: <Rss className="w-4 h-4" /> },
+      { title: "Routing", href: "/calls/routing", icon: <Route className="w-4 h-4" /> },
     ],
   },
 ];
@@ -126,34 +123,17 @@ function NavLink({
   collapsed: boolean;
   onClick: () => void;
 }) {
-  const content = (
-    <>
-      <span className={cn(active ? "text-indigo-600" : "text-muted-foreground")}>{item.icon}</span>
-      {!collapsed && (
-        <span className="flex-1 truncate">{item.title}</span>
-      )}
-      {!collapsed && !item.live && (
-        <span className="text-[10px] uppercase tracking-wide text-muted-foreground/60">Soon</span>
-      )}
-    </>
-  );
-
   const className = cn(
     "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors",
     active
       ? "bg-indigo-50 text-indigo-600 font-medium"
-      : item.live
-        ? "text-foreground/80 hover:bg-sidebar-accent hover:text-foreground"
-        : "text-muted-foreground/70 hover:bg-sidebar-accent/60 cursor-default"
+      : "text-foreground/80 hover:bg-sidebar-accent hover:text-foreground"
   );
-
-  if (!item.live) {
-    return <div className={className}>{content}</div>;
-  }
 
   return (
     <Link href={item.href} className={className} onClick={onClick}>
-      {content}
+      <span className={cn(active ? "text-indigo-600" : "text-muted-foreground")}>{item.icon}</span>
+      {!collapsed && <span className="flex-1 truncate">{item.title}</span>}
     </Link>
   );
 }
@@ -163,7 +143,7 @@ export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
-  const isActive = (href: string) => href !== "#" && pathname === href;
+  const isActive = (href: string) => pathname === href;
 
   return (
     <>
