@@ -1,16 +1,39 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Copy, Loader2, Phone, PhoneOff } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ArrowLeft,
+  Copy,
+  Loader2,
+  Phone,
+  PhoneOff,
+  Bot,
+  Sparkles,
+  Construction,
+} from "lucide-react";
 import Link from "next/link";
 import { Agent } from "@/types/database";
 import Vapi from "@vapi-ai/web";
+import {
+  AgentStudioHeader,
+  AGENT_STUDIO_TABS,
+  type AgentStudioTabId,
+} from "@/components/dashboard/agent-studio-header";
+import { cn } from "@/lib/utils";
 
 interface Language {
   id: string;
@@ -26,12 +49,33 @@ const languages: Language[] = [
   { id: "spanish", name: "Spanish" },
 ];
 
+const FACES = [
+  { id: "ruby", label: "Ruby" },
+  { id: "noor", label: "Noor" },
+  { id: "kai", label: "Kai" },
+];
+
+const VOICES = [
+  { id: "marin", label: "Marin" },
+  { id: "savannah", label: "Savannah" },
+  { id: "cole", label: "Cole" },
+];
+
+const REP_AI_TOOLS = [
+  { id: "suggest", label: "Suggest", description: "Generate a response to the visitor's last message. This tool requires AI Content to be configured.", defaultOn: true },
+  { id: "summarize", label: "Summarize", description: "Summarize the conversation so far for a rep picking up the chat.", defaultOn: false },
+  { id: "translate", label: "Translate", description: "Translate the visitor's message into the rep's preferred language.", defaultOn: false },
+];
+
 export default function AgentPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const agentId = params.id as string;
   const isCreateMode = agentId === "create";
   const isEditMode = !isCreateMode && agentId !== "create";
+
+  const studioTab = (searchParams.get("tab") || "profile") as AgentStudioTabId;
 
   const [businessName, setBusinessName] = useState("");
   const [website, setWebsite] = useState("");
@@ -47,6 +91,14 @@ export default function AgentPage() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [existingAgent, setExistingAgent] = useState<Agent | null>(null);
+  const [agentsList, setAgentsList] = useState<Agent[]>([]);
+
+  const [profileSubTab, setProfileSubTab] = useState<"avatar" | "role">(isCreateMode ? "role" : "avatar");
+  const [face, setFace] = useState(FACES[0].id);
+  const [voice, setVoice] = useState(VOICES[0].id);
+  const [tools, setTools] = useState<Record<string, boolean>>(
+    Object.fromEntries(REP_AI_TOOLS.map((t) => [t.id, t.defaultOn]))
+  );
 
   useEffect(() => {
     if (isEditMode) {
@@ -54,14 +106,24 @@ export default function AgentPage() {
     } else {
       setLoading(false);
     }
+    fetchAgentsList();
   }, [agentId, isEditMode]);
+
+  const fetchAgentsList = async () => {
+    try {
+      const response = await fetch("/api/agents");
+      if (!response.ok) return;
+      const data = await response.json();
+      setAgentsList(data.agents || []);
+    } catch {
+      // Non-critical — header dropdown just shows fewer agents.
+    }
+  };
 
   const fetchAgent = async () => {
     try {
       setLoading(true);
-      console.log('Fetching agent:', agentId);
       const response = await fetch(`/api/agents?id=${agentId}`);
-      console.log('Fetching agent response:', response);
       if (!response.ok) {
         throw new Error("Failed to fetch agent");
       }
@@ -102,14 +164,11 @@ export default function AgentPage() {
     setGeneratedPrompt("");
 
     try {
-      console.log('🚀 Starting agent generation/update for:', { businessName, website });
-      
       if (isEditMode && existingAgent) {
-        // Update existing agent
         const updateRes = await fetch(`/api/agents?id=${agentId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             name: businessName,
             website_url: website,
             languages: selectedLanguages,
@@ -117,58 +176,39 @@ export default function AgentPage() {
             vapi_assistant_id: vapiAssistantId || null,
           }),
         });
-        
+
         const updateData = await updateRes.json();
-        console.log('📊 Agent update response:', { 
-          status: updateRes.status, 
-          success: updateData.success
-        });
-        
+
         if (!updateRes.ok || !updateData.success) {
           throw new Error(updateData.error || updateData.details || "Agent update failed");
         }
-        
+
         setGeneratedPrompt(generatedPrompt);
-        console.log('✅ Agent updated successfully!');
       } else {
-        // Create new agent (same as original generate logic)
         const agentRes = await fetch("/api/agents", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             businessName: businessName,
             website: website,
             languages: selectedLanguages,
             vapi_assistant_id: vapiAssistantId || null,
           }),
         });
-        
+
         const agentData = await agentRes.json();
-        console.log('📊 Agent creation response:', { 
-          status: agentRes.status, 
-          success: agentData.success,
-          hasPrompt: !!agentData.prompt,
-          agentId: agentData.agentId
-        });
-        
+
         if (!agentRes.ok || !agentData.success) {
           throw new Error(agentData.error || agentData.details || "Agent creation failed");
         }
 
-        // Step 2: Show the generated prompt
         setGeneratedPrompt(agentData.prompt || "");
-        
-        // Step 3: Redirect to edit page after creation
+
         if (agentData.agentId) {
-          console.log('🔄 Redirecting to agent edit page:', `/agent/${agentData.agentId}`);
           router.push(`/agent/${agentData.agentId}`);
         }
-        
-        console.log('✅ Agent created successfully!');
       }
-      
     } catch (error) {
-      console.error('💥 Error generating/updating agent:', error);
       setError(error instanceof Error ? error.message : "Failed to generate/update agent");
     } finally {
       setIsGenerating(false);
@@ -186,7 +226,6 @@ export default function AgentPage() {
     }
 
     if (isCallActive) {
-      // End the call
       if (vapiRef.current) {
         vapiRef.current.stop();
         vapiRef.current = null;
@@ -199,9 +238,6 @@ export default function AgentPage() {
     setError("");
 
     try {
-      console.log('🚀 Testing VAPI agent:', vapiAssistantId);
-      
-      // Get test configuration from API
       const response = await fetch("/api/test-vapi-agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -211,42 +247,33 @@ export default function AgentPage() {
       });
 
       const data = await response.json();
-      console.log('📊 VAPI test response:', data);
 
       if (!response.ok || !data.success) {
         throw new Error(data.error || data.details || "VAPI test failed");
       }
 
-      // Initialize VAPI and start the call (like landing page)
       const vapi = new Vapi(data.apiKey);
       vapiRef.current = vapi;
 
-      // Set up event listeners
       vapi.on('call-start', () => {
-        console.log('✅ Test call started!');
         setIsCallActive(true);
         setIsTesting(false);
       });
 
       vapi.on('call-end', () => {
-        console.log('📞 Test call ended');
         setIsCallActive(false);
         vapiRef.current = null;
       });
 
       vapi.on('error', (error) => {
-        console.error('❌ VAPI call error:', error);
         setError(`VAPI call error: ${error.message}`);
         setIsCallActive(false);
         vapiRef.current = null;
         setIsTesting(false);
       });
 
-      // Start the call with test configuration
       await vapi.start(data.config.assistantId, data.config.assistantOverrides);
-      
     } catch (error) {
-      console.error('💥 Error testing VAPI agent:', error);
       setError(error instanceof Error ? error.message : "Failed to test VAPI agent");
       setIsTesting(false);
     }
@@ -262,8 +289,6 @@ export default function AgentPage() {
     setError("");
 
     try {
-      console.log('🧩 Generating widget for agent:', agentId);
-      
       const response = await fetch("/api/widgets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -273,17 +298,13 @@ export default function AgentPage() {
       });
 
       const data = await response.json();
-      console.log('📊 Widget generation response:', data);
 
       if (!response.ok || !data.success) {
         throw new Error(data.error || data.details || "Widget generation failed");
       }
 
       setWidgetConfig(data);
-      console.log('✅ Widget generated successfully!');
-      
     } catch (error) {
-      console.error('💥 Error generating widget:', error);
       setError(error instanceof Error ? error.message : "Failed to generate widget");
     } finally {
       setIsGeneratingWidget(false);
@@ -302,232 +323,325 @@ export default function AgentPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="w-full">
-        {/* Header */}
-        <div className="mb-6">
-          <Link href="/agent" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Agents
-          </Link>
-          <h1 className="text-3xl font-bold text-gray-900">
-            {isCreateMode ? "Create New Agent" : "Edit Agent"}
-          </h1>
-          <p className="text-gray-600 mt-2">
-            {isCreateMode 
-              ? "Configure your AI agent by providing business details and language preferences."
-              : "Update your AI agent configuration and prompt."
-            }
-          </p>
-        </div>
+    <div>
+      <AgentStudioHeader
+        agentName={businessName || (isCreateMode ? "New agent" : "Untitled agent")}
+        agentId={agentId}
+        agents={agentsList}
+        activeTab={studioTab}
+      />
 
-        {/* Form */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <div className="space-y-6">
-            {/* Business Name */}
-            <div className="space-y-2">
-              <Label htmlFor="businessName">Business Name</Label>
-              <Input
-                id="businessName"
-                placeholder="Enter your business name"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                disabled={isGenerating}
-              />
-            </div>
+      <div className="max-w-3xl mx-auto px-6 py-6">
+        <Link href="/agent" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Agents
+        </Link>
 
-            {/* Website */}
-            <div className="space-y-2">
-              <Label htmlFor="website">Website</Label>
-              <Input
-                id="website"
-                type="url"
-                placeholder="https://example.com"
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-                disabled={isGenerating}
-              />
-            </div>
+        {studioTab !== "profile" ? (
+          <ComingSoonPanel tabId={studioTab} />
+        ) : (
+          <>
+            {/* Agent settings panel */}
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                <h2 className="text-sm font-semibold text-foreground">Agent settings</h2>
+                <div className="flex items-center gap-2">
+                  <Link href="/agent">
+                    <Button variant="outline" size="sm">Cancel</Button>
+                  </Link>
+                  <Button
+                    size="sm"
+                    onClick={handleGenerate}
+                    disabled={!businessName || !website || selectedLanguages.length === 0 || isGenerating}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    {isGenerating ? (
+                      <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                    ) : null}
+                    {isCreateMode ? "Create" : "Save"}
+                  </Button>
+                </div>
+              </div>
 
-            {/* Languages */}
-            <div className="space-y-3">
-              <Label>Languages</Label>
-              <div className="grid grid-cols-2 gap-4">
-                {languages.map((language) => (
-                  <div key={language.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={language.id}
-                      checked={selectedLanguages.includes(language.id)}
-                      onCheckedChange={(checked) => handleLanguageChange(language.id, checked)}
-                      disabled={isGenerating}
-                    />
-                    <Label
-                      htmlFor={language.id}
-                      className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed"
+              <div className="px-6 py-6 space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="businessName">Agent name</Label>
+                  <Input
+                    id="businessName"
+                    placeholder="e.g. &quot;Your AI SDR Agent&quot;"
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    disabled={isGenerating}
+                  />
+                </div>
+
+                <div className="flex items-center gap-5 border-b border-border text-sm">
+                  <button
+                    onClick={() => setProfileSubTab("avatar")}
+                    className={cn(
+                      "pb-2.5 border-b-2 transition-colors",
+                      profileSubTab === "avatar"
+                        ? "border-indigo-600 text-foreground font-medium"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    Agent avatar
+                  </button>
+                  <button
+                    onClick={() => setProfileSubTab("role")}
+                    className={cn(
+                      "pb-2.5 border-b-2 transition-colors",
+                      profileSubTab === "role"
+                        ? "border-indigo-600 text-foreground font-medium"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    Agent role
+                  </button>
+                </div>
+
+                {profileSubTab === "avatar" ? (
+                  <div className="space-y-5">
+                    <div className="w-full max-w-xs aspect-video rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-50 border border-border flex items-center justify-center">
+                      <Bot className="w-10 h-10 text-indigo-400" />
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleTestAgent}
+                      disabled={!vapiAssistantId || isTesting}
+                      className="w-full max-w-xs"
                     >
-                      {language.name}
-                    </Label>
+                      {isTesting ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : isCallActive ? (
+                        <PhoneOff className="w-4 h-4 mr-2" />
+                      ) : (
+                        <Phone className="w-4 h-4 mr-2" />
+                      )}
+                      {isCallActive ? "End preview call" : "Preview"}
+                    </Button>
+                    {!vapiAssistantId && (
+                      <p className="text-xs text-muted-foreground">
+                        Add a VAPI Assistant ID under &quot;Agent role&quot; to enable preview calls.
+                      </p>
+                    )}
+                    {isCallActive && (
+                      <p className="text-sm text-emerald-600">
+                        Call in progress — speak to test your assistant.
+                      </p>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-4 max-w-xs">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs text-muted-foreground">Face</Label>
+                        <Select value={face} onValueChange={setFace}>
+                          <SelectTrigger className="w-full" size="sm">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {FACES.map((f) => (
+                              <SelectItem key={f.id} value={f.id}>{f.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-xs text-muted-foreground">Voice</Label>
+                        <Select value={voice} onValueChange={setVoice}>
+                          <SelectTrigger className="w-full" size="sm">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {VOICES.map((v) => (
+                              <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {website && (
+                      <p className="text-sm text-muted-foreground">
+                        Talks to visitors on <span className="text-foreground">{website}</span>.{" "}
+                        <button onClick={() => setProfileSubTab("role")} className="text-indigo-600 hover:underline">
+                          Edit in Agent role
+                        </button>
+                      </p>
+                    )}
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* VAPI Assistant ID */}
-            <div className="space-y-2">
-              <Label htmlFor="vapiAssistantId">VAPI Assistant ID (Optional)</Label>
-              <Input
-                id="vapiAssistantId"
-                placeholder="Enter VAPI assistant ID after creating it manually"
-                value={vapiAssistantId}
-                onChange={(e) => setVapiAssistantId(e.target.value)}
-                disabled={isGenerating}
-              />
-              <p className="text-sm text-gray-500">
-                After creating your assistant manually on the VAPI platform, enter the assistant ID here.
-              </p>
-            </div>
-
-            {/* Generate/Update Button */}
-            <div className="pt-4">
-              <Button 
-                onClick={handleGenerate}
-                className="w-full"
-                disabled={!businessName || !website || selectedLanguages.length === 0 || isGenerating}
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    {isCreateMode ? "Creating Agent..." : "Updating Agent..."}
-                  </>
                 ) : (
-                  isCreateMode ? "Create Agent" : "Update Agent"
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="website">Website</Label>
+                      <Input
+                        id="website"
+                        type="url"
+                        placeholder="https://example.com"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                        disabled={isGenerating}
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <Label>Languages</Label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {languages.map((language) => (
+                          <div key={language.id} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={language.id}
+                              checked={selectedLanguages.includes(language.id)}
+                              onCheckedChange={(checked) => handleLanguageChange(language.id, checked)}
+                              disabled={isGenerating}
+                            />
+                            <Label htmlFor={language.id} className="text-sm font-normal leading-none">
+                              {language.name}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="vapiAssistantId">VAPI Assistant ID (optional)</Label>
+                      <Input
+                        id="vapiAssistantId"
+                        placeholder="Enter VAPI assistant ID after creating it manually"
+                        value={vapiAssistantId}
+                        onChange={(e) => setVapiAssistantId(e.target.value)}
+                        disabled={isGenerating}
+                      />
+                      <p className="text-sm text-muted-foreground">
+                        After creating your assistant manually on the VAPI platform, enter the assistant ID here.
+                      </p>
+                    </div>
+
+                    {isEditMode && vapiAssistantId && (
+                      <Button
+                        onClick={handleGenerateWidget}
+                        variant="secondary"
+                        className="w-full"
+                        disabled={isGeneratingWidget}
+                      >
+                        {isGeneratingWidget ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-4 h-4 mr-2" />
+                        )}
+                        Generate Widget
+                      </Button>
+                    )}
+                  </div>
                 )}
-              </Button>
-            </div>
 
-            {/* Generate Widget Button - Only show if VAPI assistant ID exists and in edit mode */}
-            {isEditMode && vapiAssistantId && (
-              <div className="pt-2">
-                <Button 
-                  onClick={handleGenerateWidget}
-                  variant="secondary"
-                  className="w-full"
-                  disabled={isGeneratingWidget}
-                >
-                  {isGeneratingWidget ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Generating Widget...
-                    </>
-                  ) : (
-                    <>
-                      🧩 Generate Widget
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
-
-            {/* Test Agent Button - Only show if VAPI assistant ID exists and in edit mode */}
-            {isEditMode && vapiAssistantId && (
-              <div className="pt-2">
-                <Button 
-                  onClick={handleTestAgent}
-                  variant={isCallActive ? "destructive" : "outline"}
-                  className="w-full"
-                  disabled={isTesting}
-                >
-                  {isTesting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Starting Test...
-                    </>
-                  ) : isCallActive ? (
-                    <>
-                      <PhoneOff className="w-4 h-4 mr-2" />
-                      End Test Call
-                    </>
-                  ) : (
-                    <>
-                      <Phone className="w-4 h-4 mr-2" />
-                      Test Agent
-                    </>
-                  )}
-                </Button>
-                {isCallActive && (
-                  <p className="text-sm text-green-600 mt-2 text-center">
-                    📞 Test call in progress... Speak to test your assistant!
-                  </p>
+                {error && (
+                  <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <p className="text-destructive text-sm">{error}</p>
+                  </div>
                 )}
               </div>
-            )}
+            </div>
 
-            {/* Error Display */}
-            {error && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-800 text-sm">{error}</p>
+            {/* Generated Prompt */}
+            {generatedPrompt && (
+              <div className="mt-6 bg-card border border-border rounded-xl p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-sm font-semibold text-foreground">
+                    {isCreateMode ? "Generated Agent Prompt" : "Updated Agent Prompt"}
+                  </h2>
+                  <Button onClick={copyToClipboard} variant="outline" size="sm">
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy
+                  </Button>
+                </div>
+                <Textarea
+                  value={generatedPrompt}
+                  readOnly
+                  className="min-h-[200px] w-full p-4 border rounded-lg bg-muted/40"
+                />
               </div>
             )}
-          </div>
-        </div>
 
-        {/* Generated Prompt Section */}
-        {generatedPrompt && (
-          <div className="mt-6 bg-white shadow rounded-lg p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">
-                {isCreateMode ? "Generated Agent Prompt" : "Updated Agent Prompt"}
-              </h2>
-              <Button
-                onClick={copyToClipboard}
-                variant="outline"
-                size="sm"
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                Copy
-              </Button>
-            </div>
-            <Textarea
-              value={generatedPrompt}
-              readOnly
-              className="min-h-[200px] w-full p-4 border rounded-lg bg-gray-50"
-            />
-          </div>
-        )}
+            {/* Widget Embed */}
+            {widgetConfig && (
+              <div className="mt-6 bg-card border border-border rounded-xl p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-sm font-semibold text-foreground">Widget Embed Code</h2>
+                  <Button
+                    onClick={() => navigator.clipboard.writeText(widgetConfig.embed_code)}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Code
+                  </Button>
+                </div>
+                <div className="bg-muted/40 p-4 rounded-lg border border-border">
+                  <code className="text-sm text-foreground break-all">
+                    {widgetConfig.embed_code}
+                  </code>
+                </div>
+                <div className="mt-4 p-4 bg-muted/40 rounded-lg border border-border">
+                  <h3 className="font-semibold text-foreground mb-2 text-sm">Installation Instructions:</h3>
+                  <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                    <li>Copy the embed code above</li>
+                    <li>Paste it into your website's HTML</li>
+                    <li>Place it before the closing &lt;/body&gt; tag</li>
+                    <li>The widget will appear as a floating button in the bottom-right corner</li>
+                  </ol>
+                </div>
+              </div>
+            )}
 
-        {/* Widget Embed Section */}
-        {widgetConfig && (
-          <div className="mt-6 bg-white shadow rounded-lg p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">
-                🧩 Widget Embed Code
-              </h2>
-              <Button
-                onClick={() => navigator.clipboard.writeText(widgetConfig.embed_code)}
-                variant="outline"
-                size="sm"
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                Copy Code
-              </Button>
+            {/* Rep AI tools */}
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="text-sm font-semibold text-foreground mb-1.5">Rep AI tools</h3>
+                <p className="text-sm text-muted-foreground">
+                  Configure which AI tools your reps have access to while chatting with visitors.
+                </p>
+              </div>
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="text-sm font-semibold text-foreground mb-3">Tools</h3>
+                <div className="space-y-4">
+                  {REP_AI_TOOLS.map((tool) => (
+                    <div key={tool.id} className="flex items-start gap-3">
+                      <Switch
+                        checked={tools[tool.id]}
+                        onCheckedChange={(checked) =>
+                          setTools((prev) => ({ ...prev, [tool.id]: checked }))
+                        }
+                        className="mt-0.5"
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{tool.label}</p>
+                        <p className="text-xs text-muted-foreground">{tool.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="bg-gray-50 p-4 rounded-lg border">
-              <code className="text-sm text-gray-800 break-all">
-                {widgetConfig.embed_code}
-              </code>
-            </div>
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <h3 className="font-semibold text-gray-900 mb-2">Installation Instructions:</h3>
-              <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
-                <li>Copy the embed code above</li>
-                <li>Paste it into your website's HTML</li>
-                <li>Place it before the closing &lt;/body&gt; tag</li>
-                <li>The widget will appear as a floating button in the bottom-right corner</li>
-              </ol>
-            </div>
-          </div>
+          </>
         )}
       </div>
     </div>
   );
-};
+}
+
+function ComingSoonPanel({ tabId }: { tabId: AgentStudioTabId }) {
+  const tab = AGENT_STUDIO_TABS.find((t) => t.id === tabId);
+  return (
+    <div className="bg-card border border-border rounded-xl py-16 flex flex-col items-center text-center gap-3">
+      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+        <Construction className="w-5 h-5 text-muted-foreground" />
+      </div>
+      <p className="text-sm font-medium text-foreground">{tab?.label} is coming soon</p>
+      <p className="text-sm text-muted-foreground max-w-sm">
+        This part of Agent Studio isn&apos;t wired up yet. Check back soon.
+      </p>
+    </div>
+  );
+}

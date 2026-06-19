@@ -39,20 +39,20 @@ const faqs = [
   {
     question: "What's the pricing?",
     answer:
-      "We offer three plans: Starter (€100/month, 100 minutes), Growth (€200/month, 300 minutes), and Enterprise (custom pricing for high-volume). All plans include unlimited text chat, calendar integration, 50+ languages, and CRM sync. See our pricing section for full details.",
+      "Pricing is based on conversation volume, with plans for small businesses up through high-volume enterprise. All plans include unlimited text chat, calendar integration, 50+ languages, and CRM sync. Talk to us for a quote tailored to your site.",
   },
 ];
 
 export function FAQSection() {
   return (
-    <section id="faq" className="py-24 md:py-32">
+    <section id="faq" className="py-24 md:py-32 bg-[#f0f8f3]">
       <div className="max-w-3xl mx-auto px-6">
         <div className="text-center mb-12">
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4 block">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#02524b]/50 mb-4 block">
             FAQ
           </span>
           <h2
-            className="text-4xl md:text-5xl font-normal leading-tight tracking-tight"
+            className="text-4xl md:text-5xl font-normal leading-tight tracking-tight text-[#02524b]"
             style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
           >
             Questions? Answered.
@@ -64,12 +64,12 @@ export function FAQSection() {
             <AccordionItem
               key={index}
               value={`item-${index}`}
-              className="bg-white rounded-xl border border-gray-200 shadow-sm px-6 data-[state=open]:shadow-md transition-all"
+              className="bg-white rounded-xl border border-[#02524b]/10 shadow-sm px-6 data-[state=open]:shadow-md transition-all"
             >
-              <AccordionTrigger className="text-left font-medium text-gray-900 hover:text-gray-700 hover:no-underline py-5">
+              <AccordionTrigger className="text-left font-medium text-[#02524b] hover:text-[#02524b]/70 hover:no-underline py-5">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600 pb-5 leading-relaxed">
+              <AccordionContent className="text-[#02524b]/70 pb-5 leading-relaxed">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

@@ -62,7 +62,7 @@ export function ROISection() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5">Close rate on consultations (%)</label>
+              <label className="block text-sm font-medium mb-1.5">Close rate on bookings (%)</label>
               <Input
                 type="number"
                 value={closeRate}

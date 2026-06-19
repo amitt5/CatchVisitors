@@ -19,10 +19,10 @@ export function Header() {
   }, []);
 
   const navLinks = [
+    { href: "#industries", label: "Industries" },
     { href: "#how-it-works", label: "How It Works" },
     { href: "#features", label: "Features" },
-    { href: "#pricing", label: "Pricing" },
-    // { href: "#testimonials", label: "Testimonials" },
+    { href: "#faq", label: "FAQ" },
   ];
 
   const authNavLinks = [
@@ -43,11 +43,11 @@ export function Header() {
       >
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gray-900 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-lg bg-[#02524b] flex items-center justify-center">
             <Mic className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
           </div>
           <span
-            className="text-xl font-normal"
+            className="text-xl font-normal text-[#02524b]"
             style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
           >
             CatchVisitors
@@ -61,7 +61,7 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
               >
                 {link.label}
               </Link>
@@ -72,7 +72,7 @@ export function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
               >
                 {link.label}
               </a>
@@ -83,24 +83,17 @@ export function Header() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
           <SignedOut>
-            {/* <Link
+            <Link
               href="/sign-in"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
             >
-              Sign In
-            </Link> */}
+              Login
+            </Link>
             <Button
               asChild
-              variant="outline"
-              className="rounded-full border-gray-200 text-sm py-2 px-5 h-auto hover:border-gray-900"
+              className="bg-[#b5d627] hover:bg-[#a3c322] text-[#02524b] rounded-full text-sm font-semibold py-2 px-5 h-auto"
             >
               <a href="#try-it">Try Demo</a>
-            </Button>
-            <Button
-              asChild
-              className="bg-gray-900 hover:bg-gray-800 text-white rounded-full text-sm py-2 px-5 h-auto"
-            >
-              {/* <Link href="/sign-up">Sign Up</Link> */}
             </Button>
           </SignedOut>
           <SignedIn>
@@ -111,7 +104,7 @@ export function Header() {
         {/* Mobile Menu Button */}
         <button
           type="button"
-          className="md:hidden p-2 text-gray-900"
+          className="md:hidden p-2 text-[#02524b]"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -128,7 +121,7 @@ export function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -140,7 +133,7 @@ export function Header() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
@@ -151,15 +144,15 @@ export function Header() {
               <Button
                 asChild
                 variant="outline"
-                className="rounded-full w-full"
+                className="rounded-full w-full border-[#02524b]/20 text-[#02524b]"
               >
-                <Link href="/sign-in">Sign In</Link>
+                <Link href="/sign-in">Login</Link>
               </Button>
               <Button
                 asChild
-                className="bg-gray-900 text-white rounded-full w-full"
+                className="bg-[#b5d627] hover:bg-[#a3c322] text-[#02524b] font-semibold rounded-full w-full"
               >
-                <Link href="/sign-up">Sign Up</Link>
+                <a href="#try-it" onClick={() => setMobileMenuOpen(false)}>Try Demo</a>
               </Button>
             </SignedOut>
             <SignedIn>

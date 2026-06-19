@@ -1,65 +1,97 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Mic } from "lucide-react";
+
+function BrowserMockup() {
+  return (
+    <div className="bg-white border border-[#02524b]/10 rounded-2xl shadow-xl overflow-hidden">
+      {/* Browser chrome */}
+      <div className="flex items-center gap-1.5 px-4 py-3 bg-[#f0f8f3] border-b border-[#02524b]/10">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#f44b2a]/60" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#b5d627]/70" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#02524b]/30" />
+        <div className="ml-3 flex-1 max-w-xs h-5 rounded-full bg-white border border-[#02524b]/10" />
+      </div>
+      {/* Mock conversation */}
+      <div className="p-6 md:p-8 bg-[#f0f8f3]">
+        <div className="max-w-md mx-auto space-y-3">
+          <div className="bg-white rounded-xl rounded-tl-sm p-3.5 text-sm text-[#02524b] shadow-sm max-w-[85%]">
+            Hi! I'm the AI assistant for this site. Ask me anything, or I can help you book a time.
+          </div>
+          <div className="bg-[#02524b] text-white rounded-xl rounded-tr-sm p-3.5 text-sm max-w-[70%] ml-auto shadow-sm">
+            Do you have availability this Thursday?
+          </div>
+          <div className="bg-white rounded-xl rounded-tl-sm p-3.5 text-sm text-[#02524b] shadow-sm max-w-[85%]">
+            Yes — 2:00 PM and 4:30 PM are open. Want me to book one for you?
+          </div>
+          <div className="flex items-center gap-2 pt-1">
+            <span className="w-2 h-2 rounded-full bg-[#b5d627] animate-pulse" />
+            <span className="text-xs text-[#02524b]/60">Live conversation · voice or text</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function HeroSection() {
   return (
-    <section className="relative pt-32 pb-20 md:pt-40 md:pb-24 overflow-hidden text-center">
-      {/* Ambient gradient glows */}
-      <div
-        className="absolute -top-48 -right-32 w-[700px] h-[700px] rounded-full blur-[120px] opacity-35 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, #fecaca, #fda4af, transparent 70%)'
-        }}
-      />
-      <div
-        className="absolute -bottom-24 -left-24 w-[500px] h-[500px] rounded-full blur-[120px] opacity-35 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, #ddd6fe, #c4b5fd, transparent 70%)'
-        }}
-      />
+    <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden text-center bg-white">
+      {/* Decorative dotted arc, Drift-style */}
+      <svg
+        className="absolute -top-10 -right-10 w-64 h-64 text-[#02524b]/15 pointer-events-none hidden md:block"
+        viewBox="0 0 200 200"
+        fill="none"
+      >
+        {[40, 60, 80, 100, 120].map((r) => (
+          <circle key={r} cx="200" cy="0" r={r} stroke="currentColor" strokeDasharray="4 6" />
+        ))}
+      </svg>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* Badge */}
         <div
-          className="inline-flex items-center gap-2 px-4 py-1.5 mb-10 rounded-full bg-white border border-gray-200 text-sm text-gray-600"
+          className="inline-flex items-center gap-2 mb-7"
           style={{ animation: 'fadeUp 0.8s ease both' }}
         >
-          <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-          AI Voice Assistant for Professional Services
+          <div className="w-7 h-7 rounded-lg bg-[#02524b] flex items-center justify-center">
+            <Mic className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+          </div>
+          <span className="text-sm font-semibold text-[#02524b] uppercase tracking-wider">CatchVisitors</span>
         </div>
 
         {/* Headline */}
         <h1
-          className="text-5xl md:text-7xl lg:text-8xl font-normal mb-7 leading-[1.05] tracking-tight max-w-4xl mx-auto"
+          className="text-5xl md:text-7xl font-normal mb-6 leading-[1.08] tracking-tight max-w-4xl mx-auto text-[#02524b]"
           style={{
             fontFamily: 'var(--font-serif, Georgia, serif)',
             animation: 'fadeUp 0.8s ease 0.1s both'
           }}
         >
-          Turn every visitor<br />into a <em className="italic">booked consultation.</em>
+          Convert Website Visitors Into Conversations
         </h1>
 
         {/* Subtitle */}
         <p
-          className="text-lg md:text-xl text-gray-600 max-w-xl mx-auto mb-11 leading-relaxed"
+          className="text-lg md:text-xl text-[#02524b]/70 max-w-xl mx-auto mb-9 leading-relaxed"
           style={{ animation: 'fadeUp 0.8s ease 0.2s both' }}
         >
-          An AI voice assistant that lives on your website. Visitors click, talk, and book — 24/7, in 50+ languages, while you focus on patient care.
+          CatchVisitors' AI agent engages visitors with real-time voice & chat conversations — answering questions, qualifying leads, and booking meetings, 24/7 in 50+ languages.
         </p>
 
         {/* CTA Buttons */}
         <div
-          className="flex items-center justify-center gap-4 mb-20 flex-wrap"
+          className="flex items-center justify-center gap-4 mb-16 flex-wrap"
           style={{ animation: 'fadeUp 0.8s ease 0.3s both' }}
         >
           <Button
             asChild
             size="lg"
-            className="bg-gray-900 hover:bg-gray-800 text-white rounded-full px-9 py-6 text-base font-medium shadow-lg transition-all duration-300 group"
+            className="bg-[#b5d627] hover:bg-[#a3c322] text-[#02524b] rounded-full px-9 py-6 text-base font-semibold shadow-lg transition-all duration-300 group"
           >
             <a href="#try-it" className="flex items-center gap-2">
-              Try It With Your Website
+              Talk to It Right Now
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </a>
           </Button>
@@ -67,38 +99,17 @@ export function HeroSection() {
             asChild
             variant="outline"
             size="lg"
-            className="bg-white border border-gray-200 text-gray-900 hover:border-gray-900 hover:shadow-sm rounded-full px-9 py-6 text-base font-medium transition-all"
+            className="bg-white border border-[#02524b]/20 text-[#02524b] hover:border-[#02524b] hover:shadow-sm rounded-full px-9 py-6 text-base font-medium transition-all"
           >
-            <a href="#how-it-works">
-              See How It Works
+            <a href="#industries">
+              See Live Industry Demos
             </a>
           </Button>
         </div>
 
-        {/* Stats */}
-        <div
-          className="flex items-center justify-center gap-12 flex-wrap"
-          style={{ animation: 'fadeUp 0.8s ease 0.4s both' }}
-        >
-          <div className="text-center">
-            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>3×</div>
-            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">More Bookings</div>
-          </div>
-          <div className="w-px h-9 bg-gray-200" />
-          <div className="text-center">
-            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>24/7</div>
-            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">Always On</div>
-          </div>
-          <div className="w-px h-9 bg-gray-200" />
-          <div className="text-center">
-            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>50+</div>
-            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">Languages</div>
-          </div>
-          <div className="w-px h-9 bg-gray-200" />
-          <div className="text-center">
-            <div className="text-4xl font-normal mb-1" style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}>30 days</div>
-            <div className="text-xs text-gray-400 uppercase tracking-wider font-medium">Free Trial</div>
-          </div>
+        {/* Product mockup */}
+        <div className="max-w-2xl mx-auto" style={{ animation: 'fadeUp 0.8s ease 0.4s both' }}>
+          <BrowserMockup />
         </div>
       </div>
 

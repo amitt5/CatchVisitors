@@ -49,12 +49,12 @@ export default function AgentPage() {
   };
   return (
     <div className="p-6">
-      <div className="bg-white shadow rounded-lg">
-        <div className="p-6 border-b border-gray-200">
+      <div className="bg-card border border-border rounded-xl">
+        <div className="p-6 border-b border-border">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Agents</h1>
-              <p className="text-gray-600 mt-1">Manage your AI agents and their performance</p>
+              <h1 className="text-2xl font-semibold text-foreground">Agent Studio</h1>
+              <p className="text-muted-foreground mt-1">Manage your AI agents and their performance</p>
             </div>
             <Link href="/agent/create">
               <Button className="flex items-center gap-2">
@@ -64,23 +64,23 @@ export default function AgentPage() {
             </Link>
           </div>
         </div>
-        
+
         <div className="p-6">
           {loading ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-              <p className="text-gray-600 mt-2">Loading agents...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground mx-auto"></div>
+              <p className="text-muted-foreground mt-2">Loading agents...</p>
             </div>
           ) : error ? (
             <div className="text-center py-8">
-              <p className="text-red-600">{error}</p>
+              <p className="text-destructive">{error}</p>
               <Button onClick={fetchAgents} className="mt-2">
                 Retry
               </Button>
             </div>
           ) : agents.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-600">No agents found. Create your first agent to get started.</p>
+              <p className="text-muted-foreground">No agents found. Create your first agent to get started.</p>
             </div>
           ) : (
             <Table>

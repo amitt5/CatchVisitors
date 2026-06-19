@@ -5,149 +5,243 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  Phone,
-  MessageSquare,
-  Settings,
+  User,
+  Calendar,
+  Bell,
+  Keyboard,
+  Users,
+  Contact,
+  UsersRound,
+  KeyRound,
+  Building2,
+  Palette,
+  Type,
+  PieChart,
+  Megaphone,
+  Workflow,
+  Wrench,
   Bot,
-  ChevronDown,
+  Mail,
+  Zap,
+  FileText,
+  MousePointerClick,
+  BookOpen,
+  Blocks,
+  Phone,
+  Rss,
+  Route,
   ChevronRight,
   Menu,
   X,
-  FileText,
-  BarChart3,
-  Mic
+  Mic,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
   title: string;
-  href?: string;
-  icon?: React.ReactNode;
-  items?: NavItem[];
+  href: string;
+  icon: React.ReactNode;
+  /** Real, wired-up page. Unset items render as visual-only placeholders. */
+  live?: boolean;
 }
 
-const navigation: NavItem[] = [
+interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+const TOP_ITEM: NavItem = {
+  title: "Dashboard",
+  href: "/dashboard",
+  icon: <LayoutDashboard className="w-4 h-4" />,
+  live: true,
+};
+
+const GROUPS: NavGroup[] = [
   {
-    title: "Dashboard",
-    href: "/dashboard",
-    icon: <LayoutDashboard className="w-4 h-4" />,
+    title: "Me",
+    items: [
+      { title: "My Profile", href: "#", icon: <User className="w-4 h-4" /> },
+      { title: "Calendar", href: "#", icon: <Calendar className="w-4 h-4" /> },
+      { title: "Notifications", href: "#", icon: <Bell className="w-4 h-4" /> },
+      { title: "Shortcuts", href: "#", icon: <Keyboard className="w-4 h-4" /> },
+    ],
   },
   {
-    title: "Calls",
-    href: "/calls",
-    icon: <Phone className="w-4 h-4" />,
+    title: "Organization",
+    items: [
+      { title: "Users", href: "#", icon: <Users className="w-4 h-4" /> },
+      { title: "Profiles", href: "#", icon: <Contact className="w-4 h-4" /> },
+      { title: "Groups", href: "#", icon: <UsersRound className="w-4 h-4" /> },
+      { title: "Single Sign-On", href: "#", icon: <KeyRound className="w-4 h-4" /> },
+      { title: "Company Details", href: "#", icon: <Building2 className="w-4 h-4" /> },
+      { title: "Themes", href: "#", icon: <Palette className="w-4 h-4" /> },
+    ],
   },
   {
-    title: "Agent",
-    href: "/agent",
-    icon: <Bot className="w-4 h-4" />,
+    title: "App Settings",
+    items: [
+      { title: "Fields", href: "#", icon: <Type className="w-4 h-4" /> },
+      { title: "Segments", href: "#", icon: <PieChart className="w-4 h-4" /> },
+      { title: "Advertising", href: "#", icon: <Megaphone className="w-4 h-4" /> },
+      { title: "Workflows", href: "#", icon: <Workflow className="w-4 h-4" /> },
+      { title: "Setup", href: "/settings", icon: <Wrench className="w-4 h-4" />, live: true },
+    ],
   },
   {
-    title: "Settings",
-    href: "/settings",
-    icon: <Settings className="w-4 h-4" />,
+    title: "AI",
+    items: [
+      { title: "Agent Studio", href: "/agent", icon: <Bot className="w-4 h-4" />, live: true },
+      { title: "Email Campaigns", href: "#", icon: <Mail className="w-4 h-4" /> },
+    ],
+  },
+  {
+    title: "Experiences",
+    items: [
+      { title: "Automatic", href: "#", icon: <Zap className="w-4 h-4" /> },
+      { title: "Forms", href: "#", icon: <FileText className="w-4 h-4" /> },
+      { title: "Buttons", href: "#", icon: <MousePointerClick className="w-4 h-4" /> },
+      { title: "Manual", href: "#", icon: <BookOpen className="w-4 h-4" /> },
+      { title: "Blocks", href: "#", icon: <Blocks className="w-4 h-4" /> },
+    ],
+  },
+  {
+    title: "Conversations",
+    items: [
+      { title: "Calls", href: "/calls", icon: <Phone className="w-4 h-4" />, live: true },
+      { title: "Streams", href: "#", icon: <Rss className="w-4 h-4" /> },
+      { title: "Routing", href: "#", icon: <Route className="w-4 h-4" /> },
+    ],
   },
 ];
+
+function NavLink({
+  item,
+  active,
+  collapsed,
+  onClick,
+}: {
+  item: NavItem;
+  active: boolean;
+  collapsed: boolean;
+  onClick: () => void;
+}) {
+  const content = (
+    <>
+      <span className={cn(active ? "text-indigo-600" : "text-muted-foreground")}>{item.icon}</span>
+      {!collapsed && (
+        <span className="flex-1 truncate">{item.title}</span>
+      )}
+      {!collapsed && !item.live && (
+        <span className="text-[10px] uppercase tracking-wide text-muted-foreground/60">Soon</span>
+      )}
+    </>
+  );
+
+  const className = cn(
+    "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors",
+    active
+      ? "bg-indigo-50 text-indigo-600 font-medium"
+      : item.live
+        ? "text-foreground/80 hover:bg-sidebar-accent hover:text-foreground"
+        : "text-muted-foreground/70 hover:bg-sidebar-accent/60 cursor-default"
+  );
+
+  if (!item.live) {
+    return <div className={className}>{content}</div>;
+  }
+
+  return (
+    <Link href={item.href} className={className} onClick={onClick}>
+      {content}
+    </Link>
+  );
+}
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
+  const isActive = (href: string) => href !== "#" && pathname === href;
+
   return (
     <>
-      {/* Mobile overlay */}
       {mobileOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex flex-col bg-gray-900 text-white transition-all duration-300 ease-in-out lg:relative lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border transition-all duration-300 ease-in-out lg:relative lg:translate-x-0",
           collapsed ? "w-16" : "w-64",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         {/* Header */}
-        <div className="flex h-16 items-center justify-between px-4 border-b border-gray-800">
+        <div className="flex h-14 items-center justify-between px-4 border-b border-sidebar-border shrink-0">
           {!collapsed && (
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
-                <Mic className="w-3.5 h-3.5 text-gray-900" strokeWidth={2.5} />
+              <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
+                <Mic className="w-3.5 h-3.5 text-primary-foreground" strokeWidth={2.5} />
               </div>
-              <span
-                className="text-lg font-normal text-white"
-                style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
-              >
-                CatchVisitors
-              </span>
+              <span className="text-sm font-semibold text-foreground">CatchVisitors</span>
             </div>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="hidden lg:flex text-white hover:bg-gray-800"
+          <button
+            className="hidden lg:flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-sidebar-accent"
             onClick={() => setCollapsed(!collapsed)}
           >
-            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="lg:hidden text-white hover:bg-gray-800"
+            <ChevronRight className={cn("w-4 h-4 transition-transform", !collapsed && "rotate-180")} />
+          </button>
+          <button
+            className="lg:hidden flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:bg-sidebar-accent"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </Button>
+          </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 space-y-1 p-4">
-          {navigation.map((item) => (
-            <div key={item.title}>
-              {item.href ? (
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                    pathname === item.href
-                      ? "bg-gray-800 text-white"
-                      : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                  )}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.icon}
-                  {!collapsed && <span>{item.title}</span>}
-                </Link>
-              ) : (
-                <div className="space-y-1">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-gray-300 hover:bg-gray-800 hover:text-white"
-                    onClick={() => {
-                      // Toggle submenu logic here if needed
-                    }}
-                  >
-                    {item.icon}
-                    {!collapsed && <span>{item.title}</span>}
-                  </Button>
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+          <div>
+            <NavLink
+              item={TOP_ITEM}
+              active={isActive(TOP_ITEM.href)}
+              collapsed={collapsed}
+              onClick={() => setMobileOpen(false)}
+            />
+          </div>
+
+          {GROUPS.map((group) => (
+            <div key={group.title}>
+              {!collapsed && (
+                <div className="px-2.5 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+                  {group.title}
                 </div>
               )}
+              <div className="space-y-0.5">
+                {group.items.map((item) => (
+                  <NavLink
+                    key={item.title}
+                    item={item}
+                    active={isActive(item.href)}
+                    collapsed={collapsed}
+                    onClick={() => setMobileOpen(false)}
+                  />
+                ))}
+              </div>
             </div>
           ))}
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-gray-800">
+        <div className="p-3 border-t border-sidebar-border shrink-0">
           {!collapsed && (
-            <div className="text-xs text-gray-400">
-              <p>© 2024 CatchVisitors</p>
-            </div>
+            <p className="px-2.5 text-xs text-muted-foreground">© 2026 CatchVisitors</p>
           )}
         </div>
       </div>

@@ -35,36 +35,39 @@ const features = [
 
 export function BenefitsSection() {
   return (
-    <section id="features" className="py-24 md:py-32">
+    <section id="features" className="py-24 md:py-32 bg-[#f0f8f3]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4 block">
-            Capabilities
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#02524b]/50 mb-4 block">
+            Key Features
           </span>
           <h2
-            className="text-4xl md:text-5xl font-normal leading-tight tracking-tight"
+            className="text-4xl md:text-5xl font-normal leading-tight tracking-tight text-[#02524b] mb-4"
             style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
           >
-            Everything your front desk<br />can't do at 2 AM
+            Everything your front desk<br />can't do at once
           </h2>
+          <p className="text-lg text-[#02524b]/70 max-w-xl mx-auto leading-relaxed">
+            Learn more about how CatchVisitors helps your team succeed.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="p-8 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:border-gray-200 hover:-translate-y-1 hover:shadow-md"
+              className="p-8 bg-white border border-[#02524b]/10 rounded-2xl transition-all duration-300 hover:border-[#b5d627] hover:-translate-y-1 hover:shadow-md"
             >
-              <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center mb-5">
-                <feature.icon className="w-5 h-5 text-gray-900" strokeWidth={1.5} />
+              <div className="w-10 h-10 rounded-lg bg-[#f0f8f3] flex items-center justify-center mb-5">
+                <feature.icon className="w-5 h-5 text-[#02524b]" strokeWidth={1.5} />
               </div>
               <h3
-                className="text-lg md:text-xl font-normal mb-2"
+                className="text-lg md:text-xl font-normal mb-2 text-[#02524b]"
                 style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
               >
                 {feature.title}
               </h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
+              <p className="text-sm text-[#02524b]/70 leading-relaxed">
                 {feature.description}
               </p>
             </div>

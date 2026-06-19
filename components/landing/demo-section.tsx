@@ -234,46 +234,40 @@ export function DemoSection() {
   };
 
   return (
-    <section id="try-it" className="py-24 md:py-32 relative overflow-hidden">
-      {/* Ambient glow */}
-      <div
-        className="absolute top-0 right-1/4 w-96 h-96 rounded-full blur-[120px] opacity-35 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #fed7aa, #fdba74, transparent 70%)' }}
-      />
-
+    <section id="try-it" className="py-24 md:py-32 relative overflow-hidden bg-white">
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4 block">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#02524b]/50 mb-4 block">
             Live Demo
           </span>
           <h2
-            className="text-4xl md:text-5xl lg:text-6xl font-normal mb-4 leading-tight tracking-tight"
+            className="text-4xl md:text-5xl lg:text-6xl font-normal mb-4 leading-tight tracking-tight text-[#02524b]"
             style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
           >
-            See it work on <em className="italic">your</em> website
+            Don't take our word for it.<br /><em className="italic">Talk to it.</em>
           </h2>
-          <p className="text-lg text-gray-600 max-w-xl mx-auto mt-4 leading-relaxed">
+          <p className="text-lg text-[#02524b]/70 max-w-xl mx-auto mt-4 leading-relaxed">
             Enter your URL. We'll analyze your site and build a custom voice assistant in under 60 seconds.
           </p>
         </div>
 
-        <div className="max-w-2xl mx-auto bg-white border border-gray-200 rounded-2xl p-10 shadow-md relative z-10">
+        <div className="max-w-2xl mx-auto bg-white border border-[#02524b]/10 rounded-2xl p-10 shadow-md relative z-10">
           {!isBuilding && !showDemo && (
             <div>
               <div className="flex gap-2.5 mb-6">
                 <div className="flex-1 relative">
-                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#02524b]/40" />
                   <Input
                     type="url"
                     placeholder="yourwebsite.com"
                     value={websiteUrl}
                     onChange={(e) => setWebsiteUrl(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleBuild()}
-                    className="pl-10 h-12 bg-gray-50 border-gray-200 focus:border-gray-900 rounded-xl"
+                    className="pl-10 h-12 bg-[#f0f8f3] border-[#02524b]/15 focus:border-[#02524b] rounded-xl"
                   />
                 </div>
                 <Select value={language} onValueChange={(v: any) => setLanguage(v)}>
-                  <SelectTrigger className="w-32 h-12 bg-gray-50 border-gray-200 rounded-xl">
+                  <SelectTrigger className="w-32 h-12 bg-[#f0f8f3] border-[#02524b]/15 rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -285,12 +279,12 @@ export function DemoSection() {
                 <Button
                   onClick={handleBuild}
                   disabled={!websiteUrl.trim()}
-                  className="h-12 px-7 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-semibold"
+                  className="h-12 px-7 bg-[#02524b] hover:bg-[#023d38] text-white rounded-xl font-semibold"
                 >
                   Build My Assistant
                 </Button>
               </div>
-              <p className="text-center text-sm text-gray-400">
+              <p className="text-center text-sm text-[#02524b]/50">
                 No sign-up required. Takes about 30 seconds.
               </p>
               {buildError && (
@@ -306,15 +300,15 @@ export function DemoSection() {
                   <div
                     key={i}
                     className={`flex items-center gap-3 text-sm transition-all ${
-                      i === currentStep ? 'text-gray-900 font-medium' :
-                      i < currentStep ? 'text-green-600' : 'text-gray-400'
+                      i === currentStep ? 'text-[#02524b] font-medium' :
+                      i < currentStep ? 'text-[#7a9e1f]' : 'text-[#02524b]/40'
                     }`}
                   >
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      i === currentStep ? 'border-gray-900 bg-gray-900' :
-                      i < currentStep ? 'border-green-600 bg-green-600' : 'border-gray-200'
+                      i === currentStep ? 'border-[#02524b] bg-[#02524b]' :
+                      i < currentStep ? 'border-[#b5d627] bg-[#b5d627]' : 'border-[#02524b]/20'
                     }`}>
-                      {i < currentStep && <span className="text-white text-xs">✓</span>}
+                      {i < currentStep && <span className="text-[#02524b] text-xs">✓</span>}
                       {i === currentStep && (
                         <div className="w-2.5 h-2.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       )}
@@ -323,7 +317,7 @@ export function DemoSection() {
                   </div>
                 ))}
               </div>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-[#02524b]/50">
                 Building assistant for {websiteUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}
               </p>
             </div>
@@ -331,20 +325,20 @@ export function DemoSection() {
 
           {showDemo && (
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-sm text-green-600 font-medium mb-6">
+              <div className="flex items-center justify-center gap-2 text-sm text-[#02524b] font-medium mb-6">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 Your custom assistant is ready
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl p-7 max-w-sm mx-auto">
-                <div className="flex items-center gap-3 mb-5 pb-4 border-b border-gray-200">
-                  <div className="w-9 h-9 rounded-full bg-gray-900 flex items-center justify-center text-white">
+              <div className="bg-[#f0f8f3] border border-[#02524b]/10 rounded-2xl p-7 max-w-sm mx-auto">
+                <div className="flex items-center gap-3 mb-5 pb-4 border-b border-[#02524b]/10">
+                  <div className="w-9 h-9 rounded-full bg-[#02524b] flex items-center justify-center text-white">
                     <Mic className="w-3.5 h-3.5" />
                   </div>
                   <div className="text-left">
-                    <div className="text-sm font-semibold">Your AI Assistant</div>
-                    <div className="text-xs text-green-600 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-green-600 rounded-full" />
+                    <div className="text-sm font-semibold text-[#02524b]">Your AI Assistant</div>
+                    <div className="text-xs text-[#7a9e1f] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-[#b5d627] rounded-full" />
                       Ready to talk
                     </div>
                   </div>
@@ -354,7 +348,7 @@ export function DemoSection() {
                   {demoMessages.map((msg, i) => (
                     <div
                       key={i}
-                      className="text-sm text-gray-600 p-2.5 bg-white rounded-lg text-left leading-relaxed"
+                      className="text-sm text-[#02524b] p-2.5 bg-white rounded-lg text-left leading-relaxed"
                       style={{ animation: 'msgIn 0.4s ease' }}
                     >
                       {msg}
@@ -367,7 +361,7 @@ export function DemoSection() {
                     {[...Array(5)].map((_, i) => (
                       <div
                         key={i}
-                        className="w-0.5 h-2 bg-orange-500 rounded-sm"
+                        className="w-0.5 h-2 bg-[#f44b2a] rounded-sm"
                         style={{
                           animation: `wave 0.8s ease-in-out infinite`,
                           animationDelay: `${i * 0.1}s`
@@ -381,8 +375,8 @@ export function DemoSection() {
                   onClick={isCallActive ? handleEndCall : toggleDemoMic}
                   className={`w-13 h-13 rounded-full flex items-center justify-center mx-auto transition-all ${
                     demoListening || isCallActive
-                      ? 'bg-orange-500 hover:scale-105'
-                      : 'bg-gray-900 hover:scale-105 hover:shadow-lg'
+                      ? 'bg-[#f44b2a] hover:scale-105'
+                      : 'bg-[#02524b] hover:scale-105 hover:shadow-lg'
                   }`}
                   style={demoListening ? { animation: 'micPulse 1.5s ease infinite' } : {}}
                 >
@@ -392,7 +386,7 @@ export function DemoSection() {
                     <Mic className="w-5 h-5 text-white" />
                   )}
                 </button>
-                <p className="text-xs text-gray-400 mt-2.5">
+                <p className="text-xs text-[#02524b]/50 mt-2.5">
                   {demoListening ? 'Listening…' : 'Click to start talking'}
                 </p>
               </div>
@@ -401,7 +395,7 @@ export function DemoSection() {
                 <Button
                   onClick={handleReset}
                   variant="outline"
-                  className="border-gray-200 rounded-full"
+                  className="border-[#02524b]/20 text-[#02524b] rounded-full"
                 >
                   Build Another
                 </Button>
@@ -421,9 +415,9 @@ export function DemoSection() {
           50% { height: 24px; }
         }
         @keyframes micPulse {
-          0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3); }
-          70% { box-shadow: 0 0 0 14px rgba(249, 115, 22, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+          0% { box-shadow: 0 0 0 0 rgba(244, 75, 42, 0.3); }
+          70% { box-shadow: 0 0 0 14px rgba(244, 75, 42, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(244, 75, 42, 0); }
         }
       `}</style>
     </section>
