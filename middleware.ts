@@ -19,6 +19,7 @@ const isPublicRoute = createRouteMatcher([
   "/strategence",  // Strategence demo page
   "/chiro(.*)",  // Chiro demo page
   "/steel",  // Steel demo page
+  "/isla(.*)",  // Isla AI SDR demo page
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
