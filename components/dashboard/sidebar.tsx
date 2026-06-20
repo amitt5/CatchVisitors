@@ -30,6 +30,7 @@ import {
   Phone,
   Rss,
   Route,
+  Plug,
   ChevronRight,
   Menu,
   X,
@@ -83,6 +84,15 @@ const GROUPS: NavGroup[] = [
       { title: "Advertising", href: "/settings/advertising", icon: <Megaphone className="w-4 h-4" /> },
       { title: "Workflows", href: "/settings/workflows", icon: <Workflow className="w-4 h-4" /> },
       { title: "Setup", href: "/settings", icon: <Wrench className="w-4 h-4" /> },
+    ],
+  },
+  {
+    title: "Integrations",
+    items: [
+      { title: "Salesforce", href: "/integrations/salesforce", icon: <Plug className="w-4 h-4" /> },
+      { title: "HubSpot", href: "/integrations/hubspot", icon: <Plug className="w-4 h-4" /> },
+      { title: "Pipedrive", href: "/integrations/pipedrive", icon: <Plug className="w-4 h-4" /> },
+      { title: "Microsoft Dynamics 365", href: "/integrations/dynamics-365", icon: <Plug className="w-4 h-4" /> },
     ],
   },
   {
