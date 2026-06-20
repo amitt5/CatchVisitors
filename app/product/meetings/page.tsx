@@ -16,6 +16,7 @@ export default function ProductMeetingsPage() {
       <MeetingsHero />
 
       <FeatureRow
+        id="meetings-forms"
         title="Turn website forms and buttons into quick pipeline."
         description="Isla knows when qualified buyers are on your website. With this insight, she can invite them to schedule a meeting once a form or CTA button is submitted and accelerate speed-to-lead."
         visual={
@@ -34,6 +35,7 @@ export default function ProductMeetingsPage() {
       />
 
       <FeatureRow
+        id="meetings-livechat"
         reverse
         title="Book meetings in the moment during live chat."
         description="When Isla has a qualified buyer hooked into a conversation, she can serve the meeting booker in context and get the next meeting scheduled before they leave the website."

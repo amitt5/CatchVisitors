@@ -14,6 +14,7 @@ export default function ProductEmailPage() {
       <EmailHero />
 
       <FeatureRow
+        id="email-followup"
         title="Instantly follow up with high-intent leads."
         description="Isla reduces response times from days to minutes by sending an immediate AI email the moment a high-intent lead requests to connect with your team."
         visual={
@@ -33,6 +34,7 @@ export default function ProductEmailPage() {
       />
 
       <FeatureRow
+        id="email-nurture"
         reverse
         title="Nurture warm leads with curated content."
         description="Isla observes changing buyer signals in real time then makes intelligent decisions about when, where, and how to nurture buyers down the funnel."
@@ -73,6 +75,7 @@ export default function ProductEmailPage() {
       />
 
       <FeatureRow
+        id="email-reply"
         title="Reply to buyers with zero downtime."
         description="When buyers respond to Isla over email, she taps into her rich knowledge base to generate a contextual AI-generated reply that keeps the conversation moving forward."
         visual={

@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
 
 export function FeatureRow({
+  id,
   title,
   description,
   cta,
   reverse,
   visual,
 }: {
+  id?: string;
   title: string;
   description: string;
   cta?: string;
@@ -14,7 +16,7 @@ export function FeatureRow({
   visual: ReactNode;
 }) {
   return (
-    <section className="px-6 py-16 md:py-20">
+    <section id={id} className="px-6 py-16 md:py-20 scroll-mt-24">
       <div
         className={`max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center ${
           reverse ? "md:[&>*:first-child]:order-2" : ""

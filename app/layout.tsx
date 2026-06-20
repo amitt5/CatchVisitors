@@ -5,6 +5,8 @@ import { Inter, Instrument_Serif } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { FloatingVoiceWidget } from "@/components/landing/floating-voice-widget"
+import { PresenterScroll } from "@/components/isla/presenter-scroll"
+import { AppShell } from "@/components/isla/app-shell"
 import './globals.css'
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -67,8 +69,9 @@ export default function RootLayout({
             `}
           </Script>
 
-          {children}
+          <AppShell>{children}</AppShell>
           <FloatingVoiceWidget />
+          <PresenterScroll />
           <Analytics />
         </body>
       </html>

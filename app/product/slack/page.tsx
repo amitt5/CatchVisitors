@@ -30,6 +30,7 @@ export default function ProductSlackPage() {
 
       <div className="bg-[#f7f7fa]">
         <FeatureRow
+          id="slack-sales"
           title="Sales teams, say hello to your partner in crime."
           description="Because Isla integrates with Slack, sales teams can accelerate the path to “closed-won.” Isla gives them immediate access to all the information they need to perfect their first call and stay ahead of every deal."
           visual={
@@ -63,6 +64,7 @@ export default function ProductSlackPage() {
         />
 
         <FeatureRow
+          id="slack-marketers"
           reverse
           title="Marketers, rejoice! Managing an AI agent has never been easier."
           description="Free your marketing team of disorganized, siloed data. Now they have full visibility into Isla's performance and how she delivers real business results, right at their fingertips."

@@ -10,7 +10,7 @@ const REACTIONS = [
 
 export function SlackHero() {
   return (
-    <section className="pt-32 md:pt-40 px-6 pb-10">
+    <section id="slack-overview" className="pt-32 md:pt-40 px-6 pb-10 scroll-mt-24">
       <div className="max-w-3xl mx-auto text-center mb-12">
         <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-[#02524b] leading-[1.15] mb-5">
           Hey Isla, welcome to Slack 👋

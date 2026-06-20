@@ -16,12 +16,14 @@ export default function ProductOffersPage() {
       <OffersHero />
 
       <FeatureRow
+        id="offers-serve"
         title="Serve unique, dynamic AI offers to every buyer."
         description="Buyers have different needs based on their buying journey. Knowing this, Isla the AI Agent will audit your entire content library and then surface the best content to maximize engagement."
         visual={<ContentAuditMock />}
       />
 
       <FeatureRow
+        id="offers-present"
         reverse
         title="Present AI offers at the right time and place."
         description="Isla nurtures buyers beyond the inbox — she can also present offers during a live conversation. Plus, you can serve offers on the website as banners, side pops, or overlays."
@@ -29,6 +31,7 @@ export default function ProductOffersPage() {
       />
 
       <FeatureRow
+        id="offers-committee"
         title="Nurture the buying committee, not just the individual buyer."
         description="B2B buying involves many people, priorities, and opinions. With a holistic view of each account, Isla the AI Agent intelligently serves personalized content to each stakeholder to tailor their experience."
         visual={<OrgChartMock company="Northwind Clinics" />}

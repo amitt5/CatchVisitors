@@ -1,17 +1,33 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Vapi from "@vapi-ai/web";
+import { SCRIPTED_QUESTIONS, type ScriptedQuestion } from "@/lib/isla/scripted-questions";
+import { present } from "@/lib/isla/presenter-store";
+import { setPanelOpen } from "@/lib/isla/panel-store";
+import { ChatMeetingBooker } from "@/components/isla/chat-meeting-booker";
 
 const VAPI_ASSISTANT_ID = "61ecaf11-a10e-4205-8440-611bd394ede7";
 
+interface ChatMessage {
+  role: "user" | "isla";
+  text?: string;
+  // Interactive in-chat widgets
+  kind?: "meeting-offer" | "calendar" | "confirmed";
+  meta?: { day?: string; time?: string };
+}
+
 export function FloatingVoiceWidget() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isCallActive, setIsCallActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [meetingBooked, setMeetingBooked] = useState(false);
   const vapiRef = useRef<Vapi | null>(null);
+  const transcriptEndRef = useRef<HTMLDivElement>(null);
 
   // Don't show on hotels, strategence, chiro, navank, or isla pages
   if (pathname === '/hotels' || pathname === '/strategence' || pathname === '/steel' || pathname.startsWith('/chiro') || pathname.startsWith('/navank') || pathname.startsWith('/isla')) {
@@ -48,19 +64,58 @@ export function FloatingVoiceWidget() {
     };
   }, []);
 
+  useEffect(() => {
+    transcriptEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   const handleOpen = () => {
     setIsOpen(true);
+    setPanelOpen(true);
   };
 
   const handleClose = () => {
     setIsOpen(false);
+    setPanelOpen(false);
   };
 
-  const SUGGESTED_QUESTIONS = [
-    "How do you qualify leads automatically?",
-    "What makes Isla different from a chatbot?",
-    "Can you share customer stories?",
-  ];
+  const handleAsk = (q: ScriptedQuestion) => {
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: q.question },
+      { role: "isla", text: q.answer },
+      ...(q.offerMeeting ? [{ role: "isla" as const, kind: "meeting-offer" as const }] : []),
+    ]);
+    // Present the matching section, then drive the app to the right page.
+    present(q.sectionId);
+    if (pathname !== q.route) {
+      router.push(q.route);
+    }
+  };
+
+  const handleAcceptMeeting = () => {
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: "Yes, let's set one up" },
+      { role: "isla", text: "Great! Pick a day and time that works for you:" },
+      { role: "isla", kind: "calendar" },
+    ]);
+  };
+
+  const handleDeclineMeeting = () => {
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: "Not right now" },
+      { role: "isla", text: "No problem at all — whenever you're ready, just ask and I'll set it up." },
+    ]);
+  };
+
+  const handleBookMeeting = (day: string, time: string) => {
+    setMeetingBooked(true);
+    setMessages((prev) => [
+      ...prev,
+      { role: "isla", kind: "confirmed", meta: { day, time } },
+    ]);
+  };
 
   return (
     <>
@@ -227,6 +282,105 @@ export function FloatingVoiceWidget() {
           color: #e8553d;
         }
 
+        .voice-panel__transcript {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .voice-panel__msg {
+          max-width: 85%;
+          padding: 10px 14px;
+          border-radius: 14px;
+          font-size: 13px;
+          line-height: 1.5;
+        }
+
+        .voice-panel__msg--user {
+          align-self: flex-end;
+          background: #544CD1;
+          color: white;
+          border-bottom-right-radius: 4px;
+        }
+
+        .voice-panel__msg--isla {
+          align-self: flex-start;
+          background: #f3f3f5;
+          color: #1a1a1a;
+          border-bottom-left-radius: 4px;
+        }
+
+        .voice-panel__offer {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          align-self: flex-start;
+          width: 100%;
+        }
+
+        .voice-panel__offer-btn {
+          padding: 10px 14px;
+          border-radius: 12px;
+          border: 1px solid #e2e2e8;
+          background: white;
+          font-size: 13px;
+          font-weight: 500;
+          color: #1a1a1a;
+          cursor: pointer;
+          transition: all 0.15s;
+        }
+
+        .voice-panel__offer-btn:hover {
+          border-color: #544cd1;
+        }
+
+        .voice-panel__offer-btn--yes {
+          background: #544cd1;
+          border-color: #544cd1;
+          color: white;
+        }
+
+        .voice-panel__offer-btn--yes:hover {
+          background: #463ec4;
+        }
+
+        .voice-panel__confirmed {
+          display: flex;
+          gap: 10px;
+          align-items: flex-start;
+          background: #ecfdf3;
+          border: 1px solid #b7ebcb;
+          border-radius: 14px;
+          padding: 12px 14px;
+        }
+
+        .voice-panel__confirmed-check {
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          background: #10b981;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 13px;
+          flex-shrink: 0;
+        }
+
+        .voice-panel__confirmed-title {
+          font-size: 13px;
+          font-weight: 600;
+          color: #02524b;
+        }
+
+        .voice-panel__confirmed-sub {
+          font-size: 12px;
+          color: #02524b;
+          opacity: 0.75;
+          line-height: 1.5;
+          margin-top: 2px;
+        }
+
         .voice-panel__bottom-cluster {
           margin-top: auto;
           display: flex;
@@ -329,23 +483,82 @@ export function FloatingVoiceWidget() {
             </button>
           </div>
           <div className="voice-panel__body">
-            <div className="voice-panel__mic-wrap">
-              <button className="voice-panel__mic-circle">
-                <span className="voice-panel__mic-pulse"></span>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                  <line x1="12" y1="19" x2="12" y2="23"/>
-                </svg>
-              </button>
-              <span className="voice-panel__mic-caption">Speak with Isla</span>
-            </div>
+            {messages.length === 0 ? (
+              <div className="voice-panel__mic-wrap">
+                <button className="voice-panel__mic-circle">
+                  <span className="voice-panel__mic-pulse"></span>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                  </svg>
+                </button>
+                <span className="voice-panel__mic-caption">Speak with Isla</span>
+              </div>
+            ) : (
+              <div className="voice-panel__transcript">
+                {messages.map((m, i) => {
+                  if (m.kind === "meeting-offer") {
+                    return (
+                      <div key={i} className="voice-panel__offer">
+                        <button
+                          className="voice-panel__offer-btn voice-panel__offer-btn--yes"
+                          onClick={handleAcceptMeeting}
+                        >
+                          Yes, let's set one up
+                        </button>
+                        <button
+                          className="voice-panel__offer-btn"
+                          onClick={handleDeclineMeeting}
+                        >
+                          Not right now
+                        </button>
+                      </div>
+                    );
+                  }
+                  if (m.kind === "calendar") {
+                    return meetingBooked ? null : (
+                      <ChatMeetingBooker key={i} onConfirm={handleBookMeeting} />
+                    );
+                  }
+                  if (m.kind === "confirmed") {
+                    return (
+                      <div key={i} className="voice-panel__confirmed">
+                        <div className="voice-panel__confirmed-check">✓</div>
+                        <div>
+                          <div className="voice-panel__confirmed-title">You're all set!</div>
+                          <div className="voice-panel__confirmed-sub">
+                            {m.meta?.day} at {m.meta?.time} with our sales team. A calendar
+                            invite is on its way to your inbox.
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div
+                      key={i}
+                      className={`voice-panel__msg voice-panel__msg--${m.role}`}
+                    >
+                      {m.text}
+                    </div>
+                  );
+                })}
+                <div ref={transcriptEndRef} />
+              </div>
+            )}
 
             <div className="voice-panel__bottom-cluster">
               <div>
                 <div className="voice-panel__suggestions-label">Ask me things like:</div>
-                {SUGGESTED_QUESTIONS.map((q) => (
-                  <button key={q} className="voice-panel__suggestion">{q}</button>
+                {SCRIPTED_QUESTIONS.map((q) => (
+                  <button
+                    key={q.id}
+                    className="voice-panel__suggestion"
+                    onClick={() => handleAsk(q)}
+                  >
+                    {q.question}
+                  </button>
                 ))}
               </div>
 
