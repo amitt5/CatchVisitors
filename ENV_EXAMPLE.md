@@ -20,6 +20,13 @@ OPENROUTER_API_KEY=your_openrouter_api_key
 OPENAI_API_KEY=your_openai_api_key
 ```
 
+### Resend (Isla widget booking emails)
+```
+RESEND_API_KEY=your_resend_api_key
+```
+Domain `insightsim.ai` must be verified in your Resend account; the booking
+notification is sent from `isla@insightsim.ai` (see `app/api/isla/book-meeting/route.ts`).
+
 ### Clerk Authentication
 ```
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
@@ -32,8 +39,11 @@ NEXT_PUBLIC_VAPI_API_KEY=your_vapi_public_key
 VAPI_PRIVATE_KEY=your_vapi_private_key
 NEXT_PUBLIC_VAPI_ASSISTANT_ID=your_vapi_assistant_id
 NEXT_PUBLIC_TEST_VAPI_ASSISTANT_ID=your_test_vapi_assistant_id
+NEXT_PUBLIC_VAPI_ASSISTANT_ID_ASK_ISLA=your_ask_isla_assistant_id
 VAPI_WEBHOOK_SECRET=your_webhook_secret
 ```
+The "Ask Isla" floating widget uses `NEXT_PUBLIC_VAPI_ASSISTANT_ID_ASK_ISLA` — create that
+assistant manually in the Vapi dashboard (see the prompt in the voice plan).
 
 ### Website Scraping
 ```

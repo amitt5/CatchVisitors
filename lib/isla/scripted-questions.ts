@@ -80,9 +80,22 @@ export const SCRIPTED_QUESTIONS: ScriptedQuestion[] = [
     id: "pricing",
     question: "How much does Isla cost?",
     answer:
-      "We customize pricing to fit your needs, so talking to our sales team will get you the most accurate details. Would you like to set up a meeting?",
+      "We customize pricing to fit your needs, so a quick chat with our sales team will get you the most accurate details. Would you like to set up a demo?",
     route: "/pricing",
     sectionId: "pricing-top",
     offerMeeting: true,
   },
+  {
+    id: "overview",
+    question: "What is Isla and what does it do?",
+    answer:
+      "I'm Isla, an AI SDR agent. I work your inbound pipeline around the clock — instantly emailing high-intent leads, booking meetings, serving the right content, and collaborating in Slack — so your team only ever talks to sales-ready buyers. Let me show you where I start.",
+    route: "/product/email",
+    sectionId: "email-followup",
+  },
 ];
+
+/** Look up a scripted question by its id (used by the classifier route). */
+export function getQuestionById(id: string): ScriptedQuestion | undefined {
+  return SCRIPTED_QUESTIONS.find((q) => q.id === id);
+}

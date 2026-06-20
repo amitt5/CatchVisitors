@@ -8,13 +8,20 @@ import { present } from "@/lib/isla/presenter-store";
 import { setPanelOpen } from "@/lib/isla/panel-store";
 import { ChatMeetingBooker } from "@/components/isla/chat-meeting-booker";
 
-const VAPI_ASSISTANT_ID = "61ecaf11-a10e-4205-8440-611bd394ede7";
+// Show only a couple of example chips — they hint at the kind of questions a
+// visitor can ask; the classifier handles anything they actually type/say.
+const EXAMPLE_QUESTIONS = SCRIPTED_QUESTIONS.filter((q) =>
+  ["meetings-forms", "slack-overview"].includes(q.id)
+);
 
 interface ChatMessage {
   role: "user" | "isla";
   text?: string;
+  // True once a voice transcript bubble is finalized (used to merge streaming
+  // partials and absorb Vapi's duplicate/overlapping transcript deliveries).
+  final?: boolean;
   // Interactive in-chat widgets
-  kind?: "meeting-offer" | "calendar" | "confirmed";
+  kind?: "meeting-offer" | "confirmed";
   meta?: { day?: string; time?: string };
 }
 
@@ -26,8 +33,13 @@ export function FloatingVoiceWidget() {
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [meetingBooked, setMeetingBooked] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [isThinking, setIsThinking] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const vapiRef = useRef<Vapi | null>(null);
   const transcriptEndRef = useRef<HTMLDivElement>(null);
+  const lastPresentedRef = useRef<string | null>(null);
 
   // Don't show on hotels, strategence, chiro, navank, or isla pages
   if (pathname === '/hotels' || pathname === '/strategence' || pathname === '/steel' || pathname.startsWith('/chiro') || pathname.startsWith('/navank') || pathname.startsWith('/isla')) {
@@ -48,12 +60,54 @@ export function FloatingVoiceWidget() {
       vapiRef.current.on('call-end', () => {
         console.log('📞 VAPI call ended');
         setIsCallActive(false);
+        setIsListening(false);
+      });
+
+      vapiRef.current.on('speech-start', () => setIsListening(true));
+      vapiRef.current.on('speech-end', () => setIsListening(false));
+
+      // Live transcript: render in the same chat as text mode, and drive the
+      // on-screen section from each final USER utterance (Option A).
+      vapiRef.current.on('message', (message: any) => {
+        if (message.type !== 'transcript' || !message.transcript) return;
+        const role: ChatMessage['role'] =
+          message.role === 'assistant' ? 'isla' : 'user';
+        const text = message.transcript.trim();
+        const isFinal = message.transcriptType === 'final';
+        if (!text) return;
+
+        setMessages((prev) => {
+          const last = prev[prev.length - 1];
+          const sameSpeakerBubble =
+            last && last.role === role && last.kind === undefined && last.text !== undefined;
+          // Merge into the current bubble when the speaker is still on the same
+          // utterance: while it's streaming, or when Vapi re-delivers the same
+          // text / a longer revision of it (its transcripts often overlap).
+          if (
+            sameSpeakerBubble &&
+            (!last!.final ||
+              text === last!.text ||
+              text.startsWith(last!.text!) ||
+              last!.text!.startsWith(text))
+          ) {
+            if (text === last!.text && (last!.final ?? false) === isFinal) return prev;
+            return [...prev.slice(0, -1), { role, text, final: isFinal }];
+          }
+          return [...prev, { role, text, final: isFinal }];
+        });
+
+        // Drive the screen once per finalized user utterance (skip duplicates).
+        if (role === 'user' && isFinal && text !== lastPresentedRef.current) {
+          lastPresentedRef.current = text;
+          presentFromUtterance(text);
+        }
       });
 
       vapiRef.current.on('error', (error: any) => {
         console.error('❌ VAPI call error:', error);
         setError(`Call error: ${error.message}`);
         setIsCallActive(false);
+        setIsListening(false);
       });
     }
 
@@ -76,6 +130,51 @@ export function FloatingVoiceWidget() {
   const handleClose = () => {
     setIsOpen(false);
     setPanelOpen(false);
+    vapiRef.current?.stop().catch(() => {});
+  };
+
+  // Voice: start a Vapi call with the statically-configured Ask-Isla assistant.
+  const startCall = () => {
+    const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID_ASK_ISLA;
+    if (!vapiRef.current || !assistantId) {
+      console.error('❌ Missing NEXT_PUBLIC_VAPI_API_KEY or NEXT_PUBLIC_VAPI_ASSISTANT_ID_ASK_ISLA');
+      setError('Voice is not configured yet.');
+      return;
+    }
+    lastPresentedRef.current = null;
+    vapiRef.current
+      .start(assistantId)
+      .catch((e) => console.error('Failed to start Ask Isla call:', e));
+  };
+
+  const endCall = () => {
+    vapiRef.current?.stop().catch(() => {});
+    setIsCallActive(false);
+    setIsListening(false);
+  };
+
+  // Option A: route a final spoken question through the existing classifier and
+  // present the matching screen (the assistant speaks the answer itself).
+  const presentFromUtterance = async (text: string) => {
+    try {
+      const res = await fetch('/api/isla/classify-question', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: text }),
+      });
+      const match = (await res.json())?.match;
+      if (!match) return;
+      present(match.sectionId);
+      if (window.location.pathname !== match.route) {
+        router.push(match.route);
+      }
+      // Pricing/booking: offer a demo (Yes / Not now); calendar only after Yes.
+      if (match.offerMeeting) {
+        setMessages((prev) => [...prev, ...offerMessages(prev, true)]);
+      }
+    } catch (e) {
+      console.error('Voice classify failed:', e);
+    }
   };
 
   const handleAsk = (q: ScriptedQuestion) => {
@@ -83,7 +182,7 @@ export function FloatingVoiceWidget() {
       ...prev,
       { role: "user", text: q.question },
       { role: "isla", text: q.answer },
-      ...(q.offerMeeting ? [{ role: "isla" as const, kind: "meeting-offer" as const }] : []),
+      ...offerMessages(prev, q.offerMeeting),
     ]);
     // Present the matching section, then drive the app to the right page.
     present(q.sectionId);
@@ -92,13 +191,78 @@ export function FloatingVoiceWidget() {
     }
   };
 
+  // Free-text question: classify it to a known topic, then answer + present.
+  const handleSubmitQuestion = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const text = inputValue.trim();
+    if (!text || isThinking) return;
+
+    setInputValue("");
+    setMessages((prev) => [...prev, { role: "user", text }]);
+    setIsThinking(true);
+
+    try {
+      const res = await fetch("/api/isla/classify-question", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: text }),
+      });
+      const data = await res.json();
+      const match = data?.match;
+
+      if (match) {
+        setMessages((prev) => [
+          ...prev,
+          { role: "isla", text: match.answer },
+          ...offerMessages(prev, match.offerMeeting),
+        ]);
+        present(match.sectionId);
+        if (pathname !== match.route) {
+          router.push(match.route);
+        }
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "isla",
+            text:
+              "I'm focused on how Isla helps with email, meetings, offers, Slack, and pricing. Try asking about one of those — or I can set up a quick demo with our team.",
+          },
+        ]);
+      }
+    } catch (err) {
+      console.error("Classify failed:", err);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "isla",
+          text:
+            "Sorry — I had trouble with that just now. Mind trying again in a moment?",
+        },
+      ]);
+    } finally {
+      setIsThinking(false);
+    }
+  };
+
+  // Pricing/booking: offer a demo (Yes / Not now) — never the calendar directly.
+  // Guards against duplicate offers and re-offering after a booking.
+  const offerMessages = (
+    prev: ChatMessage[],
+    offerMeeting?: boolean
+  ): ChatMessage[] => {
+    if (!offerMeeting || meetingBooked || showCalendar) return [];
+    if (prev.some((m) => m.kind === "meeting-offer")) return [];
+    return [{ role: "isla", kind: "meeting-offer" }];
+  };
+
   const handleAcceptMeeting = () => {
     setMessages((prev) => [
       ...prev,
       { role: "user", text: "Yes, let's set one up" },
-      { role: "isla", text: "Great! Pick a day and time that works for you:" },
-      { role: "isla", kind: "calendar" },
+      { role: "isla", text: "Great — pick a day and time from the calendar below." },
     ]);
+    setShowCalendar(true);
   };
 
   const handleDeclineMeeting = () => {
@@ -111,10 +275,17 @@ export function FloatingVoiceWidget() {
 
   const handleBookMeeting = (day: string, time: string) => {
     setMeetingBooked(true);
+    setShowCalendar(false);
     setMessages((prev) => [
       ...prev,
       { role: "isla", kind: "confirmed", meta: { day, time } },
     ]);
+    // Fire-and-forget: notify via email. UI confirmation isn't blocked on this.
+    fetch("/api/isla/book-meeting", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ day, time }),
+    }).catch((err) => console.error("Booking email failed:", err));
   };
 
   return (
@@ -405,6 +576,45 @@ export function FloatingVoiceWidget() {
           background: #2a2a2a;
         }
 
+        .voice-panel__typing {
+          display: inline-flex;
+          gap: 4px;
+          align-items: center;
+        }
+        .voice-panel__typing span {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #9a9a9a;
+          display: inline-block;
+          animation: isla-typing 1.2s infinite ease-in-out;
+        }
+        .voice-panel__typing span:nth-child(2) { animation-delay: 0.2s; }
+        .voice-panel__typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes isla-typing {
+          0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+          30% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        .voice-panel__icon-btn:disabled {
+          opacity: 0.45;
+          cursor: not-allowed;
+        }
+
+        .voice-panel__calendar-dock {
+          flex-shrink: 0;
+          padding: 14px 24px;
+          border-top: 1px solid #eee;
+          background: #faf9ff;
+        }
+
+        .voice-panel__calendar-dock-label {
+          font-size: 12px;
+          font-weight: 600;
+          color: #544cd1;
+          margin-bottom: 10px;
+        }
+
         .voice-panel__input-row {
           display: flex;
           align-items: center;
@@ -443,6 +653,34 @@ export function FloatingVoiceWidget() {
 
         .voice-panel__icon-btn:hover {
           background: #ebebeb;
+        }
+
+        .voice-panel__icon-btn--active {
+          background: #e5484d;
+          color: white;
+          animation: isla-mic-pulse 1.4s infinite ease-in-out;
+        }
+        .voice-panel__icon-btn--active:hover {
+          background: #d33b40;
+        }
+        @keyframes isla-mic-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(229,72,77,0.5); }
+          50% { box-shadow: 0 0 0 6px rgba(229,72,77,0); }
+        }
+
+        .voice-panel__end-btn {
+          margin-top: 14px;
+          padding: 8px 18px;
+          border: none;
+          border-radius: 20px;
+          background: #e5484d;
+          color: white;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .voice-panel__end-btn:hover {
+          background: #d33b40;
         }
 
         .voice-panel__footer {
@@ -485,7 +723,10 @@ export function FloatingVoiceWidget() {
           <div className="voice-panel__body">
             {messages.length === 0 ? (
               <div className="voice-panel__mic-wrap">
-                <button className="voice-panel__mic-circle">
+                <button
+                  className="voice-panel__mic-circle"
+                  onClick={isCallActive ? endCall : startCall}
+                >
                   <span className="voice-panel__mic-pulse"></span>
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -493,13 +734,26 @@ export function FloatingVoiceWidget() {
                     <line x1="12" y1="19" x2="12" y2="23"/>
                   </svg>
                 </button>
-                <span className="voice-panel__mic-caption">Speak with Isla</span>
+                <span className="voice-panel__mic-caption">
+                  {error
+                    ? error
+                    : isCallActive
+                    ? isListening
+                      ? "Listening…"
+                      : "Speaking…"
+                    : "Speak with Isla"}
+                </span>
+                {isCallActive && (
+                  <button className="voice-panel__end-btn" onClick={endCall}>
+                    End call
+                  </button>
+                )}
               </div>
             ) : (
               <div className="voice-panel__transcript">
                 {messages.map((m, i) => {
                   if (m.kind === "meeting-offer") {
-                    return (
+                    return showCalendar || meetingBooked ? null : (
                       <div key={i} className="voice-panel__offer">
                         <button
                           className="voice-panel__offer-btn voice-panel__offer-btn--yes"
@@ -514,11 +768,6 @@ export function FloatingVoiceWidget() {
                           Not right now
                         </button>
                       </div>
-                    );
-                  }
-                  if (m.kind === "calendar") {
-                    return meetingBooked ? null : (
-                      <ChatMeetingBooker key={i} onConfirm={handleBookMeeting} />
                     );
                   }
                   if (m.kind === "confirmed") {
@@ -544,6 +793,11 @@ export function FloatingVoiceWidget() {
                     </div>
                   );
                 })}
+                {isThinking && (
+                  <div className="voice-panel__msg voice-panel__msg--isla voice-panel__typing">
+                    <span></span><span></span><span></span>
+                  </div>
+                )}
                 <div ref={transcriptEndRef} />
               </div>
             )}
@@ -551,7 +805,7 @@ export function FloatingVoiceWidget() {
             <div className="voice-panel__bottom-cluster">
               <div>
                 <div className="voice-panel__suggestions-label">Ask me things like:</div>
-                {SCRIPTED_QUESTIONS.map((q) => (
+                {EXAMPLE_QUESTIONS.map((q) => (
                   <button
                     key={q.id}
                     className="voice-panel__suggestion"
@@ -566,22 +820,47 @@ export function FloatingVoiceWidget() {
             </div>
           </div>
 
-          <div className="voice-panel__input-row">
-            <input type="text" className="voice-panel__input" placeholder="Ask Isla a question" />
-            <button className="voice-panel__icon-btn">
+          {showCalendar && !meetingBooked && (
+            <div className="voice-panel__calendar-dock">
+              <div className="voice-panel__calendar-dock-label">Pick a time for your demo</div>
+              <ChatMeetingBooker onConfirm={handleBookMeeting} />
+            </div>
+          )}
+
+          <form className="voice-panel__input-row" onSubmit={handleSubmitQuestion}>
+            <input
+              type="text"
+              className="voice-panel__input"
+              placeholder="Ask Isla a question"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              disabled={isThinking}
+            />
+            <button
+              type="button"
+              className={`voice-panel__icon-btn${isCallActive ? " voice-panel__icon-btn--active" : ""}`}
+              aria-label={isCallActive ? "End call" : "Speak with Isla"}
+              title={isCallActive ? "End call" : "Speak with Isla"}
+              onClick={isCallActive ? endCall : startCall}
+            >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                 <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
                 <line x1="12" y1="19" x2="12" y2="23"/>
               </svg>
             </button>
-            <button className="voice-panel__icon-btn">
+            <button
+              type="submit"
+              className="voice-panel__icon-btn"
+              aria-label="Send question"
+              disabled={isThinking || !inputValue.trim()}
+            >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"/>
                 <polyline points="12 5 19 12 12 19"/>
               </svg>
             </button>
-          </div>
+          </form>
 
           <div className="voice-panel__footer">
             By continuing, you agree this conversation may be recorded and used per our Privacy Policy.
