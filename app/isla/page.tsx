@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Settings2, FolderKanban, Users, ArrowRight, Mic } from "lucide-react";
+import { IslaWidgetLauncher } from "@/components/isla/isla-widget-launcher";
 
 const ACT1_CARDS = [
   {
@@ -94,6 +95,8 @@ export default function IslaHomePage() {
           </Link>
         </section>
       </main>
+
+      <IslaWidgetLauncher />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Vapi from "@vapi-ai/web";
-import { Mic, MicOff, PhoneOff, CalendarDays, Check, ChevronLeft } from "lucide-react";
+import { Mic, MicOff, PhoneOff, CalendarDays, Check, ChevronLeft, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { IslaPersona } from "@/lib/isla/personas";
 
@@ -34,7 +34,7 @@ function nextWeekdays(count: number): Date[] {
   return days;
 }
 
-export function IslaVoiceWidget({ persona }: { persona: IslaPersona }) {
+export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; onClose?: () => void }) {
   const [status, setStatus] = useState<"connecting" | "live" | "ended">("connecting");
   const [isListening, setIsListening] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -135,6 +135,14 @@ export function IslaVoiceWidget({ persona }: { persona: IslaPersona }) {
           className={cn("w-2 h-2 rounded-full", status === "live" ? "animate-pulse" : "")}
           style={{ backgroundColor: status === "ended" ? "#475569" : accent }}
         />
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="w-7 h-7 rounded-full flex items-center justify-center text-[#9AA3B2] hover:text-white hover:bg-[#1E2433] transition"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       <div className="px-4 py-2 border-b border-[#232838] text-[11px] text-[#9AA3B2] flex items-center gap-2">

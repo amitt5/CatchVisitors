@@ -2,12 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Mic } from "lucide-react";
+import { Menu, X, Mic, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
+const PRODUCT_LINKS = [
+  { href: "/product/email", title: "Isla Email", description: "Engage inbound leads in the inbox" },
+  { href: "/product/meetings", title: "Isla Meetings", description: "Instantly schedule sales meetings" },
+  { href: "/product/offers", title: "Isla Offers", description: "Serve personalized marketing content" },
+  { href: "/product/slack", title: "Isla for Slack", description: "Collaborate with Isla directly in Slack" },
+];
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [productOpen, setProductOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -18,10 +26,12 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
+  const navLinksBeforeProduct = [
     { href: "#industries", label: "Industries" },
     { href: "#how-it-works", label: "How It Works" },
-    { href: "#features", label: "Features" },
+  ];
+
+  const navLinksAfterProduct = [
     { href: "#faq", label: "FAQ" },
   ];
 
@@ -68,7 +78,45 @@ export function Header() {
             ))}
           </SignedIn>
           <SignedOut>
-            {navLinks.map((link) => (
+            {navLinksBeforeProduct.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+            <div
+              className="relative"
+              onMouseEnter={() => setProductOpen(true)}
+              onMouseLeave={() => setProductOpen(false)}
+            >
+              <button
+                type="button"
+                className="flex items-center gap-1 text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
+              >
+                Product
+                <ChevronDown className="w-3.5 h-3.5" />
+              </button>
+              {productOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-72">
+                  <div className="bg-white rounded-2xl shadow-xl border border-black/[0.06] p-2">
+                    {PRODUCT_LINKS.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block rounded-xl px-4 py-3 hover:bg-[#02524b]/5 transition-colors"
+                      >
+                        <div className="text-sm font-semibold text-[#02524b]">{item.title}</div>
+                        <div className="text-xs text-[#02524b]/60 mt-0.5">{item.description}</div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            {navLinksAfterProduct.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -129,7 +177,32 @@ export function Header() {
               ))}
             </SignedIn>
             <SignedOut>
-              {navLinks.map((link) => (
+              {navLinksBeforeProduct.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              ))}
+              <div>
+                <div className="text-sm font-semibold text-[#02524b] mb-2">Product</div>
+                <div className="flex flex-col gap-2 pl-2">
+                  {PRODUCT_LINKS.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="text-sm text-[#02524b]/70 hover:text-[#02524b] transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              {navLinksAfterProduct.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}

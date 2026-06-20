@@ -20,6 +20,7 @@ const isPublicRoute = createRouteMatcher([
   "/chiro(.*)",  // Chiro demo page
   "/steel",  // Steel demo page
   "/isla(.*)",  // Isla AI SDR demo page
+  "/product(.*)",  // Public product marketing pages (Email, Meetings, Offers, Slack)
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
