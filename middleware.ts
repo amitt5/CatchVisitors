@@ -23,6 +23,7 @@ const isPublicRoute = createRouteMatcher([
   "/product(.*)",  // Public product marketing pages (Email, Meetings, Offers, Slack)
   "/pricing",  // Public pricing page
   "/api/isla/(.*)",  // Isla widget API routes (booking email, etc.)
+  "/pitchdeck",  // Hackathon pitch deck page
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

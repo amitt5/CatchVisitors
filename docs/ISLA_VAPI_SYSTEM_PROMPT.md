@@ -4,6 +4,8 @@ Current production system prompt for the Isla AI SDR voice assistant (Inboundly)
 
 Last updated: 2026-06-21
 
+What it does, how it works, what's impressive about it.
+
 ---
 
 ```
