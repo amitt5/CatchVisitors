@@ -23,7 +23,7 @@ const columns = [
     title: "Company",
     links: [
       { href: "#faq", label: "FAQ" },
-      { href: "mailto:hello@catchvisitors.com", label: "Contact" },
+      { href: "mailto:hello@inboundly.com", label: "Contact" },
     ],
   },
 ];
@@ -43,7 +43,7 @@ export function Footer() {
                 className="text-xl font-normal"
                 style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
               >
-                CatchVisitors
+                Inboundly
               </span>
             </Link>
             <p className="text-sm text-white/60 max-w-xs leading-relaxed">
@@ -72,9 +72,9 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-white/15 text-sm text-white/50">
-          <p>&copy; {new Date().getFullYear()} CatchVisitors. All rights reserved.</p>
-          <a href="mailto:hello@catchvisitors.com" className="hover:text-white transition-colors">
-            hello@catchvisitors.com
+          <p>&copy; {new Date().getFullYear()} Inboundly. All rights reserved.</p>
+          <a href="mailto:hello@inboundly.com" className="hover:text-white transition-colors">
+            hello@inboundly.com
           </a>
         </div>
       </div>

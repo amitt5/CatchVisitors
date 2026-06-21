@@ -14,7 +14,7 @@ const stats = [
     stat: "€5K-€20K",
     title: "lost per visitor",
     description:
-      "Just one new patient can pay for months of CatchVisitors.",
+      "Just one new patient can pay for months of Inboundly.",
   },
   {
     icon: Clock,

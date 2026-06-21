@@ -48,7 +48,7 @@ export function BenefitsSection() {
             Everything your front desk<br />can't do at once
           </h2>
           <p className="text-lg text-[#02524b]/70 max-w-xl mx-auto leading-relaxed">
-            Learn more about how CatchVisitors helps your team succeed.
+            Learn more about how Inboundly helps your team succeed.
           </p>
         </div>
 

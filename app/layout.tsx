@@ -18,8 +18,8 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: 'CatchVisitors - AI Voice Assistant for Your Business | Convert More Website Visitors',
-  description: 'Stop losing website visitors. CatchVisitors gives hotels, clinics, chiropractors, dentists, wholesalers and B2B businesses an AI voice assistant that answers questions 24/7 and converts visitors into customers. Book a demo.',
+  title: 'Inboundly - AI Voice Assistant for Your Business | Convert More Website Visitors',
+  description: 'Stop losing website visitors. Inboundly gives hotels, clinics, chiropractors, dentists, wholesalers and B2B businesses an AI voice assistant that answers questions 24/7 and converts visitors into customers. Book a demo.',
   generator: 'v0.app',
   icons: {
     icon: [

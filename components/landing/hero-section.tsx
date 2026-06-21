@@ -58,7 +58,7 @@ export function HeroSection() {
           <div className="w-7 h-7 rounded-lg bg-[#02524b] flex items-center justify-center">
             <Mic className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
           </div>
-          <span className="text-sm font-semibold text-[#02524b] uppercase tracking-wider">CatchVisitors</span>
+          <span className="text-sm font-semibold text-[#02524b] uppercase tracking-wider">Inboundly</span>
         </div>
 
         {/* Headline */}
@@ -77,7 +77,7 @@ export function HeroSection() {
           className="text-lg md:text-xl text-[#02524b]/70 max-w-xl mx-auto mb-9 leading-relaxed"
           style={{ animation: 'fadeUp 0.8s ease 0.2s both' }}
         >
-          CatchVisitors' AI agent engages visitors with real-time voice & chat conversations — answering questions, qualifying leads, and booking meetings, 24/7 in 50+ languages.
+          Inboundly's AI agent engages visitors with real-time voice & chat conversations — answering questions, qualifying leads, and booking meetings, 24/7 in 50+ languages.
         </p>
 
         {/* CTA Buttons */}

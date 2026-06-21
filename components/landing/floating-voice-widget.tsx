@@ -101,6 +101,25 @@ export function FloatingVoiceWidget() {
           lastPresentedRef.current = text;
           presentFromUtterance(text);
         }
+
+        // Open the booking calendar from the voice conversation:
+        //  - when Isla cues it (she's prompted to say a calendar appeared), or
+        //  - when the visitor verbally asks for / agrees to a demo.
+        if (isFinal) {
+          const t = text.toLowerCase();
+          const islaCue =
+            role === 'isla' &&
+            t.includes('calendar') &&
+            (t.includes('appear') || t.includes('screen') || t.includes('pick a'));
+          const userWantsDemo =
+            role === 'user' &&
+            (t.includes('demo') ||
+              /\b(book|schedule|set up)\b.*\b(meeting|time|call)\b/.test(t)) &&
+            !t.trimEnd().endsWith('?');
+          if (islaCue || userWantsDemo) {
+            setShowCalendar(true); // dock render is guarded by !meetingBooked
+          }
+        }
       });
 
       vapiRef.current.on('error', (error: any) => {
@@ -816,7 +835,12 @@ export function FloatingVoiceWidget() {
                 ))}
               </div>
 
-              <button className="voice-panel__schedule-btn">Schedule a Demo</button>
+              <button
+                className="voice-panel__schedule-btn"
+                onClick={() => setShowCalendar(true)}
+              >
+                Schedule a Demo
+              </button>
             </div>
           </div>
 

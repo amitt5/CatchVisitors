@@ -20,7 +20,7 @@ export function ComparisonSection() {
               <tr>
                 <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-gray-400"></th>
                 <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-orange-600 bg-orange-50 rounded-t-xl">
-                  Catch Visitors
+                  Inboundly
                 </th>
                 <th className="text-left p-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
                   Receptionist

@@ -29,7 +29,7 @@ export function HowItWorksSection() {
             <span className="underline decoration-[#b5d627] decoration-4">turn into customers</span>
           </h2>
           <p className="text-lg text-[#02524b]/70 max-w-xl mx-auto leading-relaxed">
-            CatchVisitors blends context and timing, giving every visitor a reason to stay — all within one seamless conversation.
+            Inboundly blends context and timing, giving every visitor a reason to stay — all within one seamless conversation.
           </p>
         </div>
 

@@ -66,7 +66,7 @@ export function Header() {
             className="text-xl font-normal text-[#02524b]"
             style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
           >
-            CatchVisitors
+            Inboundly
           </span>
         </Link>
 

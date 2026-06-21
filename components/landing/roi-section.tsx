@@ -27,7 +27,7 @@ export function ROISection() {
             What's a missed visitor worth?
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto leading-relaxed">
-            Plug in your numbers. See what CatchVisitors could mean for your bottom line.
+            Plug in your numbers. See what Inboundly could mean for your bottom line.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export function ROISection() {
                 €{Math.round(newRev).toLocaleString()}
               </div>
               <div className="text-xs text-gray-400 uppercase tracking-wider">
-                With CatchVisitors (3×)
+                With Inboundly (3×)
               </div>
             </div>
             <div className="text-center">

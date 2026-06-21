@@ -81,7 +81,7 @@ export function EdgeSection() {
               <div className="absolute -top-3 -right-3">
                 <div className="bg-[#10B981] text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                   <Sparkles className="w-3 h-3" />
-                  With CatchVisitors
+                  With Inboundly
                 </div>
               </div>
               <div className="flex items-center gap-3 mb-4">

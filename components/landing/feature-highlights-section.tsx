@@ -117,7 +117,7 @@ export function FeatureHighlightsSection() {
             More conversations start here
           </h2>
           <p className="text-lg text-[#02524b]/70 max-w-xl mx-auto leading-relaxed">
-            CatchVisitors brings deeper context to every visitor and earlier engagement to every conversation — driving efficiency across your entire site.
+            Inboundly brings deeper context to every visitor and earlier engagement to every conversation — driving efficiency across your entire site.
           </p>
         </div>
 
