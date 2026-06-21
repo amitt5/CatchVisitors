@@ -7,6 +7,7 @@ import { ChatCard, InlineBooker } from "@/components/product/chat-card";
 import { EmailCard } from "@/components/product/email-card";
 import { UseCasesSection } from "@/components/product/use-cases-section";
 import { AskIslaPill } from "@/components/product/ask-isla-pill";
+import { HubSpotMock } from "@/components/product/hubspot-mock";
 
 export default function ProductMeetingsPage() {
   return (
@@ -72,6 +73,13 @@ export default function ProductMeetingsPage() {
             </p>
           </EmailCard>
         }
+      />
+
+      <FeatureRow
+        id="crm-hubspot"
+        title="Every conversation, synced straight to your CRM."
+        description="Isla doesn't just talk — she acts. The moment a meeting is booked, she identifies the visitor, captures their intent, and pushes the full interaction and meeting into HubSpot. Your reps wake up to qualified meetings with complete context — no chasing."
+        visual={<HubSpotMock />}
       />
 
       <UseCasesSection

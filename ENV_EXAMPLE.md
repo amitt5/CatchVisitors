@@ -24,6 +24,12 @@ OPENAI_API_KEY=your_openai_api_key
 ```
 RESEND_API_KEY=your_resend_api_key
 ```
+
+### Slack (Isla booking notifications — optional)
+```
+SLACK_WEBHOOK_URL=your_slack_incoming_webhook_url
+```
+Create an Incoming Webhook at api.slack.com. If unset, the booking flow simply skips the Slack ping.
 Domain `insightsim.ai` must be verified in your Resend account; the booking
 notification is sent from `isla@insightsim.ai` (see `app/api/isla/book-meeting/route.ts`).
 

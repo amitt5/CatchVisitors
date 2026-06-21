@@ -22,6 +22,7 @@ ${TOPIC_LIST}
 Rules:
 - Match on meaning, not exact wording. The visitor may phrase things casually.
 - Anything about price, cost, plans, or budget => "pricing".
+- Anything about CRM, HubSpot, Salesforce, syncing/logging leads, or pushing data to a system => "crm".
 - Questions about response time / speed of reaching new leads => "email-followup".
 - A general "what is Isla / what can you do / how does this work" => "overview".
 - If the question is unrelated to Isla or none of the topics reasonably apply, use "none".

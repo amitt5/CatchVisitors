@@ -86,6 +86,14 @@ export const SCRIPTED_QUESTIONS: ScriptedQuestion[] = [
     offerMeeting: true,
   },
   {
+    id: "crm",
+    question: "Does Isla sync to my CRM / HubSpot?",
+    answer:
+      "Every conversation I have gets logged automatically. I identify the visitor, capture their intent, and push the full interaction — along with the booked meeting — directly into HubSpot, so your team wakes up to qualified meetings with full context. Here's what that looks like.",
+    route: "/product/meetings",
+    sectionId: "crm-hubspot",
+  },
+  {
     id: "overview",
     question: "What is Isla and what does it do?",
     answer:

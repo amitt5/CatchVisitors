@@ -19,10 +19,21 @@ function nextWeekdays(count: number): Date[] {
 export function ChatMeetingBooker({
   onConfirm,
 }: {
-  onConfirm: (dayLabel: string, time: string) => void;
+  onConfirm: (dayLabel: string, time: string, email: string) => void;
 }) {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
   const days = nextWeekdays(5);
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
+  const dayLabel = selectedDay
+    ? selectedDay.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "short",
+        day: "numeric",
+      })
+    : "";
 
   return (
     <div className="cmb">
@@ -52,22 +63,37 @@ export function ChatMeetingBooker({
             {TIME_SLOTS.map((t) => (
               <button
                 key={t}
-                className="cmb__time"
-                onClick={() =>
-                  onConfirm(
-                    selectedDay.toLocaleDateString(undefined, {
-                      weekday: "long",
-                      month: "short",
-                      day: "numeric",
-                    }),
-                    t
-                  )
-                }
+                className={`cmb__time ${selectedSlot === t ? "cmb__time--active" : ""}`}
+                onClick={() => setSelectedSlot(t)}
               >
                 {t}
               </button>
             ))}
           </div>
+        </>
+      )}
+
+      {selectedDay && selectedSlot && (
+        <>
+          <div className="cmb__label">Your email</div>
+          <form
+            className="cmb__email-row"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (emailValid) onConfirm(dayLabel, selectedSlot, email.trim());
+            }}
+          >
+            <input
+              type="email"
+              className="cmb__email"
+              placeholder="you@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button type="submit" className="cmb__book" disabled={!emailValid}>
+              Book it
+            </button>
+          </form>
         </>
       )}
 
@@ -138,6 +164,43 @@ export function ChatMeetingBooker({
           background: #544cd1;
           border-color: #544cd1;
           color: white;
+        }
+        .cmb__time--active {
+          background: #544cd1;
+          border-color: #544cd1;
+          color: white;
+        }
+        .cmb__email-row {
+          display: flex;
+          gap: 6px;
+        }
+        .cmb__email {
+          flex: 1;
+          min-width: 0;
+          padding: 9px 12px;
+          border: 1px solid #e2e2e8;
+          border-radius: 10px;
+          font-size: 13px;
+          color: #1a1a1a;
+          outline: none;
+        }
+        .cmb__email:focus {
+          border-color: #544cd1;
+        }
+        .cmb__book {
+          padding: 9px 16px;
+          border: none;
+          border-radius: 10px;
+          background: #544cd1;
+          color: white;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .cmb__book:disabled {
+          opacity: 0.45;
+          cursor: not-allowed;
         }
       `}</style>
     </div>

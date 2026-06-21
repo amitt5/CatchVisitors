@@ -273,19 +273,19 @@ export function FloatingVoiceWidget() {
     ]);
   };
 
-  const handleBookMeeting = (day: string, time: string) => {
+  const handleBookMeeting = (day: string, time: string, email: string) => {
     setMeetingBooked(true);
     setShowCalendar(false);
     setMessages((prev) => [
       ...prev,
       { role: "isla", kind: "confirmed", meta: { day, time } },
     ]);
-    // Fire-and-forget: notify via email. UI confirmation isn't blocked on this.
+    // Fire-and-forget: confirm by email (to buyer) + Slack ping. Not blocking UI.
     fetch("/api/isla/book-meeting", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ day, time }),
-    }).catch((err) => console.error("Booking email failed:", err));
+      body: JSON.stringify({ day, time, email }),
+    }).catch((err) => console.error("Booking notify failed:", err));
   };
 
   return (
