@@ -22,7 +22,7 @@ const NOTES: { time: string; script: string }[] = [
   {
     time: "0:25 – 1:00",
     script:
-      "This isn't a hunch. In April 2026, Salesforce acquired Qualified — the company behind the AI SDR 'Piper' — for between one and one-and-a-half billion dollars. The biggest name in software just told the whole market that AI sales reps are the future. The category is proven. The money is real.",
+      "This isn't a hunch. In April 2026, Salesforce acquired Qualified — the company behind the AI SDR 'Piper' — for between one and one-and-a-half billion dollars. And it works: Piper's customers see more than a 20% lift in conversions. The biggest name in software just told the whole market that AI sales reps are the future. The category is proven. The money is real.",
   },
   {
     time: "1:00 – 1:40",
@@ -210,7 +210,15 @@ function Slide2() {
           April 2026.
         </p>
       </div>
-      <p className="mt-10 text-lg text-white/45">
+
+      <div className="mt-10 inline-flex items-baseline gap-3 rounded-2xl border border-[#3FD0B8]/30 bg-[#3FD0B8]/10 px-6 py-4">
+        <span className="text-3xl md:text-4xl font-semibold text-[#3FD0B8]">20%+</span>
+        <span className="text-base md:text-lg text-white/75">
+          higher conversion for Piper&apos;s customers
+        </span>
+      </div>
+
+      <p className="mt-6 text-lg text-white/45">
         The market just validated AI sales reps at unicorn scale.
       </p>
     </SlideFrame>
