@@ -17,7 +17,7 @@ export default function ManualExperiencesPage() {
           const Icon = p.icon;
           return (
             <div key={p.name} className="bg-card border border-border rounded-xl p-5 flex flex-col">
-              <Icon className="w-5 h-5 text-indigo-600 mb-3" />
+              <Icon className="w-5 h-5 text-[#02524B] mb-3" />
               <p className="text-sm font-medium text-foreground">{p.name}</p>
               <p className="text-xs text-muted-foreground mt-1 flex-1">{p.description}</p>
               <p className="text-xs text-muted-foreground mt-3 mb-3">{p.lastUsed}</p>

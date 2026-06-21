@@ -38,12 +38,12 @@ export default function Dashboard() {
             <Link
               key={link.href}
               href={link.href}
-              className="group bg-card border border-border rounded-xl p-6 hover:border-indigo-300 hover:shadow-sm transition"
+              className="group bg-card border border-border rounded-xl p-6 hover:border-[#02524B]/40 hover:shadow-sm transition"
             >
-              <Icon className="w-5 h-5 text-indigo-600 mb-4" />
+              <Icon className="w-5 h-5 text-[#02524B] mb-4" />
               <div className="font-medium text-foreground mb-1 flex items-center justify-between">
                 {link.title}
-                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-indigo-600 group-hover:translate-x-0.5 transition" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-[#02524B] group-hover:translate-x-0.5 transition" />
               </div>
               <p className="text-sm text-muted-foreground">{link.description}</p>
             </Link>

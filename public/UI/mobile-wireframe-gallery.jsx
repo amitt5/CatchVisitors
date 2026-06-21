@@ -341,7 +341,7 @@ export default function GalleryWireframes() {
       <div style={{ maxWidth: 1400, margin: "0 auto" }}>
         <div style={{ marginBottom: 28 }}>
           <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5 }}>Image Gallery States — Mobile Widget</div>
-          <div style={{ fontSize: 12, color: "#888", marginTop: 4 }}>CatchVisitors · Hotel vertical · Rooms / Amenities / Attractions</div>
+          <div style={{ fontSize: 12, color: "#888", marginTop: 4 }}>Inboundly · Hotel vertical · Rooms / Amenities / Attractions</div>
         </div>
 
         {/* ROOMS section */}

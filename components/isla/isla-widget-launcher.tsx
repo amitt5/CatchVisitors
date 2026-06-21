@@ -18,10 +18,10 @@ export function IslaWidgetLauncher() {
       <button
         onClick={() => setOpen(true)}
         className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full flex items-center justify-center shadow-2xl hover:scale-105 transition-transform"
-        style={{ backgroundColor: "#7C5CFC" }}
+        style={{ backgroundColor: "#02524B" }}
       >
-        <span className="absolute inset-0 rounded-full animate-ping opacity-30" style={{ backgroundColor: "#7C5CFC" }} />
-        <Mic className="w-6 h-6 text-[#0B0E14] relative z-10" />
+        <span className="absolute inset-0 rounded-full animate-ping opacity-30" style={{ backgroundColor: "#02524B" }} />
+        <Mic className="w-6 h-6 text-white relative z-10" />
       </button>
     );
   }

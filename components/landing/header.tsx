@@ -29,7 +29,7 @@ export function Header() {
   }, []);
 
   const navLinksBeforeProduct = [
-    { href: "#industries", label: "Industries" },
+    { href: "#industries", label: "Solutions" },
     { href: "#how-it-works", label: "How It Works" },
   ];
 

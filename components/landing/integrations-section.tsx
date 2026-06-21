@@ -10,10 +10,10 @@ const integrations = [
 
 export function IntegrationsSection() {
   return (
-    <section className="py-16 text-center bg-white border-t border-b border-[#02524b]/10">
+    <section id="integrations" className="py-16 text-center bg-white border-t border-b border-[#02524b]/10 scroll-mt-24">
       <div className="max-w-7xl mx-auto px-6">
         <p className="text-xs font-medium text-[#02524b]/50 uppercase tracking-widest mb-9">
-          Works with what you already use
+          Syncs with your CRM and sales stack
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
           {integrations.map(({ icon: Icon, name }) => (

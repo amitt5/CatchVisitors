@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Mic } from "lucide-react";
+import { BookDemoButton } from "@/components/landing/book-demo-button";
 
 function BrowserMockup() {
   return (
@@ -17,13 +17,13 @@ function BrowserMockup() {
       <div className="p-6 md:p-8 bg-[#f0f8f3]">
         <div className="max-w-md mx-auto space-y-3">
           <div className="bg-white rounded-xl rounded-tl-sm p-3.5 text-sm text-[#02524b] shadow-sm max-w-[85%]">
-            Hi! I'm the AI assistant for this site. Ask me anything, or I can help you book a time.
+            Hi! I'm Inboundly's AI agent. I can answer questions, qualify your needs, and connect you with the right rep.
           </div>
-          <div className="bg-[#02524b] text-white rounded-xl rounded-tr-sm p-3.5 text-sm max-w-[70%] ml-auto shadow-sm">
-            Do you have availability this Thursday?
+          <div className="bg-[#02524b] text-white rounded-xl rounded-tr-sm p-3.5 text-sm max-w-[80%] ml-auto shadow-sm">
+            We're comparing AI SDR tools for our inbound traffic.
           </div>
           <div className="bg-white rounded-xl rounded-tl-sm p-3.5 text-sm text-[#02524b] shadow-sm max-w-[85%]">
-            Yes — 2:00 PM and 4:30 PM are open. Want me to book one for you?
+            Got it — are you looking to qualify leads, automate follow-up, or route faster to reps? I can also book time with an AE.
           </div>
           <div className="flex items-center gap-2 pt-1">
             <span className="w-2 h-2 rounded-full bg-[#b5d627] animate-pulse" />
@@ -69,15 +69,15 @@ export function HeroSection() {
             animation: 'fadeUp 0.8s ease 0.1s both'
           }}
         >
-          Convert Website Visitors Into Conversations
+          Convert high-intent website visitors into qualified pipeline
         </h1>
 
         {/* Subtitle */}
         <p
-          className="text-lg md:text-xl text-[#02524b]/70 max-w-xl mx-auto mb-9 leading-relaxed"
+          className="text-lg md:text-xl text-[#02524b]/70 max-w-2xl mx-auto mb-9 leading-relaxed"
           style={{ animation: 'fadeUp 0.8s ease 0.2s both' }}
         >
-          Inboundly's AI agent engages visitors with real-time voice & chat conversations — answering questions, qualifying leads, and booking meetings, 24/7 in 50+ languages.
+          Inboundly is an AI SDR for your website. It identifies visitor intent, answers questions, qualifies leads, books meetings, and syncs every conversation to HubSpot, Salesforce, Slack, and your sales workflows.
         </p>
 
         {/* CTA Buttons */}
@@ -85,26 +85,13 @@ export function HeroSection() {
           className="flex items-center justify-center gap-4 mb-16 flex-wrap"
           style={{ animation: 'fadeUp 0.8s ease 0.3s both' }}
         >
-          <Button
-            asChild
+          <BookDemoButton
             size="lg"
             className="bg-[#b5d627] hover:bg-[#a3c322] text-[#02524b] rounded-full px-9 py-6 text-base font-semibold shadow-lg transition-all duration-300 group"
           >
-            <a href="#try-it" className="flex items-center gap-2">
-              Talk to It Right Now
-              <span className="transition-transform group-hover:translate-x-1">→</span>
-            </a>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="bg-white border border-[#02524b]/20 text-[#02524b] hover:border-[#02524b] hover:shadow-sm rounded-full px-9 py-6 text-base font-medium transition-all"
-          >
-            <a href="#industries">
-              See Live Industry Demos
-            </a>
-          </Button>
+            Book a demo
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </BookDemoButton>
         </div>
 
         {/* Product mockup */}

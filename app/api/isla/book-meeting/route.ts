@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       subject: `Your demo is booked — ${day} at ${time}`,
       html: `
         <div style="font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 480px; margin: 0 auto;">
-          <h2 style="color: #544CD1; margin-bottom: 4px;">You're all set! 🎉</h2>
+          <h2 style="color: #02524B; margin-bottom: 4px;">You're all set! 🎉</h2>
           <p style="color: #555; margin-top: 0;">Thanks for booking a demo with the Isla team. Here are your details:</p>
           <table style="border-collapse: collapse; margin-top: 12px;">
             <tr>

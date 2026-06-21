@@ -3,9 +3,9 @@ import { ISLA_PERSONAS } from "@/lib/isla/personas";
 import { IslaDashboardNav } from "@/components/isla/isla-dashboard-nav";
 
 const ACCENT_HEX: Record<string, string> = {
-  slate: "#94A3B8",
-  blue: "#2E7DD7",
-  purple: "#7C5CFC",
+  slate: "#5F706C",
+  blue: "#02524B",
+  purple: "#02524B",
   amber: "#B7791F",
   lime: "#2F9E5B",
 };

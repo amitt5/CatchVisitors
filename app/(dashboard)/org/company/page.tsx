@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 
 export default function CompanyDetailsPage() {
-  const [companyName, setCompanyName] = useState("CatchVisitors B.V.");
-  const [website, setWebsite] = useState("https://catchvisitors.com");
+  const [companyName, setCompanyName] = useState("Inboundly B.V.");
+  const [website, setWebsite] = useState("https://inboundly.com");
   const [industry, setIndustry] = useState("B2B SaaS");
   const [size, setSize] = useState("11-50 employees");
   const [address, setAddress] = useState("Herengracht 182, Amsterdam, Netherlands");

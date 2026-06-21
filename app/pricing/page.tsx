@@ -19,7 +19,7 @@ export default function PricingPage() {
           Hire Isla the AI Agent to scale inbound pipeline generation. We'll build a plan
           that's perfectly customized for you and your pipeline needs.
         </p>
-        <button className="bg-[#544CD1] text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#463EC4] transition-colors">
+        <button className="bg-[#02524B] text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#013F3A] transition-colors">
           Schedule a demo
         </button>
       </section>

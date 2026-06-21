@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         widget: existingWidget,
-        embed_code: `<script src="https://www.catchvisitors.com/widget.js" data-widget-id="${existingWidget.widget_id}"></script>`,
+        embed_code: `<script src="https://www.inboundly.com/widget.js" data-widget-id="${existingWidget.widget_id}"></script>`,
         message: "Widget already exists for this agent"
       });
     }
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       widget,
-      embed_code: `<script src="https://www.catchvisitors.com/widget.js" data-widget-id="${widgetId}"></script>`,
+      embed_code: `<script src="https://www.inboundly.com/widget.js" data-widget-id="${widgetId}"></script>`,
       message: "Widget created successfully"
     });
 

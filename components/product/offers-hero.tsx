@@ -7,7 +7,7 @@ export function OffersHero() {
       <div className="max-w-6xl mx-auto">
         <div
           className="relative rounded-3xl overflow-hidden px-8 md:px-14 py-14 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-10 items-center"
-          style={{ background: "linear-gradient(135deg, #9D1CFE 0%, #4F0EE0 100%)" }}
+          style={{ background: "linear-gradient(135deg, #02524B 0%, #2E9F6E 100%)" }}
         >
           <AskIslaPill className="absolute top-6 right-6" />
 

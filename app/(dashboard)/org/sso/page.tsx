@@ -22,7 +22,7 @@ const PROVIDERS = [
 
 export default function SingleSignOnPage() {
   const [provider, setProvider] = useState("google");
-  const [domain, setDomain] = useState("catchvisitors.com");
+  const [domain, setDomain] = useState("inboundly.com");
 
   return (
     <div>

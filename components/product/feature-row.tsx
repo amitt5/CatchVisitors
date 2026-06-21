@@ -28,7 +28,7 @@ export function FeatureRow({
           </h2>
           <p className="text-[#02524b]/70 text-base leading-relaxed mb-6">{description}</p>
           {cta && (
-            <button className="bg-[#544CD1] text-white text-sm font-semibold px-5 py-2.5 rounded-full">
+            <button className="bg-[#02524B] text-white text-sm font-semibold px-5 py-2.5 rounded-full">
               {cta}
             </button>
           )}

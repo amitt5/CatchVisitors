@@ -10,7 +10,7 @@ export default function HubSpotPage() {
       icon={Database}
       accentColor="#FF7A59"
       connected
-      accountLabel="Connected as amit@catchvisitors.com · Portal 24681012"
+      accountLabel="Connected as amit@inboundly.com · Portal 24681012"
       credentialFields={[
         { label: "Portal ID", value: "24681012" },
         { label: "Private app token", value: "pat-na1-••••••••••••" },
@@ -27,7 +27,7 @@ export default function HubSpotPage() {
         { id: "auto-contact", label: "Create contacts automatically", description: "New visitors who chat with Isla become HubSpot contacts.", defaultOn: true },
         { id: "transcript", label: "Sync transcripts as notes", description: "Log the full conversation as a timeline note on the contact.", defaultOn: true },
         { id: "hot-task", label: "Create task for hot leads", description: "Notify the owning rep when a visitor shows strong buying intent.", defaultOn: true },
-        { id: "two-way", label: "Two-way sync", description: "Reflect HubSpot property changes back into CatchVisitors.", defaultOn: false },
+        { id: "two-way", label: "Two-way sync", description: "Reflect HubSpot property changes back into Inboundly.", defaultOn: false },
       ]}
       activity={[
         { event: "Created contact", detail: "Karen W. — Acme Logistics", time: "9 min ago" },

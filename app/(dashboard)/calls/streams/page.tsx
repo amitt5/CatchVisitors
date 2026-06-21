@@ -18,8 +18,8 @@ export default function StreamsPage() {
           const Icon = s.icon;
           return (
             <div key={s.name} className="bg-card border border-border rounded-xl p-5 flex items-start gap-4">
-              <div className="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                <Icon className="w-4 h-4 text-indigo-600" />
+              <div className="w-9 h-9 rounded-lg bg-[#E6F2EE] flex items-center justify-center shrink-0">
+                <Icon className="w-4 h-4 text-[#02524B]" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between">

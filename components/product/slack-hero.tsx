@@ -19,7 +19,7 @@ export function SlackHero() {
           Collaborate with Isla the AI Agent in Slack, just like your best teammates.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <button className="bg-[#544CD1] text-white text-sm font-semibold px-5 py-3 rounded-full">
+          <button className="bg-[#02524B] text-white text-sm font-semibold px-5 py-3 rounded-full">
             Schedule a demo
           </button>
           <button className="flex items-center gap-2 border border-[#02524b]/20 text-[#02524b] text-sm font-semibold px-5 py-3 rounded-full hover:bg-[#02524b]/5 transition-colors">
@@ -39,7 +39,7 @@ export function SlackHero() {
         />
         <div className="absolute top-6 left-6 bg-white rounded-xl shadow-2xl p-4 max-w-xs border border-black/[0.06]">
           <div className="flex items-center gap-2.5 mb-2">
-            <div className="w-8 h-8 rounded-full bg-[#544CD1] text-white flex items-center justify-center text-[11px] font-semibold">
+            <div className="w-8 h-8 rounded-full bg-[#02524B] text-white flex items-center justify-center text-[11px] font-semibold">
               IS
             </div>
             <span className="text-sm text-gray-700">was added to Slack</span>

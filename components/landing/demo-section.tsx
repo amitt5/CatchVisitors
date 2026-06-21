@@ -236,21 +236,6 @@ export function DemoSection() {
   return (
     <section id="try-it" className="py-24 md:py-32 relative overflow-hidden bg-white">
       <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#02524b]/50 mb-4 block">
-            Live Demo
-          </span>
-          <h2
-            className="text-4xl md:text-5xl lg:text-6xl font-normal mb-4 leading-tight tracking-tight text-[#02524b]"
-            style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
-          >
-            Don't take our word for it.<br /><em className="italic">Talk to it.</em>
-          </h2>
-          <p className="text-lg text-[#02524b]/70 max-w-xl mx-auto mt-4 leading-relaxed">
-            Enter your URL. We'll analyze your site and build a custom voice assistant in under 60 seconds.
-          </p>
-        </div>
-
         <div className="max-w-2xl mx-auto bg-white border border-[#02524b]/10 rounded-2xl p-10 shadow-md relative z-10">
           {!isBuilding && !showDemo && (
             <div>

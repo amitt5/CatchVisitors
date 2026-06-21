@@ -6,10 +6,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserPlus } from "lucide-react";
 
 const USERS = [
-  { name: "Amit Goel", initials: "AG", email: "amit@catchvisitors.com", role: "Owner", status: "Active", lastActive: "Just now" },
-  { name: "Priya Shah", initials: "PS", email: "priya@catchvisitors.com", role: "Admin", status: "Active", lastActive: "2 hours ago" },
-  { name: "Tom Reyes", initials: "TR", email: "tom@catchvisitors.com", role: "Editor", status: "Active", lastActive: "Yesterday" },
-  { name: "Lina Park", initials: "LP", email: "lina@catchvisitors.com", role: "Viewer", status: "Invited", lastActive: "—" },
+  { name: "Amit Goel", initials: "AG", email: "amit@inboundly.com", role: "Owner", status: "Active", lastActive: "Just now" },
+  { name: "Priya Shah", initials: "PS", email: "priya@inboundly.com", role: "Admin", status: "Active", lastActive: "2 hours ago" },
+  { name: "Tom Reyes", initials: "TR", email: "tom@inboundly.com", role: "Editor", status: "Active", lastActive: "Yesterday" },
+  { name: "Lina Park", initials: "LP", email: "lina@inboundly.com", role: "Viewer", status: "Invited", lastActive: "—" },
 ];
 
 export default function UsersPage() {
@@ -20,7 +20,7 @@ export default function UsersPage() {
         title="Users"
         description="People with access to this workspace."
         action={
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button className="bg-[#02524B] hover:bg-[#013F3A] text-white">
             <UserPlus className="w-4 h-4 mr-2" />
             Invite user
           </Button>
@@ -32,7 +32,7 @@ export default function UsersPage() {
           rows={USERS.map((u) => [
             <div key="name" className="flex items-center gap-3">
               <Avatar className="size-7">
-                <AvatarFallback className="bg-indigo-100 text-indigo-600 text-xs font-semibold">{u.initials}</AvatarFallback>
+                <AvatarFallback className="bg-[#E6F2EE] text-[#02524B] text-xs font-semibold">{u.initials}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-medium text-foreground">{u.name}</p>

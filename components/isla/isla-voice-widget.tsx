@@ -12,11 +12,11 @@ interface Message {
 }
 
 const ACCENT_HEX: Record<IslaPersona["accent"], string> = {
-  slate: "#94A3B8",
-  blue: "#4F8AFF",
-  purple: "#7C5CFC",
-  amber: "#F5A623",
-  lime: "#8CFFB0",
+  slate: "#5F706C",
+  blue: "#02524B",
+  purple: "#02524B",
+  amber: "#D99A21",
+  lime: "#B5D627",
 };
 
 const TIME_SLOTS = ["10:00 AM", "1:30 PM", "4:00 PM"];
@@ -112,20 +112,20 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
   };
 
   return (
-    <div className="w-[380px] rounded-2xl border border-[#232838] bg-[#131722] shadow-2xl overflow-hidden flex flex-col max-h-[600px]">
+    <div className="w-[380px] rounded-2xl border border-[#DDE8E3] bg-white shadow-2xl shadow-[#02524B]/15 overflow-hidden flex flex-col max-h-[600px]">
       <div
-        className="flex items-center gap-3 px-4 py-3 border-b border-[#232838]"
-        style={{ background: `linear-gradient(135deg, ${accent}22, transparent)` }}
+        className="flex items-center gap-3 px-4 py-3 border-b border-[#DDE8E3]"
+        style={{ background: `linear-gradient(135deg, ${accent}18, #F0F8F3)` }}
       >
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm text-[#0B0E14]"
+          className="w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm text-white"
           style={{ backgroundColor: accent }}
         >
           IS
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-semibold text-white">Isla</div>
-          <div className="text-xs text-[#9AA3B2] truncate">
+          <div className="text-sm font-semibold text-[#10201D]">Isla</div>
+          <div className="text-xs text-[#5F706C] truncate">
             {status === "connecting" && "Connecting…"}
             {status === "live" && (isListening ? "Listening…" : "Speaking…")}
             {status === "ended" && "Call ended"}
@@ -133,19 +133,19 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
         </div>
         <span
           className={cn("w-2 h-2 rounded-full", status === "live" ? "animate-pulse" : "")}
-          style={{ backgroundColor: status === "ended" ? "#475569" : accent }}
+          style={{ backgroundColor: status === "ended" ? "#5F706C" : accent }}
         />
         {onClose && (
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-full flex items-center justify-center text-[#9AA3B2] hover:text-white hover:bg-[#1E2433] transition"
+            className="w-7 h-7 rounded-full flex items-center justify-center text-[#5F706C] hover:text-[#02524B] hover:bg-[#DDE8E3] transition"
           >
             <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      <div className="px-4 py-2 border-b border-[#232838] text-[11px] text-[#9AA3B2] flex items-center gap-2">
+      <div className="px-4 py-2 border-b border-[#DDE8E3] text-[11px] text-[#5F706C] flex items-center gap-2">
         <span className="font-medium" style={{ color: accent }}>
           {persona.segmentTag}
         </span>
@@ -157,7 +157,7 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
         <>
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-[220px]">
             {messages.length === 0 && (
-              <div className="text-xs text-[#5B6472] italic">
+              <div className="text-xs text-[#5F706C] italic">
                 {status === "connecting" ? "Isla is joining the call…" : "Say hello to get started."}
               </div>
             )}
@@ -166,9 +166,9 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
                 <div
                   className={cn(
                     "max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed",
-                    msg.role === "user" ? "bg-[#1E2433] text-white" : "text-white"
+                    msg.role === "user" ? "bg-[#02524B] text-white" : "text-[#10201D]"
                   )}
-                  style={msg.role === "assistant" ? { backgroundColor: `${accent}1A`, border: `1px solid ${accent}40` } : undefined}
+                  style={msg.role === "assistant" ? { backgroundColor: "#F0F8F3", border: "1px solid #DDE8E3" } : undefined}
                 >
                   {msg.content}
                 </div>
@@ -177,25 +177,25 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
             <div ref={transcriptEndRef} />
           </div>
 
-          <div className="px-4 py-3 border-t border-[#232838] flex items-center gap-2">
+          <div className="px-4 py-3 border-t border-[#DDE8E3] flex items-center gap-2">
             <button
               onClick={toggleMute}
               disabled={status !== "live"}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-[#1E2433] text-white disabled:opacity-40 hover:bg-[#272f42] transition"
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F0F8F3] text-[#02524B] disabled:opacity-40 hover:bg-[#DDE8E3] transition"
             >
               {isMuted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </button>
             <button
               onClick={endCall}
               disabled={status === "ended"}
-              className="w-10 h-10 rounded-full flex items-center justify-center bg-[#3A1620] text-[#FF6B6B] disabled:opacity-40 hover:bg-[#4a1c29] transition"
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-[#FBEDEA] text-[#D94A38] disabled:opacity-40 hover:bg-[#F7DCD7] transition"
             >
               <PhoneOff className="w-4 h-4" />
             </button>
             <button
               onClick={() => setView("booking-day")}
-              className="flex-1 h-10 rounded-full flex items-center justify-center gap-2 text-sm font-medium text-[#0B0E14] transition hover:opacity-90"
-              style={{ backgroundColor: accent }}
+              className="flex-1 h-10 rounded-full flex items-center justify-center gap-2 text-sm font-medium text-white transition hover:opacity-90"
+              style={{ backgroundColor: "#02524B" }}
             >
               <CalendarDays className="w-4 h-4" />
               Schedule a call
@@ -206,10 +206,10 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
 
       {view === "booking-day" && (
         <div className="flex-1 px-4 py-4">
-          <button onClick={() => setView("transcript")} className="flex items-center gap-1 text-xs text-[#9AA3B2] hover:text-white mb-3">
+          <button onClick={() => setView("transcript")} className="flex items-center gap-1 text-xs text-[#5F706C] hover:text-[#02524B] mb-3">
             <ChevronLeft className="w-3 h-3" /> Back
           </button>
-          <div className="text-sm font-medium text-white mb-3">Pick a day</div>
+          <div className="text-sm font-medium text-[#10201D] mb-3">Pick a day</div>
           <div className="grid grid-cols-1 gap-2">
             {days.map((day) => (
               <button
@@ -218,9 +218,9 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
                   setSelectedDay(day);
                   setView("booking-time");
                 }}
-                className="text-left px-3 py-2 rounded-lg border border-[#232838] text-sm text-white transition"
+                className="text-left px-3 py-2 rounded-lg border border-[#DDE8E3] text-sm text-[#10201D] transition hover:bg-[#F0F8F3]"
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = accent)}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#232838")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#DDE8E3")}
               >
                 {day.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" })}
               </button>
@@ -231,13 +231,13 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
 
       {view === "booking-time" && selectedDay && (
         <div className="flex-1 px-4 py-4">
-          <button onClick={() => setView("booking-day")} className="flex items-center gap-1 text-xs text-[#9AA3B2] hover:text-white mb-3">
+          <button onClick={() => setView("booking-day")} className="flex items-center gap-1 text-xs text-[#5F706C] hover:text-[#02524B] mb-3">
             <ChevronLeft className="w-3 h-3" /> Back
           </button>
-          <div className="text-sm font-medium text-white mb-1">
+          <div className="text-sm font-medium text-[#10201D] mb-1">
             {selectedDay.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" })}
           </div>
-          <div className="text-xs text-[#9AA3B2] mb-3">Pick a time</div>
+          <div className="text-xs text-[#5F706C] mb-3">Pick a time</div>
           <div className="grid grid-cols-1 gap-2">
             {TIME_SLOTS.map((slot) => (
               <button
@@ -246,9 +246,9 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
                   setSelectedSlot(slot);
                   setView("booking-confirmed");
                 }}
-                className="text-left px-3 py-2 rounded-lg border border-[#232838] text-sm text-white transition"
+                className="text-left px-3 py-2 rounded-lg border border-[#DDE8E3] text-sm text-[#10201D] transition hover:bg-[#F0F8F3]"
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = accent)}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#232838")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#DDE8E3")}
               >
                 {slot}
               </button>
@@ -265,16 +265,16 @@ export function IslaVoiceWidget({ persona, onClose }: { persona: IslaPersona; on
           >
             <Check className="w-6 h-6" style={{ color: accent }} />
           </div>
-          <div className="text-sm font-semibold text-white mb-1">Call confirmed</div>
-          <div className="text-xs text-[#9AA3B2] mb-3 leading-relaxed">
+          <div className="text-sm font-semibold text-[#10201D] mb-1">Call confirmed</div>
+          <div className="text-xs text-[#5F706C] mb-3 leading-relaxed">
             {selectedDay.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" })} at {selectedSlot}
             <br />
             with {persona.assignedRep ? `${persona.assignedRep.name} (${persona.assignedRep.title})` : "an Isla specialist"}
           </div>
           <button
             onClick={() => setView("transcript")}
-            className="px-4 py-2 rounded-full text-sm font-medium text-[#0B0E14]"
-            style={{ backgroundColor: accent }}
+            className="px-4 py-2 rounded-full text-sm font-medium text-white"
+            style={{ backgroundColor: "#02524B" }}
           >
             Back to call
           </button>

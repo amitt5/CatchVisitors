@@ -1,35 +1,35 @@
-import { MessageCircle, Calendar, Globe, Users, TrendingUp, Mail } from "lucide-react";
+import { UserCheck, Filter, Calendar, Database, Bell, ShieldCheck } from "lucide-react";
 
 const features = [
   {
-    icon: MessageCircle,
-    title: "Natural conversation",
-    description: "Sounds human, not robotic. Handles interruptions, follow-ups, and complex questions about your services."
+    icon: UserCheck,
+    title: "Known-visitor recognition",
+    description: "Identifies returning and known visitors, matching them to accounts and CRM records for personalized, context-aware conversations."
+  },
+  {
+    icon: Filter,
+    title: "Qualification & routing",
+    description: "Asks the right questions, scores leads by fit, and routes qualified prospects to the right rep automatically."
   },
   {
     icon: Calendar,
-    title: "Calendar booking",
-    description: "Checks your real-time availability and books consultations directly. No back-and-forth emails."
+    title: "Meeting booking",
+    description: "Checks real-time availability and books meetings with the right rep — no back-and-forth, no dropped handoffs."
   },
   {
-    icon: Globe,
-    title: "50+ languages",
-    description: "Supports over 50 languages including English, Dutch, German, French, and more. Auto-detects and switches seamlessly mid-conversation."
+    icon: Database,
+    title: "CRM sync & enrichment",
+    description: "Logs every transcript and enriches HubSpot and Salesforce with clean, structured conversation data and account context."
   },
   {
-    icon: Users,
-    title: "Lead qualification",
-    description: "Asks the right intake questions, scores leads by fit, puts only qualified prospects on your calendar."
+    icon: Bell,
+    title: "Slack alerts & handoff",
+    description: "Notifies your team in Slack the moment a high-intent lead is ready — with full context for a seamless handoff."
   },
   {
-    icon: TrendingUp,
-    title: "Self-improving",
-    description: "Learns from every conversation. Gets better at answering your specific questions over time."
-  },
-  {
-    icon: Mail,
-    title: "CRM & email sync",
-    description: "Every transcript lands in your inbox and CRM automatically. Full context before you pick up the phone."
+    icon: ShieldCheck,
+    title: "Controls & guardrails",
+    description: "Approved knowledge sources, fallback rules, and escalation paths keep every answer on-brand, accurate, and compliant."
   }
 ];
 
@@ -39,16 +39,16 @@ export function BenefitsSection() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#02524b]/50 mb-4 block">
-            Key Features
+            What Inboundly Does
           </span>
           <h2
             className="text-4xl md:text-5xl font-normal leading-tight tracking-tight text-[#02524b] mb-4"
             style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
           >
-            Everything your front desk<br />can't do at once
+            Everything your inbound team<br />can't do in real time
           </h2>
           <p className="text-lg text-[#02524b]/70 max-w-xl mx-auto leading-relaxed">
-            Learn more about how Inboundly helps your team succeed.
+            From first touch to booked meeting — qualified, routed, and synced to your CRM and sales workflows.
           </p>
         </div>
 

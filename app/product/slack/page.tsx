@@ -14,7 +14,7 @@ export default function ProductSlackPage() {
 
       <SlackHero />
       <SlackUnveilBanner />
-      <TrustLogosSection heading="Trusted by hundreds of CatchVisitors customers" />
+      <TrustLogosSection heading="Trusted by hundreds of Inboundly customers" />
       <TeammateCardsSection />
 
       <section className="bg-[#f7f7fa] pt-20 px-6 text-center">

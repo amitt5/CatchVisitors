@@ -10,9 +10,9 @@ export default function SalesforcePage() {
       icon={Cloud}
       accentColor="#00A1E0"
       connected
-      accountLabel="Connected as isla-integration@catchvisitors.com"
+      accountLabel="Connected as isla-integration@inboundly.com"
       credentialFields={[
-        { label: "Instance URL", value: "https://catchvisitors.my.salesforce.com" },
+        { label: "Instance URL", value: "https://inboundly.my.salesforce.com" },
         { label: "API version", value: "v59.0" },
         { label: "Consumer key", value: "3MVG9..." },
         { label: "Consumer secret", value: "••••••••••••••••" },
@@ -29,7 +29,7 @@ export default function SalesforcePage() {
         { id: "auto-lead", label: "Create leads automatically", description: "New visitors who engage with Isla become Salesforce leads.", defaultOn: true },
         { id: "transcript", label: "Sync transcripts as tasks", description: "Attach the full conversation transcript to the lead or contact.", defaultOn: true },
         { id: "hot-task", label: "Create task for hot leads", description: "Notify the assigned rep when a visitor shows strong buying intent.", defaultOn: true },
-        { id: "two-way", label: "Two-way sync", description: "Reflect Salesforce field changes back into CatchVisitors.", defaultOn: true },
+        { id: "two-way", label: "Two-way sync", description: "Reflect Salesforce field changes back into Inboundly.", defaultOn: true },
       ]}
       activity={[
         { event: "Created lead", detail: "Sofia Mendes — Northwind Clinics", time: "2 min ago" },

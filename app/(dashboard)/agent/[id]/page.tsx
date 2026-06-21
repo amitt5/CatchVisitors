@@ -388,7 +388,7 @@ export default function AgentPage() {
                     className={cn(
                       "pb-2.5 border-b-2 transition-colors",
                       profileSubTab === "avatar"
-                        ? "border-indigo-600 text-foreground font-medium"
+                        ? "border-[#02524B] text-foreground font-medium"
                         : "border-transparent text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -399,7 +399,7 @@ export default function AgentPage() {
                     className={cn(
                       "pb-2.5 border-b-2 transition-colors",
                       profileSubTab === "role"
-                        ? "border-indigo-600 text-foreground font-medium"
+                        ? "border-[#02524B] text-foreground font-medium"
                         : "border-transparent text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -409,8 +409,8 @@ export default function AgentPage() {
 
                 {profileSubTab === "avatar" ? (
                   <div className="space-y-5">
-                    <div className="w-full max-w-xs aspect-video rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-50 border border-border flex items-center justify-center">
-                      <Bot className="w-10 h-10 text-indigo-400" />
+                    <div className="w-full max-w-xs aspect-video rounded-lg bg-gradient-to-br from-[#F0F8F3] to-[#E6F2EE] border border-border flex items-center justify-center">
+                      <Bot className="w-10 h-10 text-[#02524B]/60" />
                     </div>
 
                     <Button
@@ -472,7 +472,7 @@ export default function AgentPage() {
                     {website && (
                       <p className="text-sm text-muted-foreground">
                         Talks to visitors on <span className="text-foreground">{website}</span>.{" "}
-                        <button onClick={() => setProfileSubTab("role")} className="text-indigo-600 hover:underline">
+                        <button onClick={() => setProfileSubTab("role")} className="text-[#02524B] hover:underline">
                           Edit in Agent role
                         </button>
                       </p>

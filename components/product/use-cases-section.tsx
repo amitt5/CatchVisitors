@@ -32,7 +32,7 @@ export function UseCasesSection({
         {cases.map((useCase) => (
           <div key={useCase.title} className="bg-white rounded-2xl border border-black/[0.06] overflow-hidden">
             <div className="p-6">
-              <div className="text-[11px] font-semibold tracking-wide text-[#544CD1] mb-2">
+              <div className="text-[11px] font-semibold tracking-wide text-[#02524B] mb-2">
                 USE CASE
               </div>
               <div className="text-lg font-semibold text-[#02524b] mb-2">{useCase.title}</div>
@@ -42,7 +42,7 @@ export function UseCasesSection({
               <div className="flex flex-col items-center gap-2 mb-4">
                 {useCase.steps.map((step, i) => (
                   <Fragment key={i}>
-                    {i > 0 && <ArrowDown className="w-3.5 h-3.5 text-[#544CD1]" />}
+                    {i > 0 && <ArrowDown className="w-3.5 h-3.5 text-[#02524B]" />}
                     <div className="bg-white rounded-full px-3 py-1.5 text-xs text-[#02524b] shadow-sm text-center">
                       {step}
                     </div>

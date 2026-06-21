@@ -1,7 +1,7 @@
 import { ArrowDown } from "lucide-react";
 
 const LIBRARY_ITEMS = [
-  { label: "Quick Discount Overview", color: "#544CD1" },
+  { label: "Quick Discount Overview", color: "#02524B" },
   { label: "Scaling Inbound with AI Agents", color: "#02524b" },
   { label: "Simplified Demand Generation", color: "#1a1a1a" },
 ];
@@ -24,7 +24,7 @@ export function ContentAuditMock({ className }: { className?: string }) {
         ))}
       </div>
       <div className="flex justify-center mb-3">
-        <ArrowDown className="w-4 h-4 text-[#544CD1]" />
+        <ArrowDown className="w-4 h-4 text-[#02524B]" />
       </div>
       <div className="bg-[#02524b] text-white rounded-xl p-3 text-center max-w-[220px] mx-auto">
         <div className="text-xs font-semibold">Best match selected</div>

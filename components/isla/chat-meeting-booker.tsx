@@ -100,7 +100,7 @@ export function ChatMeetingBooker({
       <style jsx>{`
         .cmb {
           background: white;
-          border: 1px solid #ececf0;
+          border: 1px solid #dde8e3;
           border-radius: 14px;
           padding: 14px;
           width: 100%;
@@ -108,7 +108,7 @@ export function ChatMeetingBooker({
         .cmb__label {
           font-size: 12px;
           font-weight: 600;
-          color: #1a1a1a;
+          color: #10201d;
           margin-bottom: 8px;
         }
         .cmb__days {
@@ -123,18 +123,18 @@ export function ChatMeetingBooker({
           align-items: center;
           gap: 2px;
           padding: 8px 0;
-          border: 1px solid #e2e2e8;
+          border: 1px solid #dde8e3;
           border-radius: 10px;
           background: white;
           cursor: pointer;
           transition: all 0.15s;
         }
         .cmb__day:hover {
-          border-color: #544cd1;
+          border-color: #02524b;
         }
         .cmb__day--active {
-          background: #544cd1;
-          border-color: #544cd1;
+          background: #02524b;
+          border-color: #02524b;
           color: white;
         }
         .cmb__day-wd {
@@ -152,22 +152,22 @@ export function ChatMeetingBooker({
         }
         .cmb__time {
           padding: 9px;
-          border: 1px solid #e2e2e8;
+          border: 1px solid #dde8e3;
           border-radius: 10px;
           background: white;
           font-size: 13px;
-          color: #1a1a1a;
+          color: #10201d;
           cursor: pointer;
           transition: all 0.15s;
         }
         .cmb__time:hover {
-          background: #544cd1;
-          border-color: #544cd1;
+          background: #02524b;
+          border-color: #02524b;
           color: white;
         }
         .cmb__time--active {
-          background: #544cd1;
-          border-color: #544cd1;
+          background: #02524b;
+          border-color: #02524b;
           color: white;
         }
         .cmb__email-row {
@@ -178,20 +178,20 @@ export function ChatMeetingBooker({
           flex: 1;
           min-width: 0;
           padding: 9px 12px;
-          border: 1px solid #e2e2e8;
+          border: 1px solid #dde8e3;
           border-radius: 10px;
           font-size: 13px;
-          color: #1a1a1a;
+          color: #10201d;
           outline: none;
         }
         .cmb__email:focus {
-          border-color: #544cd1;
+          border-color: #02524b;
         }
         .cmb__book {
           padding: 9px 16px;
           border: none;
           border-radius: 10px;
-          background: #544cd1;
+          background: #02524b;
           color: white;
           font-size: 13px;
           font-weight: 600;

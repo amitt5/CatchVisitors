@@ -48,7 +48,7 @@ export function ContentTab() {
         const Icon = item.icon;
         return (
           <div key={item.name} className="flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-lg">
-            <Icon className="w-4 h-4 text-indigo-600 shrink-0" />
+            <Icon className="w-4 h-4 text-[#02524B] shrink-0" />
             <p className="text-sm text-foreground flex-1">{item.name}</p>
             <Badge variant="secondary">{item.type}</Badge>
             <span className="text-xs text-muted-foreground w-20 text-right">{item.updated}</span>
@@ -228,13 +228,13 @@ export function GuidesTab() {
                 onClick={() => setSectionId(s.id)}
                 className={cn(
                   "w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-left transition-colors",
-                  active ? "bg-indigo-50 text-indigo-700" : "text-foreground hover:bg-muted"
+                  active ? "bg-[#E6F2EE] text-[#02524B]" : "text-foreground hover:bg-muted"
                 )}
               >
                 <Icon
                   className={cn(
                     "w-4 h-4 shrink-0",
-                    active ? "text-indigo-600" : "text-muted-foreground"
+                    active ? "text-[#02524B]" : "text-muted-foreground"
                   )}
                 />
                 <span className="text-sm truncate">{s.label}</span>
@@ -256,7 +256,7 @@ export function GuidesTab() {
               {rules.map((rule, i) => (
                 <div
                   key={i}
-                  className="group relative rounded-lg border border-border bg-card focus-within:border-indigo-400 transition-colors"
+                  className="group relative rounded-lg border border-border bg-card focus-within:border-[#02524B] transition-colors"
                 >
                   <Textarea
                     value={rule}
@@ -323,7 +323,7 @@ export function GuidesTab() {
                         className={cn(
                           "px-3 py-1.5 rounded-full text-sm border transition-colors",
                           selected
-                            ? "border-indigo-600 bg-indigo-50 text-indigo-700 font-medium"
+                            ? "border-[#02524B] bg-[#E6F2EE] text-[#02524B] font-medium"
                             : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
                         )}
                       >

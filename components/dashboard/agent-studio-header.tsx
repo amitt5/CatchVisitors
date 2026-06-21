@@ -44,7 +44,7 @@ export function AgentStudioHeader({
       <div className="flex items-center gap-2 px-6 pt-4 text-sm text-muted-foreground">
         <span>Agent Studio</span>
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-foreground font-medium hover:text-indigo-600 transition-colors outline-none">
+          <DropdownMenuTrigger className="flex items-center gap-1 text-foreground font-medium hover:text-[#02524B] transition-colors outline-none">
             {agentName || "Untitled agent"}
             <ChevronDown className="w-3.5 h-3.5" />
           </DropdownMenuTrigger>
@@ -71,7 +71,7 @@ export function AgentStudioHeader({
           const className = cn(
             "px-2 pb-2.5 text-sm border-b-2 whitespace-nowrap transition-colors",
             isActive
-              ? "border-indigo-600 text-foreground font-medium"
+              ? "border-[#02524B] text-foreground font-medium"
               : "border-transparent text-muted-foreground hover:text-foreground"
           );
 

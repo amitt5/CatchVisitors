@@ -1,4 +1,4 @@
-// CatchVisitors Voice Widget
+// Inboundly Voice Widget
 (async function() {
   const WIDGET_ID = 'data-widget-id';
   const SCRIPT_ID = 'catch-visitors-widget';
@@ -6,7 +6,7 @@
   // Prevent multiple loads
   if (document.getElementById(SCRIPT_ID)) return;
   
-  console.log('🚀 CatchVisitors Widget: Initializing...');
+  console.log('🚀 Inboundly Widget: Initializing...');
   
   // Create widget container
   const widget = document.createElement('div');
@@ -71,7 +71,7 @@
   }
   
   // Get API URL from where the widget.js was loaded from
-  const apiUrl = scriptSrc ? new URL(scriptSrc).origin : 'https://www.catchvisitors.com';
+  const apiUrl = scriptSrc ? new URL(scriptSrc).origin : 'https://www.inboundly.com';
   console.log('🔗 API URL:', apiUrl);
   
   try {

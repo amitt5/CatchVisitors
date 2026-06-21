@@ -9,6 +9,7 @@ import { IntegrationsSection } from "@/components/landing/integrations-section";
 import { FAQSection } from "@/components/landing/faq-section";
 import { FinalCTASection } from "@/components/landing/final-cta-section";
 import { Footer } from "@/components/landing/footer";
+import { BookDemoModal } from "@/components/landing/book-demo-modal";
 
 export default function CatchVisitorsLanding() {
   return (
@@ -26,6 +27,7 @@ export default function CatchVisitorsLanding() {
         <FinalCTASection />
       </main>
       <Footer />
+      <BookDemoModal />
     </div>
   );
 }

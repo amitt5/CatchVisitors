@@ -137,7 +137,7 @@ No other text, no explanation, only the JSON object.`;
         "Content-Type": "application/json",
         "Authorization": `Bearer ${openrouterApiKey}`,
         "HTTP-Referer": "https://catch-visitors.com", // Optional: your app URL
-        "X-Title": "CatchVisitors Demo", // Optional: your app name
+        "X-Title": "Inboundly Demo", // Optional: your app name
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-lite", // Gemini model via OpenRouter

@@ -75,7 +75,7 @@ export default function IslaContentPage() {
               onClick={() => setActiveTab(t.id)}
               className={`px-3 py-2 text-sm font-medium border-b-2 transition ${
                 activeTab === t.id
-                  ? "border-[#7C5CFC] text-[#1B2A3C]"
+                  ? "border-[#02524B] text-[#1B2A3C]"
                   : "border-transparent text-[#7C98B6] hover:text-[#1B2A3C]"
               }`}
             >

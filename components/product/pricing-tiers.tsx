@@ -53,7 +53,7 @@ export function PricingTiers() {
           <div
             key={tier.name}
             className={`rounded-2xl border bg-white p-7 flex flex-col ${
-              tier.featured ? "border-[#544CD1] shadow-lg" : "border-black/[0.08]"
+              tier.featured ? "border-[#02524B] shadow-lg" : "border-black/[0.08]"
             }`}
           >
             <div className="text-xs font-medium text-[#02524b]/50 mb-1">
@@ -64,12 +64,12 @@ export function PricingTiers() {
             <ul className="space-y-3 flex-1">
               {tier.features.map((f) => (
                 <li key={f} className="flex items-start gap-2.5 text-sm text-[#02524b]/80">
-                  <Check className="w-4 h-4 text-[#544CD1] mt-0.5 shrink-0" />
+                  <Check className="w-4 h-4 text-[#02524B] mt-0.5 shrink-0" />
                   <span>{f}</span>
                 </li>
               ))}
             </ul>
-            <button className="mt-7 bg-[#544CD1] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#463EC4] transition-colors">
+            <button className="mt-7 bg-[#02524B] text-white text-sm font-semibold py-3 rounded-full hover:bg-[#013F3A] transition-colors">
               Schedule a demo
             </button>
           </div>
@@ -104,7 +104,7 @@ export function AllPlansInclude() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
           {ALL_PLANS.flat().map((item) => (
             <div key={item} className="flex items-start gap-2.5 text-sm text-[#02524b]/80">
-              <Check className="w-4 h-4 text-[#544CD1] mt-0.5 shrink-0" />
+              <Check className="w-4 h-4 text-[#02524B] mt-0.5 shrink-0" />
               <span>{item}</span>
             </div>
           ))}

@@ -118,7 +118,7 @@ export function IntegrationPage({
           <div>
             <h3 className="text-sm font-semibold text-foreground mb-3">Field mapping</h3>
             <DataTable
-              columns={["CatchVisitors field", "", `${name} field`]}
+              columns={["Inboundly field", "", `${name} field`]}
               rows={fieldMappings.map((m) => [
                 m.local,
                 <ArrowRight key="arrow" className="w-3.5 h-3.5 text-muted-foreground" />,

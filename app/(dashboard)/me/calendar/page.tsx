@@ -27,8 +27,8 @@ export default function CalendarPage() {
         <div className="bg-card border border-border rounded-xl divide-y divide-border">
           {MEETINGS.map((m, i) => (
             <div key={i} className="flex items-center gap-4 px-5 py-4">
-              <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
-                <Video className="w-4 h-4 text-indigo-600" />
+              <div className="w-9 h-9 rounded-full bg-[#E6F2EE] flex items-center justify-center shrink-0">
+                <Video className="w-4 h-4 text-[#02524B]" />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-foreground">{m.title}</p>

@@ -23,7 +23,7 @@ export default function ProductMeetingsPage() {
         visual={
           <div className="relative h-[300px] md:h-[320px]">
             <AskIslaPill className="absolute -top-3 -right-3 z-10" />
-            <div className="absolute top-0 left-0 bg-[#544CD1] text-white text-xs font-semibold px-4 py-2 rounded-full shadow-md">
+            <div className="absolute top-0 left-0 bg-[#02524B] text-white text-xs font-semibold px-4 py-2 rounded-full shadow-md">
               Contact sales
             </div>
             <SchedulerCard
@@ -68,7 +68,7 @@ export default function ProductMeetingsPage() {
             <p>
               Hi Jen! Thanks for registering for our upcoming webinar. I thought you might
               also be interested in our new ebook:{" "}
-              <span className="text-[#544CD1] underline">Scaling Inbound with AI Agents</span>.
+              <span className="text-[#02524B] underline">Scaling Inbound with AI Agents</span>.
               If you have any questions, our team is standing by ready to connect.
             </p>
           </EmailCard>

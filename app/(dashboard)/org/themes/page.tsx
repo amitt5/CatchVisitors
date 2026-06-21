@@ -6,7 +6,7 @@ import { Check, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const COLORS = [
-  { id: "indigo", hex: "#5B5FED" },
+  { id: "green", hex: "#02524B" },
   { id: "emerald", hex: "#10B981" },
   { id: "amber", hex: "#F59E0B" },
   { id: "rose", hex: "#F43F5E" },
@@ -14,7 +14,7 @@ const COLORS = [
 ];
 
 export default function ThemesPage() {
-  const [color, setColor] = useState("indigo");
+  const [color, setColor] = useState("green");
   const active = COLORS.find((c) => c.id === color)!;
 
   return (

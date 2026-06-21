@@ -17,7 +17,7 @@ function ContextMockup() {
           Yeah, what's included in Growth?
         </div>
         <div className="bg-[#f0f8f3] rounded-xl rounded-tl-sm p-3 text-sm text-[#02524b] max-w-[85%]">
-          300 conversation minutes, calendar sync, and CRM integration. Want to start a free trial?
+          Unlimited seats, HubSpot & Salesforce sync, and lead routing. Want me to connect you with an AE?
         </div>
       </div>
     </div>
@@ -86,21 +86,21 @@ function BookingMockup() {
 
 const features = [
   {
-    challenge: "Challenge #1: Visitors leave without answers",
-    title: "Understand every visitor",
-    description: "It knows what page they're on, what they asked before, and what they've looked at — so it responds with context instead of starting from zero every time.",
+    challenge: "Challenge #1: You can't tell who's on your site",
+    title: "Recognize high-intent accounts",
+    description: "It knows the page they're on, the account they belong to, and their CRM history — so it engages with real context instead of treating every visitor like a stranger.",
     mockup: ContextMockup,
   },
   {
-    challenge: "Challenge #2: Coverage gaps after hours",
-    title: "Never miss an after-hours visitor",
-    description: "24/7 coverage in 50+ languages. Whether it's a weekend, a holiday, or 3 AM on the other side of the world, someone's there to answer.",
+    challenge: "Challenge #2: Inbound leads go cold",
+    title: "Engage every visitor in real time",
+    description: "Always-on coverage in 50+ languages. The moment a lead shows intent, the agent is there to answer, qualify, and keep the conversation moving — day or night.",
     mockup: CoverageMockup,
   },
   {
-    challenge: "Challenge #3: Booking friction kills momentum",
-    title: "Book without the email chain",
-    description: "Synced to your real calendar. The agent checks availability, locks in a time, and sends confirmation — all inside the conversation.",
+    challenge: "Challenge #3: Handoffs lose context",
+    title: "Route to the right rep and book",
+    description: "The agent qualifies, picks the right owner from your routing rules, books the meeting on their calendar, and syncs the full transcript to your CRM — all in one conversation.",
     mockup: BookingMockup,
   },
 ];
@@ -114,10 +114,10 @@ export function FeatureHighlightsSection() {
             className="text-4xl md:text-5xl font-normal leading-tight tracking-tight mb-4 text-[#02524b]"
             style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
           >
-            More conversations start here
+            More pipeline starts here
           </h2>
           <p className="text-lg text-[#02524b]/70 max-w-xl mx-auto leading-relaxed">
-            Inboundly brings deeper context to every visitor and earlier engagement to every conversation — driving efficiency across your entire site.
+            Inboundly brings account context to every visitor and instant engagement to every high-intent conversation — turning anonymous traffic into qualified pipeline.
           </p>
         </div>
 

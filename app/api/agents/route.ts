@@ -326,7 +326,7 @@ No other text, no explanation, only the JSON object.`;
         "Content-Type": "application/json",
         "Authorization": `Bearer ${openrouterApiKey}`,
         "HTTP-Referer": "https://catch-visitors.com",
-        "X-Title": "CatchVisitors Agent",
+        "X-Title": "Inboundly Agent",
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash-lite",

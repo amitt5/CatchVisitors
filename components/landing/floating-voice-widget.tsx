@@ -324,20 +324,20 @@ export function FloatingVoiceWidget() {
           height: 56px;
           padding: 0 24px;
           border-radius: 28px;
-          background: #544CD1;
+          background: #02524b;
           color: white;
           border: none;
           font-size: 16px;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 4px 20px rgba(84,76,209,0.4);
+          box-shadow: 0 4px 20px rgba(2,82,75,0.28);
         }
 
         .voice-widget__btn:hover {
-          background: #463EC4;
+          background: #013f3a;
           transform: scale(1.03);
-          box-shadow: 0 6px 24px rgba(84,76,209,0.5);
+          box-shadow: 0 6px 24px rgba(2,82,75,0.34);
         }
 
         .voice-panel {
@@ -348,7 +348,7 @@ export function FloatingVoiceWidget() {
           width: 400px;
           max-width: 100vw;
           background: white;
-          box-shadow: -8px 0 30px rgba(0,0,0,0.15);
+          box-shadow: -8px 0 30px rgba(2,82,75,0.16);
           z-index: 9999;
           display: flex;
           flex-direction: column;
@@ -359,7 +359,7 @@ export function FloatingVoiceWidget() {
           align-items: center;
           justify-content: space-between;
           padding: 20px 24px;
-          border-bottom: 1px solid #eee;
+          border-bottom: 1px solid #dde8e3;
         }
 
         .voice-panel__title {
@@ -368,12 +368,12 @@ export function FloatingVoiceWidget() {
 
         .voice-panel__title-bold {
           font-weight: 700;
-          color: #1a1a1a;
+          color: #10201d;
         }
 
         .voice-panel__title-light {
           font-weight: 400;
-          color: #888;
+          color: #5f706c;
         }
 
         .voice-panel__close {
@@ -381,8 +381,8 @@ export function FloatingVoiceWidget() {
           height: 32px;
           border-radius: 50%;
           border: none;
-          background: #f5f5f5;
-          color: #1a1a1a;
+          background: #f0f8f3;
+          color: #02524b;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -390,7 +390,7 @@ export function FloatingVoiceWidget() {
         }
 
         .voice-panel__close:hover {
-          background: #ebebeb;
+          background: #dde8e3;
         }
 
         .voice-panel__body {
@@ -416,7 +416,7 @@ export function FloatingVoiceWidget() {
           height: 88px;
           border-radius: 50%;
           border: none;
-          background: #1a1a1a;
+          background: #02524b;
           color: white;
           display: flex;
           align-items: center;
@@ -425,14 +425,14 @@ export function FloatingVoiceWidget() {
         }
 
         .voice-panel__mic-circle:hover {
-          background: #2a2a2a;
+          background: #013f3a;
         }
 
         .voice-panel__mic-pulse {
           position: absolute;
           inset: 0;
           border-radius: 50%;
-          background: #1a1a1a;
+          background: #b5d627;
           opacity: 0.3;
           animation: panelMicPulse 2s ease infinite;
         }
@@ -446,12 +446,12 @@ export function FloatingVoiceWidget() {
         .voice-panel__mic-caption {
           font-size: 14px;
           font-weight: 500;
-          color: #1a1a1a;
+          color: #10201d;
         }
 
         .voice-panel__suggestions-label {
           font-size: 13px;
-          color: #888;
+          color: #5f706c;
           margin-bottom: 8px;
         }
 
@@ -461,15 +461,15 @@ export function FloatingVoiceWidget() {
           text-align: left;
           padding: 16px 0;
           border: none;
-          border-top: 1px solid #f0f0f0;
+          border-top: 1px solid #dde8e3;
           background: none;
           font-size: 14px;
-          color: #1a1a1a;
+          color: #10201d;
           cursor: pointer;
         }
 
         .voice-panel__suggestion:hover {
-          color: #e8553d;
+          color: #02524b;
         }
 
         .voice-panel__transcript {
@@ -488,15 +488,15 @@ export function FloatingVoiceWidget() {
 
         .voice-panel__msg--user {
           align-self: flex-end;
-          background: #544CD1;
+          background: #02524b;
           color: white;
           border-bottom-right-radius: 4px;
         }
 
         .voice-panel__msg--isla {
           align-self: flex-start;
-          background: #f3f3f5;
-          color: #1a1a1a;
+          background: #f0f8f3;
+          color: #10201d;
           border-bottom-left-radius: 4px;
         }
 
@@ -511,35 +511,35 @@ export function FloatingVoiceWidget() {
         .voice-panel__offer-btn {
           padding: 10px 14px;
           border-radius: 12px;
-          border: 1px solid #e2e2e8;
+          border: 1px solid #dde8e3;
           background: white;
           font-size: 13px;
           font-weight: 500;
-          color: #1a1a1a;
+          color: #10201d;
           cursor: pointer;
           transition: all 0.15s;
         }
 
         .voice-panel__offer-btn:hover {
-          border-color: #544cd1;
+          border-color: #02524b;
         }
 
         .voice-panel__offer-btn--yes {
-          background: #544cd1;
-          border-color: #544cd1;
+          background: #02524b;
+          border-color: #02524b;
           color: white;
         }
 
         .voice-panel__offer-btn--yes:hover {
-          background: #463ec4;
+          background: #013f3a;
         }
 
         .voice-panel__confirmed {
           display: flex;
           gap: 10px;
           align-items: flex-start;
-          background: #ecfdf3;
-          border: 1px solid #b7ebcb;
+          background: #f0f8f3;
+          border: 1px solid #b7ddc4;
           border-radius: 14px;
           padding: 12px 14px;
         }
@@ -548,7 +548,7 @@ export function FloatingVoiceWidget() {
           width: 22px;
           height: 22px;
           border-radius: 50%;
-          background: #10b981;
+          background: #2e9f6e;
           color: white;
           display: flex;
           align-items: center;
@@ -584,7 +584,7 @@ export function FloatingVoiceWidget() {
           padding: 10px 20px;
           border: none;
           border-radius: 20px;
-          background: #1a1a1a;
+          background: #02524b;
           color: white;
           font-size: 13px;
           font-weight: 500;
@@ -592,7 +592,7 @@ export function FloatingVoiceWidget() {
         }
 
         .voice-panel__schedule-btn:hover {
-          background: #2a2a2a;
+          background: #013f3a;
         }
 
         .voice-panel__typing {
@@ -604,7 +604,7 @@ export function FloatingVoiceWidget() {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: #9a9a9a;
+          background: #5f706c;
           display: inline-block;
           animation: isla-typing 1.2s infinite ease-in-out;
         }
@@ -623,14 +623,14 @@ export function FloatingVoiceWidget() {
         .voice-panel__calendar-dock {
           flex-shrink: 0;
           padding: 14px 24px;
-          border-top: 1px solid #eee;
-          background: #faf9ff;
+          border-top: 1px solid #dde8e3;
+          background: #f0f8f3;
         }
 
         .voice-panel__calendar-dock-label {
           font-size: 12px;
           font-weight: 600;
-          color: #544cd1;
+          color: #02524b;
           margin-bottom: 10px;
         }
 
@@ -639,21 +639,21 @@ export function FloatingVoiceWidget() {
           align-items: center;
           gap: 8px;
           padding: 16px 24px;
-          border-top: 1px solid #eee;
+          border-top: 1px solid #dde8e3;
         }
 
         .voice-panel__input {
           flex: 1;
-          border: 1px solid #e2e2e2;
+          border: 1px solid #dde8e3;
           border-radius: 10px;
           padding: 10px 14px;
           font-size: 14px;
-          color: #1a1a1a;
+          color: #10201d;
           outline: none;
         }
 
         .voice-panel__input:focus {
-          border-color: #1a1a1a;
+          border-color: #02524b;
         }
 
         .voice-panel__icon-btn {
@@ -661,8 +661,8 @@ export function FloatingVoiceWidget() {
           height: 36px;
           border-radius: 50%;
           border: none;
-          background: #f5f5f5;
-          color: #1a1a1a;
+          background: #f0f8f3;
+          color: #02524b;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -671,20 +671,20 @@ export function FloatingVoiceWidget() {
         }
 
         .voice-panel__icon-btn:hover {
-          background: #ebebeb;
+          background: #dde8e3;
         }
 
         .voice-panel__icon-btn--active {
-          background: #e5484d;
+          background: #d94a38;
           color: white;
           animation: isla-mic-pulse 1.4s infinite ease-in-out;
         }
         .voice-panel__icon-btn--active:hover {
-          background: #d33b40;
+          background: #c43f31;
         }
         @keyframes isla-mic-pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(229,72,77,0.5); }
-          50% { box-shadow: 0 0 0 6px rgba(229,72,77,0); }
+          0%, 100% { box-shadow: 0 0 0 0 rgba(217,74,56,0.45); }
+          50% { box-shadow: 0 0 0 6px rgba(217,74,56,0); }
         }
 
         .voice-panel__end-btn {
@@ -692,20 +692,20 @@ export function FloatingVoiceWidget() {
           padding: 8px 18px;
           border: none;
           border-radius: 20px;
-          background: #e5484d;
+          background: #d94a38;
           color: white;
           font-size: 13px;
           font-weight: 600;
           cursor: pointer;
         }
         .voice-panel__end-btn:hover {
-          background: #d33b40;
+          background: #c43f31;
         }
 
         .voice-panel__footer {
           padding: 12px 24px 16px;
           font-size: 11px;
-          color: #999;
+          color: #5f706c;
           text-align: center;
         }
       `}</style>

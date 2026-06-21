@@ -5,11 +5,11 @@ import { getPersonaById } from "@/lib/isla/personas";
 import { IslaVoiceWidget } from "@/components/isla/isla-voice-widget";
 
 const ACCENT_HEX: Record<string, string> = {
-  slate: "#94A3B8",
-  blue: "#4F8AFF",
-  purple: "#7C5CFC",
-  amber: "#F5A623",
-  lime: "#8CFFB0",
+  slate: "#5F706C",
+  blue: "#02524B",
+  purple: "#02524B",
+  amber: "#D99A21",
+  lime: "#B5D627",
 };
 
 export default async function IslaLivePersonaPage({
@@ -25,16 +25,16 @@ export default async function IslaLivePersonaPage({
   const isAnonymous = persona.name === null;
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[#F0F8F3] text-[#10201D] relative overflow-hidden">
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: `radial-gradient(circle at 20% 0%, ${accent}1A, transparent 50%)` }}
+        style={{ background: `radial-gradient(circle at 20% 0%, ${accent}18, transparent 50%)` }}
       />
 
-      <nav className="relative z-10 flex items-center justify-between px-8 py-5 border-b border-[#1A1F2C]">
+      <nav className="relative z-10 flex items-center justify-between px-8 py-5 border-b border-[#DDE8E3] bg-white">
         <div className="flex items-center gap-8">
-          <span className="text-lg font-semibold tracking-tight">Isla</span>
-          <div className="hidden md:flex items-center gap-6 text-sm text-[#9AA3B2]">
+          <span className="text-lg font-semibold tracking-tight text-[#02524B]">Isla</span>
+          <div className="hidden md:flex items-center gap-6 text-sm text-[#5F706C]">
             <span>Product</span>
             <span>Pricing</span>
             <span>Customers</span>
@@ -43,16 +43,16 @@ export default async function IslaLivePersonaPage({
         </div>
         <Link
           href="/isla/live"
-          className="flex items-center gap-1.5 text-sm text-[#9AA3B2] hover:text-white transition"
+          className="flex items-center gap-1.5 text-sm text-[#5F706C] hover:text-[#02524B] transition"
         >
           <ArrowLeft className="w-4 h-4" />
           Try another persona
         </Link>
       </nav>
 
-      <div className="relative z-10 px-8 py-3 border-b border-[#1A1F2C] bg-[#10141C]">
+      <div className="relative z-10 px-8 py-3 border-b border-[#DDE8E3] bg-white">
         <div
-          className="max-w-3xl mx-auto text-center text-sm rounded-full px-4 py-2"
+          className="max-w-3xl mx-auto text-center text-sm rounded-full px-4 py-2 text-[#10201D]"
           style={{ backgroundColor: `${accent}14`, border: `1px solid ${accent}40` }}
         >
           {isAnonymous ? (
@@ -77,20 +77,20 @@ export default async function IslaLivePersonaPage({
           <br />
           your best seller.
         </h1>
-        <p className="text-lg text-[#9AA3B2] max-w-xl mx-auto mb-10">
+        <p className="text-lg text-[#5F706C] max-w-xl mx-auto mb-10">
           Isla is the AI SDR that engages, qualifies, and books meetings with your
           website visitors — the instant they land, 24/7.
         </p>
         <div className="flex items-center justify-center gap-4">
-          <button className="px-6 py-3 rounded-full text-sm font-medium text-[#0B0E14]" style={{ backgroundColor: accent }}>
+          <button className="px-6 py-3 rounded-full text-sm font-medium text-white bg-[#02524B]">
             Book a demo
           </button>
-          <button className="px-6 py-3 rounded-full text-sm font-medium text-white border border-[#2A3142]">
+          <button className="px-6 py-3 rounded-full text-sm font-medium text-[#02524B] border border-[#DDE8E3] bg-white">
             Watch Isla in action
           </button>
         </div>
 
-        <div className="mt-24 flex items-center justify-center gap-10 text-[#5B6472] text-sm uppercase tracking-wide">
+        <div className="mt-24 flex items-center justify-center gap-10 text-[#5F706C] text-sm uppercase tracking-wide">
           <span>Brightwave</span>
           <span>Lumio</span>
           <span>Northstar Logistics</span>

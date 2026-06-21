@@ -136,13 +136,13 @@ function NavLink({
   const className = cn(
     "flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors",
     active
-      ? "bg-indigo-50 text-indigo-600 font-medium"
+      ? "bg-[#E6F2EE] text-[#02524B] font-medium"
       : "text-foreground/80 hover:bg-sidebar-accent hover:text-foreground"
   );
 
   return (
     <Link href={item.href} className={className} onClick={onClick}>
-      <span className={cn(active ? "text-indigo-600" : "text-muted-foreground")}>{item.icon}</span>
+      <span className={cn(active ? "text-[#02524B]" : "text-muted-foreground")}>{item.icon}</span>
       {!collapsed && <span className="flex-1 truncate">{item.title}</span>}
     </Link>
   );
@@ -178,7 +178,7 @@ export function Sidebar() {
               <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
                 <Mic className="w-3.5 h-3.5 text-primary-foreground" strokeWidth={2.5} />
               </div>
-              <span className="text-sm font-semibold text-foreground">CatchVisitors</span>
+              <span className="text-sm font-semibold text-foreground">Inboundly</span>
             </div>
           )}
           <button
@@ -231,7 +231,7 @@ export function Sidebar() {
         {/* Footer */}
         <div className="p-3 border-t border-sidebar-border shrink-0">
           {!collapsed && (
-            <p className="px-2.5 text-xs text-muted-foreground">© 2026 CatchVisitors</p>
+            <p className="px-2.5 text-xs text-muted-foreground">© 2026 Inboundly</p>
           )}
         </div>
       </div>

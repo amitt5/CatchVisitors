@@ -10,7 +10,7 @@ import { Check } from "lucide-react";
 
 export default function MyProfilePage() {
   const [name, setName] = useState("Amit Goel");
-  const [email, setEmail] = useState("amit@catchvisitors.com");
+  const [email, setEmail] = useState("amit@inboundly.com");
   const [role, setRole] = useState("Founder");
   const [phone, setPhone] = useState("+31 6 1234 5678");
   const [timezone, setTimezone] = useState("Europe/Amsterdam");
@@ -28,11 +28,11 @@ export default function MyProfilePage() {
         <div className="bg-card border border-border rounded-xl p-6 space-y-6">
           <div className="flex items-center gap-4">
             <Avatar className="size-14">
-              <AvatarFallback className="bg-indigo-100 text-indigo-600 font-semibold">AG</AvatarFallback>
+              <AvatarFallback className="bg-[#F0F8F3] text-[#02524B] font-semibold">AG</AvatarFallback>
             </Avatar>
             <div>
               <p className="text-sm font-medium text-foreground">{name}</p>
-              <p className="text-sm text-muted-foreground">{role} at CatchVisitors</p>
+              <p className="text-sm text-muted-foreground">{role} at Inboundly</p>
             </div>
           </div>
 
@@ -60,11 +60,11 @@ export default function MyProfilePage() {
           </div>
 
           <div className="flex items-center gap-3 pt-2">
-            <Button onClick={handleSave} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+            <Button onClick={handleSave} className="bg-[#02524B] hover:bg-[#013F3A] text-white">
               Save changes
             </Button>
             {saved && (
-              <span className="text-sm text-emerald-600 flex items-center gap-1">
+              <span className="text-sm text-[#2E9F6E] flex items-center gap-1">
                 <Check className="w-4 h-4" /> Saved
               </span>
             )}

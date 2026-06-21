@@ -350,7 +350,7 @@ export default function Wireframes() {
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.5 }}>Mobile Widget — State Wireframes</div>
-          <div style={{ fontSize: 12, color: "#888", marginTop: 4 }}>CatchVisitors · Hotel vertical · Mobile layout</div>
+          <div style={{ fontSize: 12, color: "#888", marginTop: 4 }}>Inboundly · Hotel vertical · Mobile layout</div>
         </div>
 
         {/* flow line */}
