@@ -58,12 +58,12 @@ export function Header() {
         }`}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#02524b] flex items-center justify-center">
-            <Mic className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-[#02524b] flex items-center justify-center">
+            <Mic className="w-[18px] h-[18px] text-white" strokeWidth={2.5} />
           </div>
           <span
-            className="text-xl font-normal text-[#02524b]"
+            className="text-2xl font-normal text-[#02524b]"
             style={{ fontFamily: 'var(--font-serif, Georgia, serif)' }}
           >
             Inboundly
