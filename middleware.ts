@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
-  "/sign-up(.*)",
   "/api/webhooks(.*)",
   "/api/widgets/(.*)",  // Allow public access to widget API
   "/api/gemini-research",  // Allow demo API

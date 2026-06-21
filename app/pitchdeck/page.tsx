@@ -1,12 +1,49 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Mic, Navigation, CalendarCheck, Send } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Mic,
+  Navigation,
+  CalendarCheck,
+  Send,
+  StickyNote,
+} from "lucide-react";
 
 const TOTAL = 5;
 
+const NOTES: { time: string; script: string }[] = [
+  {
+    time: "0:00 – 0:25",
+    script:
+      "Every company with a website has the same leak: visitors show up, don't get answers fast enough, and leave. We built Isla — an AI sales rep that talks to every visitor, by voice or chat, and turns them into booked meetings. And we're building it for a market that just got abandoned.",
+  },
+  {
+    time: "0:25 – 1:00",
+    script:
+      "This isn't a hunch. In April 2026, Salesforce acquired Qualified — the company behind the AI SDR 'Piper' — for between one and one-and-a-half billion dollars. The biggest name in software just told the whole market that AI sales reps are the future. The category is proven. The money is real.",
+  },
+  {
+    time: "1:00 – 1:40",
+    script:
+      "But here's the opportunity. The moment Salesforce bought them, Piper became a Salesforce-only product. The hundreds of thousands of companies running HubSpot, Pipedrive, Dynamics, Zoho — they can't use it. The category leader just walked out of the rest of the market. That's the gap. Isla is CRM-agnostic by design — it plugs into any of them.",
+  },
+  {
+    time: "1:40 – 2:25",
+    script:
+      "Let me show you. A visitor just talks — and Isla answers while driving the website, scrolling them straight to what they asked about. When there's intent, she books the demo right there. Then she does the whole job a human rep does after the call — confirmation email to the buyer, Slack alert to the team, record logged in the CRM. Fully autonomous. That's not a chatbot. That's a sales rep.",
+  },
+  {
+    time: "2:25 – 3:00",
+    script:
+      "The category is billion-dollar-validated. The market — every business not on Salesforce — is wide open. Our model is simple SaaS that costs less than a single sales hire, and Isla already runs in production across three industries today. Salesforce proved this is worth over a billion dollars. We're building it for everyone they left behind. We're Isla — thank you.",
+  },
+];
+
 export default function PitchDeckPage() {
   const [slide, setSlide] = useState(0);
+  const [showNotes, setShowNotes] = useState(false);
 
   const go = useCallback((dir: number) => {
     setSlide((s) => Math.max(0, Math.min(TOTAL - 1, s + dir)));
@@ -24,6 +61,8 @@ export default function PitchDeckPage() {
         setSlide(0);
       } else if (e.key === "End") {
         setSlide(TOTAL - 1);
+      } else if (e.key === "n" || e.key === "N" || e.key === "s" || e.key === "S") {
+        setShowNotes((v) => !v);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -82,9 +121,38 @@ export default function PitchDeckPage() {
         ))}
       </div>
 
-      <div className="absolute bottom-5 right-6 z-20 text-xs text-white/30 tabular-nums">
-        {slide + 1} / {TOTAL}
+      <div className="absolute bottom-5 right-6 z-20 flex items-center gap-3 text-xs text-white/30 tabular-nums">
+        <button
+          onClick={() => setShowNotes((v) => !v)}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full transition ${
+            showNotes ? "bg-[#3FD0B8] text-[#04110E]" : "bg-white/5 text-white/40 hover:bg-white/15"
+          }`}
+          aria-label="Toggle speaker notes"
+          title="Speaker notes (press N)"
+        >
+          <StickyNote className="w-3.5 h-3.5" />
+          Notes
+        </button>
+        <span>
+          {slide + 1} / {TOTAL}
+        </span>
       </div>
+
+      {/* speaker notes overlay */}
+      {showNotes && (
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-30 w-[min(90vw,720px)] rounded-2xl border border-[#3FD0B8]/30 bg-[#071c18]/95 backdrop-blur p-5 shadow-2xl">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[#3FD0B8] text-xs font-semibold tracking-[0.18em] uppercase">
+              Speaker Notes · Slide {slide + 1}
+            </span>
+            <span className="text-white/40 text-xs tabular-nums">{NOTES[slide].time}</span>
+          </div>
+          <p className="text-white/85 text-base md:text-lg leading-relaxed">
+            {NOTES[slide].script}
+          </p>
+          <p className="mt-3 text-white/30 text-[11px]">Press N to hide</p>
+        </div>
+      )}
     </div>
   );
 }
